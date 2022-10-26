@@ -1,0 +1,116 @@
+% Included Packages
+\documentclass[12pt]{report}
+\usepackage{aums}   
+\usepackage{ulem}   
+\usepackage{url}
+\usepackage{tikz}
+\usepackage{pgf}
+\usepackage{tocloft}
+\usepackage[intoc]{nomencl}
+\usepackage[nottoc,notlof,notlot]{tocbibind}
+\usepackage{times}
+\usepackage[a4paper,left=1in,right=1in,top=1.15in,bottom=1in]{geometry}
+\usepackage{etoolbox}
+\usepackage{titlesec}
+\usepackage{subfiles}
+\usepackage{biblatex}
+
+\addbibresource{Thesis.biblatex}
+
+% Title Formatting
+\titleformat{\chapter}[display] 
+  {\singlespace\center}{\chaptertitlename\ \thechapter}{12pt}{\center} 
+  \titleformat*{\section} {\normalfont\fontsize{12}{12}}  
+\titleformat*{\subsection} {\normalfont\fontsize{12}{12}}
+\titleformat*{\subsubsection} {\normalfont\fontsize{12}{12}}
+\setlength\cftparskip{-2pt}
+
+% Creating custom commands
+\renewcommand\bibname{References}
+\renewcommand\cftchapafterpnum{\vskip\baselineskip}  
+\renewcommand\cftsecafterpnum{\vskip\baselineskip \normalfont}
+\renewcommand\cftsubsecafterpnum{\vskip\baselineskip \normalfont}
+\renewcommand\cftsubsubsecafterpnum{\vskip\baselineskip \normalsize}
+\renewcommand\cftfigafterpnum{\vskip\baselineskip}
+\renewcommand\cfttabafterpnum{\vskip\baselineskip}
+\renewcommand{\cftpartleader}{\cftdotfill{\cftdotsep}}
+\renewcommand{\cftchapleader}{\cftdotfill{\cftdotsep}}
+\renewcommand{\nomname}{List of Abbreviations}
+
+
+\makenomenclature
+
+
+\newtheorem{theorem}{\normalfont Theorem} [chapter]
+
+% Title 
+\title{Deeply Coupled GNSS/INS Integration Using Simulated Aircraft Models and Satellite Signals}
+\author{Noah S. Miller} 
+\date{August 15}
+\copyrightyear{2023}
+
+\keywords{Simulation, GNSS/INS Integration, Aircraft Modeling}
+ 
+\adviser{Scott M. Martin}
+
+\professor{Scott M. Martin, Assistant Professor of Mechanical Engineering}
+
+\professor{David M. Bevly, Bill and Lana McNair Distinguished Professor of Mechanical Engineering}
+
+\professor{Joe Mama, An utter freak}
+
+\begin{document}
+
+\begin{romanpages}      % roman-numbered pages 
+
+  \TitlePage
+
+  \subfile{Abstract.tex}
+
+  \subfile{Acknowledgements.tex}
+
+  % Creating Table of Contents, List of Figures, List of Tables
+  \begin{singlespace}
+
+    \begin{center}
+      \renewcommand{\cftchapfont}{}
+      \renewcommand{\cftchappagefont}{}
+      \renewcommand{\cfttoctitlefont}{\normalsize}% Remove \bfseries from ToC title
+      \renewcommand{\cftsecfont }{\normalsize}% Remove \bfseries from section titles in ToC
+      \renewcommand{\cftsecpagefont}{\normalsize}% Remove \bfseries from section titles' page in ToC
+      \tableofcontents
+      \newpage
+      \renewcommand{\cftchapfont}{}
+      \renewcommand{\cftchappagefont}{}
+      \renewcommand{\cftloftitlefont}{\normalsize}% Remove \bfseries from lof title
+      \renewcommand{\cftsecfont}{\normalsize}% Remove \bfseries from section titles in lof
+      \renewcommand{\cftsecpagefont}{\normalsize}% Remove \bfseries from section titles' page in lof
+      \listoffigures
+      \newpage
+      \renewcommand{\cftchapfont}{}
+      \renewcommand{\cftchappagefont}{}
+      \renewcommand{\cftlottitlefont}{\normalsize}% Remove \bfseries from lot title
+      \renewcommand{\cftsecfont}{\normalsize}% Remove \bfseries from section titles in lof
+      \renewcommand{\cftsecpagefont}{\normalsize}% Remove \bfseries from section titles' page in lof
+      \listoftables
+    \end{center}
+  \end{singlespace}
+
+  \printnomenclature[0.5in]
+\end{romanpages}
+
+\normalem
+
+\chapter { Humble Beginnings}  % Use \\ for long titles  
+\vspace{-1cm} %Use when chapter name is long -reduce distance between title and chapter text
+
+\section {\normalfont{This is an example of a section heading}}
+
+\subsection{\normalfont{This is a subsection heading}}
+
+
+\appendix
+\chapter*{Appendices\addcontentsline{toc}{chapter}{Appendices}}
+
+\end{document}
+
