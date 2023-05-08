@@ -16,6 +16,7 @@
 \usepackage{biblatex}
 
 \addbibresource{Thesis.bib}
+\graphicspath{Figures/}
 
 % Title Formatting
 \titleformat{\chapter}[display] 
@@ -104,7 +105,7 @@
 \chapter {Introduction and Background}
 \subfile{Chapters/chapter_1/chapter_1.tex}
 
-\chapter {Flight Vehicle Model}
+\chapter {Flight Vehicle Model and Navigation Sensors}
 \subfile{Chapters/chapter_2/chapter_2.tex}
 
 \chapter {GPS Simulator and Software Defined Receiver}
@@ -120,7 +121,10 @@
 \subfile{Chapters/chapter_6/chapter_6.tex}
 
 \appendix
-\chapter*{Appendices\addcontentsline{toc}{chapter}{Appendices}}
+\chapter*{Appendix A\addcontentsline{toc}{chapter}{Appendices}}
+\subfile{Chapters/Appendix.tex}
+
+\printbibliography
 
 \end{document}
 
