@@ -2,5 +2,19 @@
 \addbibresource{../../Thesis.bib}
 
 \begin{document}
+The final product of all the aforementioned systems sums to 2 things - the forces and moments acting on the body of the aircraft. This work demonstrates the high-fidelity modelling of engines, propellers, landing gear, and aerodynamic forces and moments the simulated flight vehicles generates while in flight. The final step of these calculations is to add them together in the body-fixed $X$, $Y$, and $Z$ directions. This is demonstrated by Equation \ref{eq:sumForce} and Equation \ref{eq:sumMoments}.
 
+\begin{equation}
+    \sum \mathbf{F} = \mathbf{F}_{prop} + \mathbf{F}_{aero} + \mathbf{F}_{LDG}
+    \label{eq:sumForce}
+\end{equation}
+
+\begin{equation}
+    \sum \mathbf{M} = \mathbf{M}_{prop} + \mathbf{M}_{aero} + \mathbf{M}_{LDG}
+    \label{eq:sumMoments}
+\end{equation}
+
+It should be noted that $\mathbf{F}_{LDG}$ and $\mathbf{M}_{LDG}$ are only calculated when the aircraft is landing.
+
+Once the forces and moments are calculated, linear and angular velocities, along with their respective positions can be calculated.
 \end{document}

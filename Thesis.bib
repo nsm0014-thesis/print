@@ -3352,6 +3352,18 @@
   file = {C\:\\Users\\nsm0014\\Zotero\\storage\\HNQIV2HA\\Burbidge et al. - 2020 - SAPCORDA - Safe and Precise GNSS Augmentation Serv.pdf}
 }
 
+@thesis{burchfieldMultiAntennaVectorTracking2022,
+  type = {Thesis},
+  title = {A {{Multi-Antenna Vector Tracking Beamsteering GPS Receiver}} for {{Robust Positioning}}.Pdf},
+  author = {Burchfield, Scott},
+  date = {2022},
+  institution = {{Auburn University}},
+  abstract = {This thesis proposes the coupling of a Global Positioning System (GPS) L1 C/A vector tracking software-defined receiver with controlled reception pattern array array (CRPA) satellite constrained beamsteering, i.e. a multi-antenna vector tracking beamsteering receiver. As technology advances, the number of systems relying on the Global Navigation Satellite System (GNSS) and precise positioning and timing is increasing. Improvements in robustness and overall design are necessary for receivers to estimate position, velocity, and time accurately in all environments. This work is inspired by previous receiver designs by NAVSYS [1] and the German Aerospace Center (DLR) [2]. The proposed receiver conducts pre-correlator beamsteering. Pre-correlator beamsteering is lower SWaP-C as it reduces the number of receiver correlator channels compared to DLR’s post-correlator implementation. The vector tracking receiver feeds back attitude corrected satellite geometry to a beamsteering module that updates the beam constraints as the extended Kalman filter (EKF) in vector tracking applies corrections. The proposed receiver is compared to a multiantenna scalar tracking receiver in all testing scenarios. Comparisons are also made with a single-antenna vector tracking receiver, a single-antenna scalar tracking receiver, and a commercial-off-the-shelf (COTS) receiver. In simulation, receiver performance using a range from one to eight element CRPAs is compared to understand the benefits different arrays offer to receiver design. The simulations show there is a diminishing return in signal quality improvements as the number of elements increase. The simulations also show that a seven and eight element implemented vector tracking receiver can track signals at carrier-to-noise ratios (C/N0s) as low as 12 dB-Hz, which is much lower than previously documented tracking thresholds [3]. The proposed receiver outperforms the other receivers when the simulation scenarios are noisy, improving PVT estimates considerably. Four element configurations of the receivers are tested with dynamic live sky collected data. The multi-antenna vector tracking beamsteering receiver outperforms the other receiver designs, aligning closely with the COTS receiver. The performance of the multi-antenna vector tracking beamsteering receiver is followed by that of the single-antenna vector tracking receiver, the multi-antenna scalar tracking receiver, and the single-antenna scalar tracking receiver, respectively. The receivers are also tested in a jamming environment. The proposed receiver offers a four dB improvement in jamming resilience compared to the single-antenna vector tracking receiver.},
+  langid = {english},
+  pagetotal = {198},
+  file = {C\:\\Users\\nsm0014\\Zotero\\storage\\4N4WS5ZI\\A Multi-Antenna Vector Tracking Beamsteering GPS Receiver for Robust Positioning.pdf}
+}
+
 @inproceedings{burchfieldPerformanceAnalysisLow2020,
   title = {Performance {{Analysis}} of {{Low SWaP-C Jamming Mitigation Methods}} for {{Commercial Applications}}},
   author = {Burchfield, Scott and Martin, Scott and Bevly, David and Starling, Joshua},
@@ -18495,6 +18507,17 @@
   file = {C\:\\Users\\nsm0014\\Zotero\\storage\\LKA6QQJ3\\Martínez et al. - 2021 - Software Receiver Implementation of SBAS Guideline.pdf}
 }
 
+@thesis{martinGPSCarrierPhase2017,
+  title = {{{GPS Carrier Phase Tracking}} in {{Difficult Environments Using Vector Tracking For Precise Positioning}} and {{Vehicle Attitude Estimation}}},
+  author = {Martin, Scott},
+  date = {2017-05-06},
+  institution = {{Auburn University}},
+  abstract = {In this dissertation, two approaches are developed to improve the carrier phase tracking performance of a software-defined GPS receiver. The first approach combines a non-coherent vector tracking architecture with a local phase locked loop to improve carrier phase tracking performance of a stand-alone (i.e. not base station) GPS receiver. The Vector Frequency Locked Loop (VFLL) aided Phase Locked Loop (PLL) receiver is shown to provide a more robust carrier phase tracking performance at low carrier-to-noise density (C/N0) ratios. The VFLL aided PLL is able to maintain phase lock of signal with 2 to 3 dB lower C/N0 ratio. The more significant improvement is that, while the scalar tracking receiver quickly lost phase lock completely at low C/N0 ratios, the VFLL aided PLL only slipped cycles. The second approach is designed to include measurements from a local base station. The Real-Time Kinematic (RTK) vector phase locked loop receiver is derived. The RTK VPLL receiver is a true carrier phase tracking receiver in that the navigation filter is updated using correlator outputs, and there is no local loop filter for each tracking channel. The tracking loop is closed by predicting the received carrier phase using the navigation solution. Base station measurements are combined with relative position vector estimates from the navigation filter and fixed carrier ambiguities to close the tracking loops. In simulation, the RTK VPLL maintains phase lock at C/N0 ratios 4 to 8 dB lower than a traditional scalar tracking receiver. During experimental testing, the RTK VPLL receiver maintains the navigation solution and carrier phase tracking throughout tests in moderate and heavy foliage. There are times during the experimental test that the RTK VPLL receiver slipped cycles of the carrier, and the navigation solution degrades as a result. The environment prevents the standard receiver from reporting a high precision solution for even longer periods. Finally, the benefits of the RTK VPLL receiver design are investigated in a multiantenna configuration. Data from multiple GPS antennas mounted on a rigid body may be used to estimate the attitude of the platform. The solution for finding the three Euler angles (i.e. roll, pitch, and yaw) of the platform given two relative position vectors is provided. Two studies are performed to identify possible improvements to the software receiver design developed in this dissertation. A modified two antenna RTK VPLL algorithm was developed and tested in simulation. It is shown that the two antenna algorithm does not significantly improve the carrier phase tracking performance at low C/N0 ratios. An RTK carrier ambiguity estimation procedure is developed using the multiple antenna configuration and the known antenna separation distance. The new baseline constrained ambiguity estimation algorithm significantly reduces time to fix and provide a method for rejecting incorrect fixes.},
+  langid = {english},
+  pagetotal = {259},
+  file = {C\:\\Users\\nsm0014\\Zotero\\storage\\HDQ4EQN7\\Martin_Dissertation.pdf}
+}
+
 @inproceedings{martiniErrorBoundingARAIM2020,
   title = {Error {{Bounding}} for {{ARAIM Integrity Support Message Generation}}},
   author = {Martini, Ilaria and Sgammini, Matteo and Boyero, Juan Pablo},
@@ -31531,6 +31554,19 @@
   langid = {english},
   annotation = {1 citations (Crossref) [2023-04-16]},
   file = {C\:\\Users\\nsm0014\\Zotero\\storage\\8ZS9ZKHC\\Watts and Martin - 2020 - Cooperative Navigation with the Vector DelayFrequ.pdf}
+}
+
+@thesis{wattsGPSGLONASSL12019,
+  title = {A {{GPS}} and {{GLONASS L1 Vector Tracking Software-Defined Receiver}}},
+  author = {Watts, Tanner},
+  date = {2019-02-19},
+  institution = {{Auburn University}},
+  url = {https://www.ion.org/publications/abstract.cfm?articleID=16686},
+  urldate = {2023-06-19},
+  abstract = {Originally designed for military navigation, GPS has exploded into a modern tool used by government, industrial, and commercial sectors. The increasing demand for navigation has led to the operation of GPS receivers in challenging signal environments that include suburbs, forested areas, and metropolitan cities. In recent years, GPS receivers have also come under attack from commercial jamming and spoofing devices. To assure the integrity of GPS, the ability for receivers to overcome challenging signal environments must be solved. GPS vectorized signal tracking (vector tracking) has been shown to enhance receiver performance by 2 to 6 dB in poor signal environments over traditional tracking methods that rely on loop filters (scalar tracking). GLONASS, the Russian Federation’s equivalent to GPS, is another system that can be used for navigation. Today, many receivers use both GPS and GLONASS with scalar processing. Implementing the constellations into a centralized vector tracking filter gives the opportunity of enhanced navigation capability in challenging areas. In this thesis, the development and analysis of a software receiver that uses GPS and GLONASS vector tracking is performed. Specifically, the software receiver uses a centralized Vector Delay/Frequency Lock Loop (VDFLL) Kalman filter implementation to track the code and carrier dynamics of the satellite signals. Cascaded Phase Lock Loop (PLL) aiding is applied to the satellite channels to maintain carrier phase lock. Simulation results showed the software receiver’s ability to maintain accurate navigation in GPS or GLONASS jamming environments. In GPS jamming environments, GLONASS was able to maintain accurate tracking replicas of the GPS channels through the VDFLL. Experimental results from forested areas and urban canyons showed that the software receiver performed better with vector tracking than scalar tracking. Depending on the experiment, GPS and GLONASS vector tracking outperformed GPS-only vector tracking. In some environments, GLONASS became degraded, which caused noise sharing issues in the software receiver’s vector processing algorithm.},
+  langid = {english},
+  pagetotal = {276},
+  file = {C\:\\Users\\nsm0014\\Zotero\\storage\\LAKXKQC7\\Watts et al. - 2019 - A GPS and GLONASS L1 Vector Tracking Software-Defi.pdf}
 }
 
 @inproceedings{wdowinskiGPSTimeSeries2018,
