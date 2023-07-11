@@ -12,7 +12,6 @@
 \usepackage[a4paper,left=1in,right=1in,top=1.15in,bottom=1in]{geometry}
 \usepackage{etoolbox}
 \usepackage{titlesec}
-\usepackage{subfiles}
 \usepackage{biblatex}
 
 \addbibresource{Thesis.bib}
@@ -66,9 +65,26 @@
 
   \TitlePage
 
-  \subfile{Preface/Abstract.tex}
+  \begin{abstract}
+    % What is being presented in this work?
 
-  \subfile{Preface/Acknowledgements.tex}
+    % Why is it important?
+
+    % How is the sensor fusion algorithm going to work?
+
+    % What are the intricacies of the Flight Vehicle Dynamic Model?
+
+    % Why use GPS measurements?
+
+    % What results are shown in this thesis?
+
+    As modern technology trends towards autonomous aerial and ground vehicles, the need for high-fidelity simulations is ever present. This thesis investigates the coupling of a high-fidelity Flight Vehicle Dynamic Model (FVDM) with simulated Global Positioning System (GPS) measurements in both healthy and degraded scenarios. The FVDM is developed to simulate real-world fixed wing aircraft and emulate measurements from an Inertial Measurement Unit (IMU) and other sensors these same aircraft may have equipped. The sensors simulated in this work suffer from noise, negatively affecting the measurements they provide. The adaptability of the FVDM allows for different aircraft to be analyzed, but this work focuses on the simulation of a Diamond DA-40, single propeller plane. GPS measurements are used to highlight realistic scenarios of degradation or multipath that may occur during important flight segments such as landing. While GPS can provide a true global position, the frequency of its measurements are lower when compared to the sensors simulated in this thesis. Sensor fusion algorithms are robust and well-documented; therefore, a closely coupled GPS and Inertial Navigation System is presented along with details of the high-fidelity FVDM.
+  \end{abstract}
+
+  \begin{acknowledgments}
+    Put text of the acknowledgments here.
+  \end{acknowledgments}
+
 
   % Creating Table of Contents, List of Figures, List of Tables
   \begin{singlespace}
@@ -103,26 +119,232 @@
 \normalem
 
 \chapter {Introduction and Background}
-\subfile{Chapters/chapter_1/chapter_1.tex}
+\section{Background and Motivation}
+
+\section{Prior Art}
+
+\section{Field Contributions}
+
+\section{Thesis Outline}
+
 
 \chapter {Flight Vehicle Model and Navigation Sensors}
-\subfile{Chapters/chapter_2/chapter_2.tex}
+This chapter covers in detail the flight vehicle model used in this work.
+
+\section{Dynamic Vehicle Model}
+This section describes the implementation of each key component in generating the forces and moments that propel the flight vehicle model forward during flight. There are 4 main components need to simulate the aircraft at high-fidelity. The engine and propeller models serve as the main proponents in accelerating the air around the aircraft, further allowing the aerodynamic model to provide lift. The performance of both the aerodynamics and engine models are based on the condition of the ambient atmosphere that are described by the ISA atmosphere model. The section holds several subsections that describe these systems and the equations that govern them.
+\clearpage
+\subsection{Atmosphere Model}
+In order to more accurately calculate a handful of dynamics models studied in this work, a model of Earth's atmosphere is needed to provided ambient temperature, pressure, density, speed of sound, and wind. This thesis uses the International Standard Atmosphere (ISA) model to approximate ambient temperature, ambient pressure, ambient density, and the speed of sound given a certain height above Mean Sea Level (MSL). Using an assumed linear distribution for temperature as a function of altitude, the ISA model assumes hydrostatic equilibrium as seen by Equation~\ref{eq:2.1},
+
+\begin{equation}
+  \frac{dP}{dh} = -\rho\,g,
+  \label{eq:2.1}
+\end{equation}
+
+where $\frac{dP}{dh}$ is the vertical pressure gradient as a factor of air density, $\rho$, and Earth's gravity, $g$. After integrating Equation~\ref{eq:2.1}, the ISA model uses the ideal gas law (Equation~\ref{eq:2.2})
+
+\begin{equation}
+  P = \rho\,R\textsubscript{air}\,T
+  \label{eq:2.2}
+\end{equation}
+
+to solve for the ambient pressure $P$, and density, $\rho$. A complete form of the ISA model is seen in Equations~\ref{eq:2.3} and~\ref{eq:2.4}.
+
+\begin{equation}
+  P = P_0\,\exp\left({\frac{-g\,\Delta h}{R\textsubscript{air}\,T}}\right)
+  \label{eq:2.3}
+\end{equation}
+
+\begin{equation}
+  \rho = \rho_0\,\exp\left({\frac{-g\,\Delta h}{R\textsubscript{air}\,T}}\right)
+  \label{eq:2.4}
+\end{equation}
+
+where $P_0$ and $\rho_0$ are atmospheric layer values for pressure and density, respectively; $R\textsubscript{air}$ is the specific gas constant for air and $\Delta h$ is difference between the current altitude of the flight vehicle and altitude of the current atmospheric layer. The speed of sound is a function of temperature and can be calculated using Equation~\ref{eq:2.5}
+
+\begin{equation}
+  a = \sqrt{\gamma\,R\textsubscript{air}\,T},
+  \label{eq:2.5}
+\end{equation}
+
+where $a$ is the speed of sound in meters per second and $\gamma$ is the ratio of specific heats. Figure~\ref{fig:atmos} describes these atmospheric parameters from MSL to 85,000 meters above sea level.
+
+Along with the aforementioned atmospheric parameters, wind is a vital modeling parameter for flight vehicles. For smaller SWAP flight vehicles, small gusts of wind can greatly affect their dynamics \cite{raymerAircraftDesignConceptual2018}. This thesis uses an updated version of the Horizontal Wind Model \cite{drobEmpiricalModelEarth2008,drobUpdateHorizontalWind2015} using collected satellite data from the Nation Oceanic and Atmospheric Administration (NOAA). The model accepts the current position of the flight vehicle to provide a predicted wind vector in the meridional and zonal reference frame. Implementation of the ISA model and calculation of winds can be found under \textit{Atmosphere.m} in \cite{millerNsm0014thesis1969}.
+
+\subsection{Piston Engine and Propeller Model}
+% Overview of Piston and Propeller Model
+A common way for small general aviation aircraft to generate propulsive forces is through use of a propeller. The Diamond DA-40 used in this thesis has a single 5 blade propeller attached to a shaft that rotates according to the torque generated by the aircraft engine. The following section describes the piston engine model, its accompanying propeller, and the electric governor that indirectly controls the thrust power generated by the aforementioned components.
+
+% Manifold Pressure
+The engine inlet manifold is a set of vents that allow the ambient air to feed directly into the combustion chambers where the oxygen in the air is used in combination with the fuel to generate power. Based on the commanded throttle input, these manifold vents can be closed or open to let in more or less air, and in return the engine delivers a proportional amount of power to the shaft.
+
+% Engine Air Flow Rate
+The by product of calculating the manifold pressure is also calculating the air flow rate that being combusted with the fuel to generate power to the propeller shaft. Because the air flow rate is a by product of the commanded throttle, the engine fuel to air ratio is maintained by a commanded mixture input. The mixture defines the ratio between the fuel and air volume in the engine combustion chambers. When the mixture is \textit{lean}, the chamber has larger volume of air compared to fuel. The opposite can be said when the mixture is \textit{rich}. Since the equation that govern the combustion efficiency are based on sociometric principles, the ideal fuel to air ratio is \textit{ideal}, where there equal parts air and equal parts fuel in the combustion chamber.
+
+% Engine Shaft Power and Torque
+The displacement of the piston as a result of the combustion between fuel and air in the combustion chamber correlate to an act of torque on the propeller shaft that results in the spinning of the propeller.
+
+% Electric Governor Model
+The governor that exists in ground and flight vehicles exists such that drastic changes in throttle do not result in extreme ramps of torque that could structurally damage engine components. It limits the rate of commanded throttle to be linear so that rotational acceleration of the shaft and propeller is safely increased or decreased.
+
+% Propeller Dynamics
+The purpose of an aircraft propeller(s) is to increase the velocity of the ambient air around them such that the lifting surfaces on the aircraft can generate lift and keep the aircraft in flight. There are 3 main components to focus on when designing and manufacturing propellers. These are
+\begin{itemize}
+  \item[i.] Material(s)
+  \item[ii.] Number of Blades
+  \item[iii.] Blade Geometry.
+\end{itemize}
+While the focus of this thesis is not on details in propeller design, it is important to show how the history and differences between each of these 3 items affect the efficiency and performance a propeller has in generating thrust power for the aircraft.
+
+\clearpage
+\subsection{Aerodynamic Modeling}
+Once in the air, aircraft must be efficient at generating lift forces on the airframe to sustain flight. Since the early 1920's, the National Advisory Committee for Aeronautics (NACA) started tested oblique elliptical shapes in wind tunnels known as \textit{airfoils}. A wind tunnel is a machine that generates straight-line "wind" to simulate the testing object flying through the air (Figure~\ref{fig:windtunnel}).
+
+\begin{figure}[!ht]
+  \centering
+  \includegraphics[width=.75\linewidth]{Figures/opencircuitwindtunnel.jpg}
+  \caption{Subsonic wind tunnel in Auburn University's Aerodynamics Laboratory.}
+  \label{fig:windtunnel}
+\end{figure}
+
+For the aircraft presented in this thesis, a \textit{Wortmann FX 63-137} is used. Figure~\ref{fig:airfoil} shows the side profile.
+
+\begin{figure}[!ht]
+  \centering
+  \includegraphics[width=\linewidth]{Figures/da40airfoil.png}
+  \caption{Wortmann FX 63-137 airfoil modeled on simulated Diamond DA-40 aircraft.}
+  \label{fig:airfoil}
+\end{figure}
+\clearpage
+\clearpage
+\subsection{Landing Gear Model}
+Although not calculated often, the modeling of the aircraft's landing gear are important and should not be overlooked. However, because of the flight paths investigated in this thesis focus solely on the aircraft during flight, a simplified dynamic model is used to describe the forces and moments acting on the landing gear during landing. It should be noted that the aerodynamic calculations of the landing gear occur in the aerodynamically modeling section, while this section focuses on the moments and forces generated from the runway opposing the weight of the aircraft.
+
+To describe the forces and moments generated during landing, a mass-spring damper system (Figure~\ref{fig:ldgfbd}) can be used in simulate the the struts, levers, and tire depression (Figure~\ref{fig:ldg}) that absorb much of the forces, moments and vibrations that act onto the aircraft during landing.
+
+\begin{figure}[!ht]
+  \centering
+  \includegraphics[width=.4\linewidth]{Figures/ldgfbd.drawio.png}
+  \caption{Mass-spring damper system, representing the components of landing gear on the aircraft (adapted from \cite{xingStrengthAnalysisDiagonal2012}).}
+  \label{fig:ldgfbd}
+\end{figure}
+
+\begin{figure}[!ht]
+  \centering
+  \includegraphics[width=.75\linewidth]{Figures/LandingGear.png}
+  \caption{Identification of the landing gear components on the Diamond DA40.}
+  \label{fig:ldg}
+\end{figure}
+
+Expanding Newton's second law, the forces on each landing gear are solved in the vertical direction (Equation~\ref{eq:ldgforces})
+
+\begin{equation}
+  \sum F^i_z = m\,a_z = k^i_t\, \Delta z_t\, + \, k^i_{ldg}\, \Delta z_{a/c}\, + c^i_{ldg}\, \Delta \dot{z}_t,
+  \label{eq:ldgforces}
+\end{equation}
+
+where $k^i_{ldg}$ and $c^i_{ldg}$ are the spring and damper coefficients of the struts and levers respectively (see Table~\ref{tbl:ldgcoeff} for the values used in this simulated model). $\Delta z_{a/c}$ and $\Delta \dot{z}_t$, are the deflection and rate of deflection of the aircraft during landing. $k^i_t$ and $\Delta z_t$ are the tire \textit{spring} coefficient and tire depression respectively. For a general aviation aircraft, the depression of the tire upon landing is relatively small such that this term is thrown out.
+
+\begin{table}[!ht]
+  \caption{List of spring and damper coefficients for nose and rear landing gear.}
+  \label{tbl:ldgcoeff}
+  \centering
+  \begin{tabular}{|c|c|c|c|}
+    \hline
+               &                                &                                                            &                                                               \\
+    \textbf{i} & \textbf{Landing Gear Location} & \textbf{Spring Coefficient}, $k\,\left[\frac{N}{m}\right]$ & \textbf{Damper Coefficient}, $c\,\left[\frac{N\,s}{m}\right]$ \\
+               &                                &                                                            &                                                               \\
+    \hline
+    1          & Nose                           & $50,000$                                                   & $11,300$                                                      \\
+    \hline
+    2          & Rear Right                     & $80,000$                                                   & $14,300$                                                      \\
+    \hline
+    3          & Rear Left                      & $80,000$                                                   & $14,300$                                                      \\
+    \hline
+  \end{tabular}
+\end{table}
+
+The observed moments are solved by taking the cross product between the calculated forces of each landing gear and the moment arm (Equation~\ref{eq:ldgmoments}).
+
+\begin{equation}
+  \sum M^i = \textnormal{cross}([\,0\,;\,0\,;\,F^i_z\,],[\,x^i\,;\,y^i\,;\,z^i\,])
+  \label{eq:ldgmoments}
+\end{equation}
+
+In Equation~\ref{eq:ldgmoments}, $x^i$, $y^i$, and $z^i$ represent the moment arm that is derived from the center of gravity for the aircraft down to where each tire makes contact with the ground.
+
+As a final note, it should be made clear that the forces and moments that act upon the landing gear if and only if a tire has made contact with the ground, for computational efficiency.
+
+\clearpage
+\subsection{Forces and Moments Calculations}
+The final product of all the aforementioned systems sums to 2 things - the forces and moments acting on the body of the aircraft. This work demonstrates the high-fidelity modelling of engines, propellers, landing gear, and aerodynamic forces and moments the simulated flight vehicles generates while in flight. The final step of these calculations is to add them together in the body-fixed $X$, $Y$, and $Z$ directions. This is demonstrated by Equation~\ref{eq:sumForce} and Equation~\ref{eq:sumMoments}.
+
+\begin{equation}
+  \sum \mathbf{F} = \mathbf{F}_{prop} + \mathbf{F}_{aero} + \mathbf{F}_{LDG}
+  \label{eq:sumForce}
+\end{equation}
+
+\begin{equation}
+  \sum \mathbf{M} = \mathbf{M}_{prop} + \mathbf{M}_{aero} + \mathbf{M}_{LDG}
+  \label{eq:sumMoments}
+\end{equation}
+
+It should be noted that $\mathbf{F}_{LDG}$ and $\mathbf{M}_{LDG}$ are only calculated when the aircraft is landing.
+
+Once the forces and moments are calculated, linear and angular velocities, along with their respective positions can be calculated.
+\clearpage
+
+\section{Guidance System}
+For commercial flights, it is important for the aircraft to know where the final destination is and how to fly there in an efficient and effective manner. These questions are usually answered by the guidance system and the pilots are provided a flight plan before taking off. The guidance system provides a time series of instructions to feed into the aircraft control to mandate the speed of the aircraft, the altitude of the aircraft, and what radius to bank about with making turns along the journey to the final destination. A similar guidance system is implemented for simulated flight vehicle demonstrated in this thesis.
+
+\subsection{Waypoint Generation}
+
+\subsection{Calculating Controller Commands}
+
+
+\section{Control Scheme}
+
+\section{Sensor Modeling}
+\subsection{Onboard sensors}
 
 \chapter {GPS Simulator and Software Defined Receiver}
-\subfile{Chapters/chapter_3/chapter_3.tex}
+Since 1993, the Global Positioning System (GPS) has provided users with capable hardware to determine their global position within seconds and in recent developments, a centimeter-level position error. GPS can be explained in 3 components: the satellite vehicles in space, control and transmission of signals, and the receiver processing component.
+
+GPS satellites have undergone multiple improvements and upgrades since the first satellites were launched in 1978. These versions of satellites are based on their \textit{block}. Currently, Block III is the most advanced satellite orbiting Earth today. Early versions (Block I) of GPS satellites were used mainly for development and did not transmit signals to the public. Lessons learned from the Block I satellites were fully integrated into the Block II GPS satellites, where GPS became fully operational in 1993. While there were many subtle differences between Block I and Block II satellites, the most important difference is that these new satellites broadcasted a signal on 2 frequencies, coined \textit{L1}, \textit{L2}, and \textit{L2c}, where \textit{L2c} is intended for civilian use. Modern day Block III satellites transmit their signal on the same frequencies that Block II satellites have, with the addition of \textit{L5}. Table provides the frequencies that signals are transmitted on.
+
+\begin{table}[h!]
+  \centering
+  \begin{tabular}{|l|c|}
+    \hline
+    Name         & Frequency [Mhz] \\
+    \hline
+    \textit{L1}  & $1575.42$       \\
+    \hline
+    \textit{L2}  & $1227.60$       \\
+    \hline
+    \textit{L2c} & $1227.60$       \\
+    \hline
+    \textit{L5}  & $1176.45$       \\
+    \hline
+  \end{tabular}
+  \label{tbl:GPSfreq}
+\end{table}
 
 \chapter {Sensor Fusion Algorithm}
-\subfile{Chapters/chapter_4/chapter_4.tex}
 
 \chapter {Scenario Implementation and Results}
-\subfile{Chapters/chapter_5/chapter_5.tex}
 
 \chapter {Conclusion and Future Work}
-\subfile{Chapters/chapter_6/chapter_6.tex}
 
 \appendix
 \chapter*{Appendix A\addcontentsline{toc}{chapter}{Appendices}}
-\subfile{Chapters/Appendix.tex}
+\begin{figure}
+  \centering
+  \includegraphics[width=\linewidth]{Figures/atmosphericparameters.png}
+  \caption{Absolute temperature, ambient pressure, air density, and speed of sound using the ISA model.}
+  \label{fig:atmos}
+\end{figure}
 
 \printbibliography
 
