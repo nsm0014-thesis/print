@@ -70,18 +70,18 @@
   \TitlePage{}
   \begin{abstract}
     % What is being presented in this work?
-
+    As modern technology trends towards autonomous aerial and ground vehicles, the need for high-fidelity simulations is ever present. This thesis investigates the deep coupling of a high-fidelity Flight Vehicle Dynamic Model (FVDM) with simulated Global Positioning System (GPS) measurements in both healthy and degraded scenarios.
     % Why is it important?
-
+    Aircraft in production today are equipped with a plethora of sensors that provide redundant global position of the flight vehicle. However, although redundant, these sensors are plagued with detrimental characteristics that inhibit high-precision measurements when used alone. Deeply coupling the measurements from these sensors with GPS correlators provides robust flight vehicle localization that is well-documented. But, the foreign threat to jam and degrade GPS signals is imminent, and new solutions that fuse multiple sensors must be evaluated when GPS is not available.
     % How is the sensor fusion algorithm going to work?
-
+    This thesis presents a deeply fused sensor fusion algorithm that incorporates the FVDM and GPS correlator measurements. The sensor fusion algorithm will be tested in scenarios of GPS-degradation or GPS-denied environments. The FVDM and GPS correlator measurements are linked together through use of vector tracking, where the propagated states from the FVDM are used to predict the changes in carrier and code phase changes, helping the GPS receiver maintain signal lock are each of the acquired satellites.
     % What are the intricacies of the Flight Vehicle Dynamic Model?
-
+    The FVDM is a high-fidelity flight vehicle model based on the Diamond DA-40 single-propeller fixed wing aircraft. The aircraft model simulates a piston engine model that generates thrust power through a shaft that spins a numerically modeled 5-blade propeller. The speed of the propeller is controlled through a electric governor, and the pitch is controlled to maintain efficient propeller action onto the incident airflow. The aerodynamics of the aircraft are modeled a discretized aerodynamic coefficient technique, called strip theory. Although not used in this work, a landing gear model incorporates the 3 landing gear seen on the Diamond DA-40 and evaluates the forces applied during landing as a second-order spring-mass-damper system. An International Standard Atmosphere (ISA) is used to calculate the density, temperature, speed of sound, and ambient pressure based on aircraft altitude. The Horizontal-Wind-Model 14 is used to calculate winds as a function of the global position of the aircraft based on 20 years of collected data from the National Oceanic and Atmospheric Administration (NOAA). To close the loop of the FVDM, a set of controllers in collaboration with a waypoint manager are used to actuate the control surfaces on the aircraft. Multiple planned paths are demonstrated during this work and are presented in their respective sections.
     % Why use GPS measurements?
 
     % What results are shown in this thesis?
 
-    As modern technology trends towards autonomous aerial and ground vehicles, the need for high-fidelity simulations is ever present. This thesis investigates the coupling of a high-fidelity Flight Vehicle Dynamic Model (FVDM) with simulated Global Positioning System (GPS) measurements in both healthy and degraded scenarios. The FVDM is developed to simulate real-world fixed wing aircraft and emulate measurements from an Inertial Measurement Unit (IMU) and other sensors these same aircraft may have equipped. The sensors simulated in this work suffer from noise, negatively affecting the measurements they provide. The adaptability of the FVDM allows for different aircraft to be analyzed, but this work focuses on the simulation of a Diamond DA-40, single propeller plane. GPS measurements are used to highlight realistic scenarios of degradation or multipath that may occur during important flight segments such as landing. While GPS can provide a true global position, the frequency of its measurements are lower when compared to the sensors simulated in this thesis. Sensor fusion algorithms are robust and well-documented; therefore, a closely coupled GPS and Inertial Navigation System is presented along with details of the high-fidelity FVDM\@.
+    The FVDM is developed to simulate real-world fixed wing aircraft and emulate measurements from an Inertial Measurement Unit (IMU) and other sensors these same aircraft may have equipped. The sensors simulated in this work suffer from noise, negatively affecting the measurements they provide. The adaptability of the FVDM allows for different aircraft to be analyzed, but this work focuses on the simulation of a Diamond DA-40, single propeller plane. GPS measurements are used to highlight realistic scenarios of degradation or multipath that may occur during flight. While GPS can provide a true global position, the frequency of its measurements are lower when compared to the sensors simulated in this thesis. Sensor fusion algorithms are robust and well-documented; therefore, a deeply coupled GPS and Inertial Navigation System is presented along with details of the high-fidelity FVDM\@.
   \end{abstract}
 
   \begin{acknowledgments}
@@ -319,6 +319,7 @@ GPS satellites have undergone multiple improvements and upgrades since the first
     \bottomrule
   \end{tabular}
 \end{table}
+
 
 \chapter{Sensor Fusion Algorithm}
 
