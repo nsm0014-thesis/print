@@ -15,6 +15,7 @@
 \usepackage{biblatex}
 \usepackage[final]{microtype}
 \usepackage{booktabs}
+\usepackage{xcolor}
 \emergencystretch=1em
 
 \addbibresource{Thesis.bib}
@@ -78,10 +79,9 @@
     % What are the intricacies of the Flight Vehicle Dynamic Model?
     The FVDM is a high-fidelity flight vehicle model based on the Diamond DA-40 single-propeller fixed wing aircraft. The aircraft model simulates a piston engine model that generates thrust power through a shaft that spins a numerically modeled 5-blade propeller. The speed of the propeller is controlled through a electric governor, and the pitch is controlled to maintain efficient propeller action onto the incident airflow. The aerodynamics of the aircraft are modeled a discretized aerodynamic coefficient technique, called strip theory. Although not used in this work, a landing gear model incorporates the 3 landing gear seen on the Diamond DA-40 and evaluates the forces applied during landing as a second-order spring-mass-damper system. An International Standard Atmosphere (ISA) is used to calculate the density, temperature, speed of sound, and ambient pressure based on aircraft altitude. The Horizontal-Wind-Model 14 is used to calculate winds as a function of the global position of the aircraft based on 20 years of collected data from the National Oceanic and Atmospheric Administration (NOAA). To close the loop of the FVDM, a set of controllers in collaboration with a waypoint manager are used to actuate the control surfaces on the aircraft. Multiple planned paths are demonstrated during this work and are presented in their respective sections.
     % Why use GPS measurements?
-
+    For several decades, GPS has served as the backbone for attaining a global position solution on a variety of collection platforms. This ubiquity is well-documented, making GPS a practical and realistic signal to simulate for the focus of this thesis. Mainly used as medium to localize United States government entities, including the military services, means foreign threats are honing the technology needed to disrupt the GPS signal from jamming the signal-in-space to spoof the receiver by masking a GPS-like signal. These imminent threats catalyze the greater need for more research in this area on all collection platforms, including flight vehicles.
     % What results are shown in this thesis?
-
-    The FVDM is developed to simulate real-world fixed wing aircraft and emulate measurements from an Inertial Measurement Unit (IMU) and other sensors these same aircraft may have equipped. The sensors simulated in this work suffer from noise, negatively affecting the measurements they provide. The adaptability of the FVDM allows for different aircraft to be analyzed, but this work focuses on the simulation of a Diamond DA-40, single propeller plane. GPS measurements are used to highlight realistic scenarios of degradation or multipath that may occur during flight. While GPS can provide a true global position, the frequency of its measurements are lower when compared to the sensors simulated in this thesis. Sensor fusion algorithms are robust and well-documented; therefore, a deeply coupled GPS and Inertial Navigation System is presented along with details of the high-fidelity FVDM\@.
+    This thesis investigates the performance of position estimation a simulated flight vehicle in scenarios of GPS-degradation and GPS-denied environments. Chapter 1 divulges prior art related to the investigation, while chapters 2, 3, and 4 describe the FVDM, GPS simulation and receiver architecture, and sensor fusion algorithm respectively. Chapter 5 presents the results, including a Monte-Carlo analysis of the stochastic elements within the simulations and Chapter 6 concludes the work followed by a section of future work for interested parties.
   \end{abstract}
 
   \begin{acknowledgments}
@@ -122,13 +122,24 @@
 \normalem{}
 
 \chapter{Introduction and Background}
-\section{Background and Motivation}
+Redundant, accurate flight vehicle localization has been well-documented over several decades \textbf{\color{red} need to add references relating to aircraft sensor fusion}. However, as the threat to GPS signals continues to rise, the need for robust positioning estimation increases. While robust systems already exist to combat incoming interference, these systems are expensive~-~costing as much as \textbf{\color{red} add dollar amount} in some cases \textbf{\color{red} add reference for cost of CRPA system}. Cheaper, robust systems are critical for the safe future of civilian and military flight vehicles. Civilian aircraft feature a wide sensor suite the work in tandem to provide redundancy and safety critical features to maintain safe flight. These include, but aren't limited to \textbf{\color{red} add list of sensor suite featured on big civilian jets with reference or two}. These aircraft have the space to fit these sensors and the power to run them consistently in all phases of flight, more importantly, the companies that design and build these aircraft also the budget to afford such expensive sensor suites. Smaller aircraft (\textbf{\color{red} add some size reference here}) are not allowed these luxuries, being manufactured with fewer sensors, overall making them less safe. Table~\ref{tbl:sensorsuitecomparison} compares the different sensors onboard a civilian airliner and a civilian general aviation aircraft.
+\begin{table}[!ht]\label{tbl:sensorsuitecomparison}
+  \caption{Comparison of sensor suites available to commercial and general aviation aircraft.}
+  \centering
+  \begin{tabular}{cccc}
+    \toprule
+    Sensor & Commercial & General Aviation \\
+    \midrule
+    \bottomrule
+  \end{tabular}
+\end{table}
 
 \section{Prior Art}
 
 \section{Field Contributions}
 
 \section{Thesis Outline}
+The rest of this work follows a description of the physical systems simulated and modeled in the FVDM, satellited simulator, and GPS receiver. After, a presentation of the results, coupled with a Monte-Carlo analysis as a performance evaluation. Wrapping up, final conclusion about the investigation are made and future work considerations are presented.
 
 
 \chapter{Flight Vehicle Model and Navigation Sensors}
