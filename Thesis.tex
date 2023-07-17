@@ -128,22 +128,59 @@ Redundant, accurate flight vehicle localization has been well-documented over se
   \centering
   \begin{tabular}{cccc}
     \toprule
-    Sensor & Commercial & General Aviation \\
+    \textbf{Sensor} & \textbf{Commercial} & \textbf{General Aviation} \\
     \midrule
+                    &                     &                           \\
     \bottomrule
   \end{tabular}
 \end{table}
-
+Regardless of size, the sensor suite aboard any flight vehicle is able to provide measurements 50 times greater than that of a GPS receiver, so a sensor fusion algorithm is optimal for this situation. Because sensor measurements have inherit errors due to a variety of factors, they can wander or \textit{dead reckon} through time. GPS measurements, although slower, provide measurements that do not drift at cost of being slightly less accurate. Table~\ref{tbl:sensorfusionframeworks} describes the most common sensor fusion frameworks for GPS and INS platforms.
+\begin{table}[!ht]\label{tbl:sensorfusionframeworks}
+  \caption{Common sensor fusion frameworks used for GPS and INS collection platforms}
+  \centering
+  \begin{tabular}{cccc}
+    \toprule
+    \textbf{Name} & \textbf{Level of Measurement} & \textbf{Typical Accuracy} \\
+    \midrule
+                  &                               &                           \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+This work presents a deeply-coupled sensor fusion algorithm known as vector tracking. Of the 3 types of GPS and INS sensor fusion frameworks, it is well-documented that deeply coupled provides the most accurate localization between measurement updates \textbf{\color{red} add reference about deeply coupled accuracy}.
 \section{Prior Art}
+The objective of this thesis is to investigate the efficacy of position estimation for a flight vehicle in GPS-degraded and GPS-denied conditions. This thesis will analyze the performance through use of a deeply-coupled sensor fusion algorithm utilizing both INS and GPS measurements. The idea of fusing INS measurements and GPS measurements together on a flight vehicle is well-documented. The following subsections scratch the surface of work performed by other authors and their contributions to the field.
+\subsection{GPS and INS Sensor Fusion}
+
+\subsection{GPS, INS, Vision Aided Sensor Fusion}
+
+\subsection{Other Types of Flight Vehicle Sensor Fusion}
 
 \section{Field Contributions}
+The focus of the research presented in this thesis is the performance evaluation of localization in GPS-degraded and GPS denied environments for simulated low-cost sensors aboard a small general aviation fixed wing flight vehicle. Taking that into consideration, the following contributions to the field are made:
+\begin{itemize}
+  \item Determination of the optimal flight vehicle model to use in the navigation algorithm when considering complexity and computational performance.
+  \item Comparative analysis of multiple flight scenarios reflecting realistic flight plans and GPS degradation.
+  \item Analysis of deeply-coupled sensor fusion algorithm using the flight vehicle model and simulated GPS measurements to determine the efficacy of safe localization in a real-life scenario.
+\end{itemize}
 
 \section{Thesis Outline}
-The rest of this work follows a description of the physical systems simulated and modeled in the FVDM, satellited simulator, and GPS receiver. After, a presentation of the results, coupled with a Monte-Carlo analysis as a performance evaluation. Wrapping up, final conclusion about the investigation are made and future work considerations are presented.
+The rest of this work follows a description of the physical systems simulated and modeled in the FVDM, satellited simulator, and GPS receiver. After, a presentation of the results, coupled with a Monte-Carlo analysis as a performance evaluation are shown. Wrapping up, final conclusion about the investigation are made and future work considerations are presented.
 
 
 \chapter{Flight Vehicle Model and Navigation Sensors}
-This chapter covers in detail the flight vehicle model used in this work.
+The aircraft simulated and modelled in this thesis is the Diamond DA-40 single propeller fixed wing aircraft (\textbf{\color{red} add figure of DA-40}). Small General Aviation (GA) aircraft are easier to model compared to commercial and military aircraft as performance information for the mechanical components of the plane are not hidden through government or proprietary documents. The sections below detail the components of the Flight Vehicle Dynamic Model (FVDM) in its entirety along with the waypoint manager and navigation sensor used to modelled realistic low-cost sensor one might see aboard the actual Diamond DA-40. The simulation is a full 6 Degrees of Freedom (DOF) simulation and features 12 control inputs~-~ranging from throttle and control surface inputs to propeller pitch and mixture levers. These are covered in more detail at a later section. The chapter concludes with information about the stochastic elements in the model, which components are the aircraft they affect and the magnitude and frequency of the random walks.
+
+\section{Reference Frames}
+% What are reference frames
+
+% The different reference frames on the aircraft model
+\subsection{Reference Frames Used During Simulation}
+% Body
+% Wind
+% Global
+
+% How the reference frames are calculated (DCMs)
+\subsection{A Note on Direction Cosine Matrices}
 
 \section{Dynamic Vehicle Model}
 This section describes the implementation of each key component in generating the forces and moments that propel the flight vehicle model forward during flight. There are 4 main components need to simulate the aircraft at high-fidelity. The engine and propeller models serve as the main proponents in accelerating the air around the aircraft, further allowing the aerodynamic model to provide lift. The performance of both the aerodynamics and engine models are based on the condition of the ambient atmosphere that are described by the ISA atmosphere model. The section holds several subsections that describe these systems and the equations that govern them.
@@ -333,6 +370,17 @@ GPS satellites have undergone multiple improvements and upgrades since the first
 
 
 \chapter{Sensor Fusion Algorithm}
+%% Background/Introduction
+\section{Sensor Fusion Architectures}
+% Types of Sensor Fusion algorithms
+\section{Deeply Coupled GPS and FVDM Navigation Filter}
+% Deeply Coupled Integration
+\subsection{Update \textit{a priori}}
+% Time Update
+\subsection{Update \textit{a posteriori}}
+% Measurement Update
+\subsection{Fault Detection}
+% fault Detection and Exclusions
 
 \chapter{Scenario Implementation and Results}
 
