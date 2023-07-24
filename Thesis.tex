@@ -16,6 +16,7 @@
 \usepackage[final]{microtype}
 \usepackage{booktabs}
 \usepackage{xcolor}
+\usepackage[T1]{fontenc}
 \emergencystretch=1em
 
 \addbibresource{Thesis.bib}
@@ -122,31 +123,57 @@
 \normalem{}
 
 \chapter{Introduction and Background}
-Redundant, accurate flight vehicle localization has been well-documented over several decades~\cite{zhaoCooperativeLocalizationBased2017,rufaSensorFusionUnmanned2014,tennyRobustNavigationUrban2022,kandemirProbabilisticMeasurementMethod2018}. However, as the threat to GPS signals continues to rise, the need for robust positioning estimation increases. While robust systems already exist to combat incoming interference, these systems are expensive~-~costing as much as \textbf{\color{red} add dollar amount} in some cases \textbf{\color{red} add reference for cost of CRPA system}. Cheaper, robust systems are critical for the safe future of civilian and military flight vehicles. Civilian aircraft feature a wide sensor suite the work in tandem to provide redundancy and safety critical features to maintain safe flight. These include, but aren't limited to \textbf{\color{red} add list of sensor suite featured on big civilian jets with reference or two}. These aircraft have the space to fit these sensors and the power to run them consistently in all phases of flight, more importantly, the companies that design and build these aircraft also the budget to afford such expensive sensor suites. Smaller aircraft (\textbf{\color{red} add some size reference here}) are not allowed these luxuries, being manufactured with fewer sensors, overall making them less safe. Table~\ref{tbl:sensorsuitecomparison} compares the different sensors onboard a civilian airliner and a civilian general aviation aircraft.
-\begin{table}[!ht]\label{tbl:sensorsuitecomparison}
-  \caption{Comparison of sensor suites available to commercial and general aviation aircraft.}
+Redundant, accurate flight vehicle localization has been well-documented over several decades~\cite{zhaoCooperativeLocalizationBased2017,rufaSensorFusionUnmanned2014,tennyRobustNavigationUrban2022,kandemirProbabilisticMeasurementMethod2018}. However, as the threat to GPS signals continues to rise, the need for robust positioning estimation increases. While robust systems already exist to combat incoming interference, these systems are either proprietary or government controlled, making them infeasible for widespread use. Cheaper, robust systems are critical for the safe future of civilian and military flight vehicles. Civilian aircraft feature a wide sensor suite the work in tandem to provide redundancy and safety critical features to maintain safe flight. These aircraft have the space to fit these sensors and the power to run them consistently in all phases of flight (Figure~\ref{fig:weights}), more importantly, the companies that design and build these aircraft also the budget to afford such expensive sensor suites.
+
+\begin{figure}[!ht]\label{fig:weights}
   \centering
-  \begin{tabular}{cccc}
+  \includegraphics[width=.6\linewidth]{Figures/weights.png}
+  \caption{Aircraft with a larger Max Takeoff Operating Weight (MTOW) typically have more space for more complex sensor suites compared to their General Aviation counterparts~\cite{AircraftCharacteristicsDatabase}.}
+\end{figure}
+
+Smaller aircraft are not allowed these luxuries, being manufactured with fewer sensors, overall making them less safe. Table~\ref{tbl:sensorsuitecomparison} compares the different sensors onboard a civilian airliner and a civilian general aviation aircraft.
+
+\begin{table}[!ht]\label{tbl:sensorsuitecomparison}
+  \caption{Inexhaustive list of sensors available to commercial and general aviation aircraft. (Adapted from~\cite{DiamondAircraftDA40,A380AircraftCharacteristics2020})}
+  \centering
+  \begin{tabular}{lcc}
     \toprule
-    \textbf{Sensor} & \textbf{Commercial} & \textbf{General Aviation} \\
+    \textbf{Sensor}                    & \textbf{Commercial} & \textbf{General Aviation} \\
     \midrule
-                    &                     &                           \\
+    Pitot Tubes                        & \(5\)               & \(2\)                     \\
+    Distance Measuring Equipment       & \(2\)               & \(1\)                     \\
+    Ultra-High Frequency Sensors       & \(2\)               & \(1\)                     \\
+    Very-High Frequency Sensors        & \(3\)               & \(2\)                     \\
+    Communication Channels             & \(2\)               & \(2\)                     \\
+    Outside Air Temperature Sensors    & \(4\)               & \(1\)                     \\
+    Fuel Flow Gauge                    & \(4\)               & \(1\)                     \\
+    GPS receivers                      & \(2\)               & \(1\)                     \\
+    Inertial Measurement Units         & \(3\)               & \(1\)                     \\
+    Satellite Communications           & \(1\)               & {--}                      \\
+    Specific Impulse Sensors           & \(6\)               & {--}                      \\
+    Weather Radar                      & \(1\)               & {--}                      \\
+    Traffic Collision Avoidance System & \(4\)               & {--}                      \\
+    Radio Altimeter                    & \(3\)               & {--}                      \\
+
     \bottomrule
   \end{tabular}
 \end{table}
+
 Regardless of size, the sensor suite aboard any flight vehicle is able to provide measurements 50 times greater than that of a GPS receiver, so a sensor fusion algorithm is optimal for this situation. Because sensor measurements have inherit errors due to a variety of factors, they can wander or \textit{dead reckon} through time. GPS measurements, although slower, provide measurements that do not drift at cost of being slightly less accurate. Table~\ref{tbl:sensorfusionframeworks} describes the most common sensor fusion frameworks for GPS and INS platforms.
 \begin{table}[!ht]\label{tbl:sensorfusionframeworks}
   \caption{Common sensor fusion frameworks used for GPS and INS collection platforms}
   \centering
-  \begin{tabular}{cccc}
+  \begin{tabular}{clc}
     \toprule
-    \textbf{Name} & \textbf{Level of Measurement} & \textbf{Typical Accuracy} \\
+    \textbf{Name}            & \textbf{Level of Measurement}          & \textbf{Typical Error} \\
     \midrule
-                  &                               &                           \\
+    \textit{Loosely-Coupled} & GPS Position and Velocity              & \(1~-~3\) [m]          \\
+    \textit{Tightly-Coupled} & GPS Pseudorange and Doppler            & \(1~-~2\) [m]          \\
+    \textit{Deeply-Coupled}  & GPS Inphase and Quadrature Correlators & \(\leq0.5\) [m]        \\
     \bottomrule
   \end{tabular}
 \end{table}
-This work presents a deeply-coupled sensor fusion algorithm known as vector tracking. Of the 3 types of GPS and INS sensor fusion frameworks, it is well-documented that deeply coupled provides the most accurate localization between measurement updates \textbf{\color{red} add reference about deeply coupled accuracy}.
+This work presents a deeply-coupled sensor fusion algorithm known as vector tracking. Of the 3 types of GPS and INS sensor fusion frameworks, it is well-documented that deeply coupled provides the most accurate localization between measurement updates~\cite{wattsGPSGLONASSL12019}.
 \section{Prior Art}
 The objective of this thesis is to investigate the efficacy of position estimation for a flight vehicle in GPS-degraded and GPS-denied conditions. This thesis will analyze the performance through use of a deeply-coupled sensor fusion algorithm utilizing both INS and GPS measurements. The idea of fusing INS measurements and GPS measurements together on a flight vehicle is well-documented. The following subsections scratch the surface of work performed by other authors and their contributions to the field.
 \subsection{GPS and INS Sensor Fusion}
@@ -168,11 +195,17 @@ The rest of this work follows a description of the physical systems simulated an
 
 
 \chapter{Flight Vehicle Model and Navigation Sensors}
-The aircraft simulated and modelled in this thesis is the Diamond DA-40 single propeller fixed wing aircraft (\textbf{\color{red} add figure of DA-40}). Small General Aviation (GA) aircraft are easier to model compared to commercial and military aircraft as performance information for the mechanical components of the plane are not hidden through government or proprietary documents. The sections below detail the components of the Flight Vehicle Dynamic Model (FVDM) in its entirety along with the waypoint manager and navigation sensor used to modelled realistic low-cost sensor one might see aboard the actual Diamond DA-40. The simulation is a full 6 Degrees of Freedom (DOF) simulation and features 12 control inputs~-~ranging from throttle and control surface inputs to propeller pitch and mixture levers. These are covered in more detail at a later section. The chapter concludes with information about the stochastic elements in the model, which components are the aircraft they affect and the magnitude and frequency of the random walks.
+The aircraft simulated and modelled in this thesis is the Diamond DA-40 single propeller fixed wing aircraft (Figure~\ref{fig:DA40}). Small General Aviation (GA) aircraft are easier to model compared to commercial and military aircraft as performance information for the mechanical components of the plane are not hidden through government or proprietary documents. The sections below detail the components of the Flight Vehicle Dynamic Model (FVDM) in its entirety along with the waypoint manager and navigation sensor used to modelled realistic low-cost sensor one might see aboard the actual Diamond DA-40. The simulation is a full 6 Degrees of Freedom (DOF) simulation and features 12 control inputs~-~ranging from throttle and control surface inputs to propeller pitch and mixture levers. These are covered in more detail at a later section. The chapter concludes with information about the stochastic elements in the model, which components are the aircraft they affect and the magnitude and frequency of the random walks.
 
+\begin{figure}[!ht]\label{fig:DA40}
+  \centering
+  \includegraphics[width=.85\linewidth]{Figures/DA40.jpg}
+  \caption{Pilot flying Diamond DA-40 single propeller aircraft~-~the focus of the collection platform for this thesis. (Adapted from~\cite{DiamondAircraftDA40}.)}
+\end{figure}
+\clearpage
 \section{Reference Frames}
 % What are reference frames
-
+Reference frames and their transformations are a critical component to any navigation algorithm. Precise determination of a flight vehicle requires the knowledge of its position, velocity, and orientation. Reference frames describe the orientation of the flight vehicle in a global or local state. Because different components of the FVDM are physically located and oriented at unique locations of the Diamond DA-40, multiple reference frames are used to describe the forces and moments these components generate due to their placement. In order for the cumulative summation of all forces and moments generated at certain time step, reference frames transformation are used to coordinate local forces and moments into a congruent reference frame such that these calculations are performed properly. This section describes the different reference frames used in this work for the FVDM\@.
 % The different reference frames on the aircraft model
 \subsection{Reference Frames Used During Simulation}
 % Body
@@ -246,7 +279,46 @@ The purpose of an aircraft propeller (s) is to increase the velocity of the ambi
   \item[ii.] Number of Blades
   \item[iii.] Blade Geometry.
 \end{itemize}
-While the focus of this thesis is not on details in propeller design, it is important to show how the history and differences between each of these 3 items affect the efficiency and performance a propeller has in generating thrust power for the aircraft.
+While the focus of this thesis is not on details in propeller design, it is important to show how the history and differences between each of these 3 items affect the efficiency and performance a propeller has in generating thrust power for the aircraft. The first modern propeller were designed in the early 1900's. Originally made of wood, they featured 3 blades and crudely resembled airfoil shapes (like the one seen in Figure~\ref{fig:airfoil}). These propellers had a fixed pitch, meaning they could rotate up and down during flight~-~severely costing the propeller thrust power. In 1929, Wallace Turnbull invented the variable pitch propeller, allowing pilots to control the pitch the propeller, dramatically increasing propeller efficiency during flight. Later on, after the advent of computers, aerodynamicist began improving the design of propellers based on the volume of air they moved within 1 rotation. This is known as the \textit{Advance Ratio} and is described in Equation~\ref{eq:advanceRatio}.
+
+% Advance Ratio
+\begin{equation}\label{eq:advanceRatio}
+  J = \frac{V}{n \, D}
+\end{equation}
+
+Where \(J\) is the \textit{Advance Ratio}, \(V\) is the forward velocity of the flight vehicle, \(n\) is the rotational speed of the propeller and \(D\) is the propeller diameter.
+
+% Power Coefficient
+\begin{equation}\label{eq:powercoefficient}
+  c_P = \frac{P}{\rho \, n^3 \, D^5}
+\end{equation}
+
+% Thrust Coefficient
+\begin{equation}\label{eq:thrustcoefficient}
+  c_T = \frac{T}{\rho \, n^2 \, D^4}
+\end{equation}
+
+% Speed-Power Coefficient
+\begin{equation}\label{eq:speedpowercoefficient}
+  c_S = V^5 \, \sqrt{\frac{\rho}{P \, n^2}}
+\end{equation}
+
+% Activity Factor
+\begin{equation}\label{eq:activityfactor}
+  AF_{\textrm{per blade}} = \frac{1 \times 10^5 \, c_{\textrm{root}}}{16 \, D} \left(0.25 + 0.2 \, \lambda - 0.2 \right)
+\end{equation}
+
+% Propeller Efficiency
+\begin{equation}\label{eq:propellerefficiency}
+\eta_P = \frac{T \, V}{P} 
+\end{equation}
+
+% Thrust
+\begin{equation}\label{eq:thrust}
+T = \frac{c_T}{c_P} \frac{P}{n \, D} 
+\end{equation}
+
+
 
 \clearpage
 \subsection{Aerodynamic Modeling}
