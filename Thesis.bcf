@@ -2361,25 +2361,30 @@
     <bcf:datasource type="file" datatype="bibtex" glob="false">Thesis.bib</bcf:datasource>
   </bcf:bibdata>
   <bcf:section number="0">
-    <bcf:citekey order="5" intorder="1">zhaoCooperativeLocalizationBased2017</bcf:citekey>
-    <bcf:citekey order="5" intorder="2">rufaSensorFusionUnmanned2014</bcf:citekey>
-    <bcf:citekey order="5" intorder="3">tennyRobustNavigationUrban2022</bcf:citekey>
-    <bcf:citekey order="5" intorder="4">kandemirProbabilisticMeasurementMethod2018</bcf:citekey>
-    <bcf:citekey order="6" intorder="1">AircraftCharacteristicsDatabase</bcf:citekey>
-    <bcf:citekey order="7" intorder="1">AircraftCharacteristicsDatabase</bcf:citekey>
-    <bcf:citekey order="8" intorder="1">DiamondAircraftDA40</bcf:citekey>
-    <bcf:citekey order="8" intorder="2">A380AircraftCharacteristics2020</bcf:citekey>
-    <bcf:citekey order="9" intorder="1">DiamondAircraftDA40</bcf:citekey>
-    <bcf:citekey order="9" intorder="2">A380AircraftCharacteristics2020</bcf:citekey>
-    <bcf:citekey order="10" intorder="1">wattsGPSGLONASSL12019</bcf:citekey>
+    <bcf:citekey order="7" intorder="1">zhaoCooperativeLocalizationBased2017</bcf:citekey>
+    <bcf:citekey order="7" intorder="2">rufaSensorFusionUnmanned2014</bcf:citekey>
+    <bcf:citekey order="7" intorder="3">tennyRobustNavigationUrban2022</bcf:citekey>
+    <bcf:citekey order="7" intorder="4">kandemirProbabilisticMeasurementMethod2018</bcf:citekey>
+    <bcf:citekey order="8" intorder="1">AircraftCharacteristicsDatabase</bcf:citekey>
+    <bcf:citekey order="9" intorder="1">AircraftCharacteristicsDatabase</bcf:citekey>
+    <bcf:citekey order="10" intorder="1">DiamondAircraftDA40</bcf:citekey>
+    <bcf:citekey order="10" intorder="2">A380AircraftCharacteristics2020</bcf:citekey>
     <bcf:citekey order="11" intorder="1">DiamondAircraftDA40</bcf:citekey>
-    <bcf:citekey order="12" intorder="1">DiamondAircraftDA40</bcf:citekey>
-    <bcf:citekey order="13" intorder="1">raymerAircraftDesignConceptual2018</bcf:citekey>
-    <bcf:citekey order="14" intorder="1">drobEmpiricalModelEarth2008</bcf:citekey>
-    <bcf:citekey order="14" intorder="2">drobUpdateHorizontalWind2015</bcf:citekey>
-    <bcf:citekey order="15" intorder="1">millerNsm0014thesis1969</bcf:citekey>
-    <bcf:citekey order="16" intorder="1">xingStrengthAnalysisDiagonal2012</bcf:citekey>
-    <bcf:citekey order="17" intorder="1">xingStrengthAnalysisDiagonal2012</bcf:citekey>
+    <bcf:citekey order="11" intorder="2">A380AircraftCharacteristics2020</bcf:citekey>
+    <bcf:citekey order="12" intorder="1">wattsGPSGLONASSL12019</bcf:citekey>
+    <bcf:citekey order="13" intorder="1">DiamondAircraftDA40</bcf:citekey>
+    <bcf:citekey order="14" intorder="1">DiamondAircraftDA40</bcf:citekey>
+    <bcf:citekey order="15" intorder="1">raymerAircraftDesignConceptual2018</bcf:citekey>
+    <bcf:citekey order="16" intorder="1">drobEmpiricalModelEarth2008</bcf:citekey>
+    <bcf:citekey order="16" intorder="2">drobUpdateHorizontalWind2015</bcf:citekey>
+    <bcf:citekey order="17" intorder="1">millerNsm0014thesis1969</bcf:citekey>
+    <bcf:citekey order="18" intorder="1">ianHowIdentifyHistoric2016</bcf:citekey>
+    <bcf:citekey order="19" intorder="1">ianShortHistoryAircraft2018</bcf:citekey>
+    <bcf:citekey order="20" intorder="1">HartzellPropellerInc</bcf:citekey>
+    <bcf:citekey order="21" intorder="1">FlightStream</bcf:citekey>
+    <bcf:citekey order="22" intorder="1">FlightStream</bcf:citekey>
+    <bcf:citekey order="23" intorder="1">xingStrengthAnalysisDiagonal2012</bcf:citekey>
+    <bcf:citekey order="24" intorder="1">xingStrengthAnalysisDiagonal2012</bcf:citekey>
   </bcf:section>
   <!-- SORTING TEMPLATES -->
   <bcf:sortingtemplate name="nty">

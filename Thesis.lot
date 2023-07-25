@@ -2,7 +2,8 @@
 \contentsline {table}{\numberline {1.1}{\ignorespaces Inexhaustive list of sensors available to commercial and general aviation aircraft. (Adapted from\nobreakspace {}\blx@tocontentsinit {0}\cite {DiamondAircraftDA40,A380AircraftCharacteristics2020})}}{2}{}%
 \contentsline {table}{\numberline {1.2}{\ignorespaces Common sensor fusion frameworks used for GPS and INS collection platforms}}{2}{}%
 \addvspace {10pt}
-\contentsline {table}{\numberline {2.1}{\ignorespaces List of spring and damper coefficients for nose and rear landing gear.}}{13}{}%
+\contentsline {table}{\numberline {2.1}{\ignorespaces Characteristics of the propeller modeled for this work.}}{11}{}%
+\contentsline {table}{\numberline {2.2}{\ignorespaces List of spring and damper coefficients for nose and rear landing gear.}}{16}{}%
 \addvspace {10pt}
 \addvspace {10pt}
 \addvspace {10pt}
