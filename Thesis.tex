@@ -344,14 +344,26 @@ Now that the \textit{Activity Factor} is known for the modeled propeller. The \t
   c_T = \frac{T}{\rho \, n^2 \, D^4}
 \end{equation}
 
-In Equations~\ref{eq:powercoefficient} and~\ref{eq:thrustcoefficient}, \(P\) is the engine power, denoted in kiloWatts, \(n\) is the rotational speed of the shaft, denoted in revolutions per second, \(T\) is the thrust of the propeller, denoted in kiloNewtons, and \( rho \) is density of the ambient air. For these calculations, an assume sea-level density is used (1.225 [\(kg/m^3\)]). Because of the variability in thrust produced at static, sea-level conditions, we can use the ratio between the \textit{Power} and \textit{Thrust} coefficient to provide insight on the propellers performance (Figure~\ref{fig:staticpropthrust}).
+In Equations~\ref{eq:powercoefficient} and~\ref{eq:thrustcoefficient}, \(P\) is the engine power, denoted in kiloWatts, \(n\) is the rotational speed of the shaft, denoted in revolutions per second, \(T\) is the thrust of the propeller, denoted in kiloNewtons, and \( rho \) is density of the ambient air. For these calculations, an assume sea-level density is used (1.225 [\(kg/m^3\)]). Using Figure~\ref{fig:staticpropthrust} and our nominal engine power and torque output, we can approximate the thrust coefficient (Equations~\ref{eq:calcCT1},~\ref{eq:calcCT2},~\ref{eq:calcCT3} and~\ref{eq:calcCT4}).
 
 \begin{figure}[!ht]\label{fig:staticpropthrust}
   \centering
-  \includegraphics[width=\linewidth]{Figures/staticpropthrust.png}
-  \caption{Static propeller thrust for the modelled propeller.}
+  \includegraphics[width=0.85\linewidth]{Figures/StaticThrust.png}
+  \caption{Static propeller thrust for the modelled propeller (Adapted from~\cite{GeneralizedMethodPropeller}).}
 \end{figure}
 
+\begin{equation}\label{eq:calcCT1}
+  c_P = \frac{(447.42)(550)}{{(1.225)} \, {(36.6)}^3 \, {(1.9)}^5}
+\end{equation}
+\begin{equation}\label{eq:calcCT2}
+  c_P = 0.16547
+\end{equation}
+\begin{equation}\label{eq:calcCT3}
+  \frac{C_T}{C_P}(@C_P == 0.16547) = 1.1544
+\end{equation}
+\begin{equation}\label{eq:calcCT4}
+  C_T = 0.18997
+\end{equation}
 
 % Advance Ratio
 \begin{equation}\label{eq:advanceRatio}
