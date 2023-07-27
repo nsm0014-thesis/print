@@ -207,14 +207,35 @@ The aircraft simulated and modelled in this thesis is the Diamond DA-40 single p
 % What are reference frames
 Reference frames and their transformations are a critical component to any navigation algorithm. Precise determination of a flight vehicle requires the knowledge of its position, velocity, and orientation. Reference frames describe the orientation of the flight vehicle in a global or local state. Because different components of the FVDM are physically located and oriented at unique locations of the Diamond DA-40, multiple reference frames are used to describe the forces and moments these components generate due to their placement. In order for the cumulative summation of all forces and moments generated at certain time step, reference frames transformation are used to coordinate local forces and moments into a congruent reference frame such that these calculations are performed properly. This section describes the different reference frames used in this work for the FVDM\@.
 % The different reference frames on the aircraft model
-\subsection{Reference Frames Used During Simulation}
 % Body
+\subsection{Flight Vehicle Reference Frame}
+The flight vehicle reference frame or body frame describes the reference frame with origin at the center of mass of the modeled Diamond DA-40. The body frame maintains alignment shown in Figure~\ref{fig:flightvehiclereferenceframe} and remained fixed to the flight vehicle at all times. The flight vehicle reference frame is essential to the FVDM as all forces and moments are added together in the body frame before integration into global and local pose states.
+
+\begin{figure}[!ht]\label{fig:flightvehiclereferenceframe}
+  \centering
+  \includegraphics[width=0.85\linewidth]{Figures/bodyframe.png}
+  \caption{Standard flight vehicle reference frame used in this work.~\cite{peetSpacecraftAircraftDynamics}}
+\end{figure}
+
+% Prop
+\subsection{Propeller Reference Frame}
+
 % Wind
+\subsection{Wind Axes Reference Frame}
+
+% Local
+\subsection{Local Reference Frame}
+
+% LLA
+\subsection{Geodetic Reference Frame}
+
 % Global
+\subsection{Earth-Centered, Earth-fixed Reference Frame}
 
 % How the reference frames are calculated (DCMs)
 \subsection{A Note on Direction Cosine Matrices}
 
+\clearpage
 \section{Dynamic Vehicle Model}
 This section describes the implementation of each key component in generating the forces and moments that propel the flight vehicle model forward during flight. There are 4 main components need to simulate the aircraft at high-fidelity. The engine and propeller models serve as the main proponents in accelerating the air around the aircraft, further allowing the aerodynamic model to provide lift. The performance of both the aerodynamics and engine models are based on the condition of the ambient atmosphere that are described by the ISA atmosphere model. The section holds several subsections that describe these systems and the equations that govern them.
 \clearpage
