@@ -209,7 +209,7 @@ Reference frames and their transformations are a critical component to any navig
 % The different reference frames on the aircraft model
 % Body
 \subsection{Flight Vehicle Reference Frame}
-The flight vehicle reference frame or body frame describes the reference frame with origin at the center of mass of the modeled Diamond DA-40. The body frame maintains alignment shown in Figure~\ref{fig:flightvehiclereferenceframe} and remained fixed to the flight vehicle at all times. The flight vehicle reference frame is essential to the FVDM as all forces and moments are added together in the body frame before integration into global and local pose states.
+The flight vehicle reference frame or body frame describes the reference frame with origin at the center of mass of the modeled Diamond DA-40. The body frame maintains alignment shown in Figure~\ref{fig:flightvehiclereferenceframe} and remains fixed to the flight vehicle at all times. The flight vehicle reference frame is essential to the FVDM as all forces and moments are added together in the body frame before integration into global and local pose states.
 
 \begin{figure}[!ht]\label{fig:flightvehiclereferenceframe}
   \centering
@@ -219,9 +219,31 @@ The flight vehicle reference frame or body frame describes the reference frame w
 
 % Prop
 \subsection{Propeller Reference Frame}
+The propeller reference frame describes the axis about which the propeller rotates with origin to the propeller nacelle, as seen in Figure~\ref{fig:propnacelle}.
+
+\begin{figure}[!ht]\label{fig:propnacelle}
+  \centering
+  \includegraphics[width=\linewidth]{Figures/propnacelle.jpg}
+  \caption{Yellow propeller nacelle on the front of a general aviation aircraft.}
+\end{figure}
+
+As seen in Figure~\ref{fig:propframe}, propeller \textit{pitch}, as it is referenced in this thesis is a rotation about the \textit{y} axis, while the blades of the propeller rotate about the \textit{x} axis. This axis remains remains fixed in orientation, but always moves with the aircraft to have the same distant from the flight vehicle reference frame.
+
+\begin{figure}[!ht]\label{fig:propframe}
+  \centering
+  \includegraphics[width=\linewidth]{Figures/propframe.png}
+  \caption{The reference frame used to model the dynamic of the propeller in this work~\cite{vanarnhemEngineeringMethodEstimate2020}.}
+\end{figure}
 
 % Wind
-\subsection{Wind Axes Reference Frame}
+\subsection{Local Wind Axes Reference Frame}
+The local wind axes reference frame is used to calculate the lift and drag generated from their respective components with origin at the center of mass of the modeled Diamond DA-40. The orientation of the reference frame changes such that \(\Psi \) remains parallel with the trajectory of the aircraft and \(\alpha \) remains parallel to the ground below. In literature, \( \Psi \) and \(\alpha \) are referred to as the \textit{sideslip} and \textit{angle of attack} of the aircraft during flight.
+
+\begin{figure}[!ht]\label{fig:windframe}
+  \centering
+  \includegraphics[width=\linewidth]{Figures/windaxes.png}
+  \caption{Flight vehicle reference frame and local wind reference frame (dotted lines) (Adapted from~\cite{ForceBalanceCoordinates}).}
+\end{figure}
 
 % Local
 \subsection{Local Reference Frame}
