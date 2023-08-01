@@ -223,7 +223,7 @@ The propeller reference frame describes the axis about which the propeller rotat
 
 \begin{figure}[!ht]\label{fig:propnacelle}
   \centering
-  \includegraphics[width=\linewidth]{Figures/propnacelle.jpg}
+  \includegraphics[width=0.65\linewidth]{Figures/propnacelle.jpg}
   \caption{Yellow propeller nacelle on the front of a general aviation aircraft.}
 \end{figure}
 
@@ -231,7 +231,7 @@ As seen in Figure~\ref{fig:propframe}, propeller \textit{pitch}, as it is refere
 
 \begin{figure}[!ht]\label{fig:propframe}
   \centering
-  \includegraphics[width=\linewidth]{Figures/propframe.png}
+  \includegraphics[width=0.75\linewidth]{Figures/propframe.png}
   \caption{The reference frame used to model the dynamic of the propeller in this work~\cite{vanarnhemEngineeringMethodEstimate2020}.}
 \end{figure}
 
@@ -241,22 +241,22 @@ The local wind axes reference frame is used to calculate the lift and drag gener
 
 \begin{figure}[!ht]\label{fig:windframe}
   \centering
-  \includegraphics[width=\linewidth]{Figures/windaxes.png}
+  \includegraphics[width=0.75\linewidth]{Figures/windaxes.png}
   \caption{Flight vehicle reference frame and local wind reference frame (dotted lines) (Adapted from~\cite{ForceBalanceCoordinates}).}
 \end{figure}
 
 % Local
-\subsection{Local Reference Frame}
+\subsection{Local Navigation Reference Frame}
 A local navigation frame is necessary to define the orientation of the flight vehicle. This work implements a North-East-Down reference frame in which the axes are aligned with the topographic directions: North, East, and vertical as seen in Figure~\ref{fig:NEDframe}. The origin of the local reference frame is defined at the initial position in the flight vehicle dynamics model and the navigation algorithm. The Euler attitude angles are used to describe the orientation of the Diamond DA-40 relative to the local navigation frame. When the aircraft has no roll pitch, or yaw, this equates to the aircraft flying perfectly tangential to Earth's ellipsoid, with the nose of the aircraft pointing towards the North.
 
 \begin{figure}[!ht]\label{fig:NEDframe}
   \centering
-  \includegraphics[width=\linewidth]{Figures/nedframe.PNG}
+  \includegraphics[width=0.75\linewidth]{Figures/nedframe.PNG}
   \caption{North-East-Down Reference Frame~-~the local reference frame used in this thesis.}
 \end{figure}
 
 \subsection{Global Reference Frames}
-Global Reference Frames are critical for GPS receiver to calculate position and velocity. In summary, a position from a receiver is based on distances between the receiver and any visible satellites. As all GPS satellites operate in orbit around the Earth, the global reference frame provides a suitable solution that encompasses both satellite and receiver position and velocities. In this thesis, two global reference frames are used. The Earth-Centered, Earth-Fixed (ECEF) and the geodetic reference system (referred to as LLA from now on). The ECEF reference frame is considered the standard global reference frame used as it works well for defining both positions and velocities for satellites and receivers, but falls short when it comes to visualization as the origin of the ECEF frame is the center of the Earth. An alternative reference frame, LLA, allows a visualization advantage by defining positions based on the surface of the Earth. Both LLA and ECEF reference frames utilize the World Geodetic System 1984 (WGS84) to describe Earth's geoid and gravitational field as function of parameters in Table~\ref{tbl:wgs84}. Visualization of both reference frames can be seen in Figure~\ref{globalframes}.
+Global Reference Frames are critical for GPS receiver to calculate position and velocity. In summary, a position from a receiver is based on distances between the receiver and any visible satellites. As all GPS satellites operate in orbit around the Earth, the global reference frame provides a suitable solution that encompasses both satellite and receiver position and velocities. In this thesis, two global reference frames are used. The Earth-Centered, Earth-Fixed (ECEF) and the geodetic reference system (referred to as LLA from now on). The ECEF reference frame is considered the standard global reference frame used as it works well for defining both positions and velocities for satellites and receivers, but falls short when it comes to visualization as the origin of the ECEF frame is the center of the Earth. An alternative reference frame, LLA, allows a visualization advantage by defining positions based on the surface of the Earth. Both LLA and ECEF reference frames utilize the World Geodetic System 1984 (WGS84) to describe Earth's geoid and gravitational field as function of parameters in Table~\ref{tbl:wgs84}. Visualization of both reference frames can be seen in Figure~\ref{fig:globalframes}.
 
 \begin{table}[!ht]\label{tbl:wgs84}
   \caption{Properties describing the WGS84 ellipsoid}
@@ -275,7 +275,7 @@ Global Reference Frames are critical for GPS receiver to calculate position and 
 
 \begin{figure}[!ht]\label{fig:globalframes}
   \centering
-  \includegraphics[width=\linewidth]{Figures/globalframe.png}
+  \includegraphics[width=0.75\linewidth]{Figures/globalframe.png}
   \caption{ECEF and geodetic reference frames as used in this thesis.}
 \end{figure}
 
