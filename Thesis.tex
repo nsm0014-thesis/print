@@ -17,6 +17,7 @@
 \usepackage{booktabs}
 \usepackage{xcolor}
 \usepackage[T1]{fontenc}
+\usepackage{amsmath}
 \emergencystretch=1em
 
 \addbibresource{Thesis.bib}
@@ -280,6 +281,7 @@ Global Reference Frames are critical for GPS receiver to calculate position and 
 \end{figure}
 
 % How the reference frames are calculated (DCMs)
+\clearpage
 \section{Reference Frame Transformations}
 Reference frame transformations are critical to any sensor fusion algorithm in order to properly add vectors of different frames together. Reference frame transformations range in complexity, the simplest being a transformation of the NED frame into the East-North-Up reference frame. A more complex transformation could be the global ECEF frame into the body frame and vice versa. The reference frame transformation used in this thesis are described in the following subsections.
 
@@ -327,18 +329,43 @@ The ECEF to LLA conversion is more complicated. In order to calculate \(L\) in E
 
 
 \subsection{ECEF to Local}
+The conversion from the ECEF reference frame to the local navigation reference frame can be done by forming a Direction Cosine Matrix (DCM),
 
-\subsection{ECEF to Body}
+\begin{equation}\label{eq:ECEF2LNDCM}
+  C^{\textrm{LN}}_{\textrm{ECEF}} =
+  \begin{bmatrix}
+    -\sin\left(L\right)\cos\left(\lambda\right) & -\sin\left(L\right)\sin\left(\lambda\right) & \cos\left(L\right)  \\
+    -\sin\left(\lambda\right)                   & \cos\left(\lambda\right)                    & 0                   \\
+    -\cos\left(L\right)\cos\left(\lambda\right) & -\cos\left(L\right)\sin\left(\lambda\right) & -\sin\left(L\right) \\
+  \end{bmatrix},
+\end{equation}
 
-\subsection{Wind to Body}
+and then multiplying the ECEF position vector to produce a position in the NED frame as discussed previously. In Equation~\ref{eq:ECEF2LNDCM}, \(C^{\textrm{LN}}_{\textrm{ECEF}}\) describes the DCM used for the transformation. The notation follows such that the subscript (ECEF) is the position in the original reference frame and the superscript (LN) is the reference frame the position is being rotated into. This thesis will always follow this notation to avoid any confusion.
 
-\subsection{Propeller to Body}
+\subsection{Local to Body}
+Similar to the conversion of ECEF to the local navigation frame, the conversion from the local navigation to the flight vehicle reference frame can be done by forming the DCM (Equation~\ref{eq:321DCM}).
+\begin{equation}\label{eq:321DCM}
+  C^{\textrm{FV}}_{\textrm{LN}} =
+  \begin{bmatrix}
+    \textrm{c}_{\theta}\textrm{c}_{\psi}                                                        & \textrm{c}_{\theta}\textrm{s}_{\psi}                                                        & -\textrm{s}_{\theta}                 \\
+    -\textrm{c}_{\phi}\textrm{s}_{\psi} + \textrm{s}_{\phi}\textrm{s}_{\theta}\textrm{c}_{\psi} & \textrm{c}_{\phi}\textrm{c}_{\psi} + \textrm{s}_{\phi}\textrm{s}_{\theta}\textrm{s}_{\psi}  & \textrm{s}_{\phi}\textrm{c}_{\theta} \\
+    \textrm{s}_{\phi}\textrm{s}_{\psi} + \textrm{c}_{\phi}\textrm{s}_{\theta}\textrm{c}_{\psi}  & -\textrm{s}_{\phi}\textrm{c}_{\psi} + \textrm{c}_{\phi}\textrm{s}_{\theta}\textrm{s}_{\psi} & \textrm{c}_{\phi}\textrm{c}_{\theta} \\
+  \end{bmatrix}
+\end{equation}
+In this case, the DCM comprises of the 3 Euler angles {--} roll (\( \phi \)), pitch (\( \theta \)), and yaw (\( \psi \)). To allow the matrix to fit the width of the paper, \textit{c} and \textit{s} denote the \textit{cosine} and \textit{sine} trigonometric functions, respectively.
 
+If one wanted to convert position from the flight vehicle to ECEF reference frame, multiplying Equations~\ref{eq:321DCM} and~\ref{eq:ECEF2LNDCM} provides the user with a DCM to do this (Equation~\ref{eq:ECEF2BODY}).
+
+\begin{equation}\label{eq:ECEF2BODY}
+  C^{\textrm{FV}}_{\textrm{ECEF}} = C^{\textrm{FV}}_{\textrm{LN}} \, C^{\textrm{LN}}_{\textrm{ECEF}}
+\end{equation}
+
+It should be noted that any of these DCM reference frame transformations can be inverted by simply transposing the matrices.
 
 \clearpage
 \section{Dynamic Vehicle Model}
 This section describes the implementation of each key component in generating the forces and moments that propel the flight vehicle model forward during flight. There are 4 main components need to simulate the aircraft at high-fidelity. The engine and propeller models serve as the main proponents in accelerating the air around the aircraft, further allowing the aerodynamic model to provide lift. The performance of both the aerodynamics and engine models are based on the condition of the ambient atmosphere that are described by the ISA atmosphere model. The section holds several subsections that describe these systems and the equations that govern them.
-\clearpage
+
 \subsection{Atmosphere Model}
 In order to more accurately calculate a handful of dynamics models studied in this work, a model of Earth's atmosphere is needed to provided ambient temperature, pressure, density, speed of sound, and wind. This thesis uses the International Standard Atmosphere (ISA) model to approximate ambient temperature, ambient pressure, ambient density, and the speed of sound given a certain height above Mean Sea Level (MSL). Using an assumed linear distribution for temperature as a function of altitude, the ISA model assumes hydrostatic equilibrium as seen by Equation~\ref{eq:2.1},
 
@@ -377,12 +404,18 @@ where \(a\) is the speed of sound in meters per second and \( \gamma \) is the r
 
 Along with the aforementioned atmospheric parameters, wind is a vital modeling parameter for flight vehicles. For smaller SWAP flight vehicles, small gusts of wind can greatly affect their dynamics~\cite{raymerAircraftDesignConceptual2018}. This thesis uses an updated version of the Horizontal Wind Model~\cite{drobEmpiricalModelEarth2008,drobUpdateHorizontalWind2015} using collected satellite data from the Nation Oceanic and Atmospheric Administration (NOAA). The model accepts the current position of the flight vehicle to provide a predicted wind vector in the meridional and zonal reference frame. Implementation of the ISA model and calculation of winds can be found under \textit{Atmosphere.m} in~\cite{millerNsm0014thesis1969}.
 
-\subsection{Piston Engine and Propeller Model}
+\subsection{Piston Engine Model}
 % Overview of Piston and Propeller Model
-A common way for small general aviation aircraft to generate propulsive forces is through use of a propeller. The Diamond DA-40 used in this thesis has a single 5 blade propeller attached to a shaft that rotates according to the torque generated by the aircraft engine. The following section describes the piston engine model, its accompanying propeller, and the electric governor that indirectly controls the thrust power generated by the aforementioned components.
+Small general aviation aircraft generate propulsive forces through use of an engine that spins a shaft which is connected to a propeller. The engine modeled and simulated is a piston, air-cooled engine. The components of the engine that produce the power are described below.
 
 % Manifold Pressure
-The engine inlet manifold is a set of vents that allow the ambient air to feed directly into the combustion chambers where the oxygen in the air is used in combination with the fuel to generate power. Based on the commanded throttle input, these manifold vents can be closed or open to let in more or less air, and in return the engine delivers a proportional amount of power to the shaft.
+Because the engine is air-cooled, one of more important component is the engine manifold. The engine inlet manifold is a set of vents that allow the ambient air to feed directly into the combustion chambers where the oxygen in the air is used in combination with the fuel to generate power. Based on the commanded throttle input, these manifold vents can be closed or open to let in more or less air, and in return the engine delivers a proportional amount of power to the shaft. This proportional amount is called the \textit{Power Factor} and is queried at every time step in the simulation as seen in Figure~\ref{fig:PFLUT}.
+
+\begin{figure}[!ht]\label{fig:PFLUT}
+  \centering
+  \includegraphics[width=.75\linewidth]{Figures/PFLUT.png}
+  \caption{Power factor look up table for modeled engine.}
+\end{figure}
 
 % Engine Air Flow Rate
 The by product of calculating the manifold pressure is also calculating the air flow rate that being combusted with the fuel to generate power to the propeller shaft. Because the air flow rate is a by product of the commanded throttle, the engine fuel to air ratio is maintained by a commanded mixture input. The mixture defines the ratio between the fuel and air volume in the engine combustion chambers. When the mixture is \textit{lean}, the chamber has larger volume of air compared to fuel. The opposite can be said when the mixture is \textit{rich}. Since the equation that govern the combustion efficiency are based on sociometric principles, the ideal fuel to air ratio is \textit{ideal}, where there equal parts air and equal parts fuel in the combustion chamber.
@@ -391,8 +424,15 @@ The by product of calculating the manifold pressure is also calculating the air 
 The displacement of the piston as a result of the combustion between fuel and air in the combustion chamber correlate to an act of torque on the propeller shaft that results in the spinning of the propeller.
 
 % Electric Governor Model
-The governor that exists in ground and flight vehicles exists such that drastic changes in throttle do not result in extreme ramps of torque that could structurally damage engine components. It limits the rate of commanded throttle to be linear so that rotational acceleration of the shaft and propeller is safely increased or decreased.
+The governor that exists in ground and flight vehicles exists such that drastic changes in throttle do not result in extreme ramps of torque that could structurally damage engine components. It limits the rate of commanded throttle to be linear so that rotational acceleration of the shaft and propeller is safely increased or decreased. The governor also controls fuel consumption of the engine by controlling the engine speed. The fuel consumption is queried at every time step using a look up table that is calculated before the simulation starts (Figure~\ref{fig:BSFCLUT}).
 
+\begin{figure}[!ht]\label{fig:BSFCLUT}
+  \centering
+  \includegraphics[width=.75\linewidth]{Figures/BSFCLUT.png}
+  \caption{Brake specific fuel consumption look up table for modeled engine.}
+\end{figure}
+
+\subsection{Propeller Modeling}
 % Propeller Dynamics
 The purpose of an aircraft propeller is to increase the velocity of the ambient air around them such that the lifting surfaces on the aircraft can generate lift and keep the aircraft in flight. There are 3 main components to focus on when designing and manufacturing propellers. These are
 \begin{itemize}
@@ -519,8 +559,6 @@ A handful of steps, provided below, list the necessary calculations needed to si
   \item[6.] The moment generated by the propeller is simply the cross-product between the thrust and moment arm between the tip of the propeller and the nacelle of propeller.
 \end{itemize}
 
-
-\clearpage
 \subsection{Aerodynamic Modeling}\label{section:aerodynamic}
 Once in the air, aircraft must be efficient at generating lift forces on the airframe to sustain flight. Since the early 1920's, the National Advisory Committee for Aeronautics (NACA) started tested oblique elliptical shapes in wind tunnels known as \textit{airfoils}. A wind tunnel is a machine that generates straight-line \textit{wind} to simulate the testing object flying through the air (Figure~\ref{fig:windtunnel}).
 
@@ -537,7 +575,7 @@ For the aircraft presented in this thesis, a \textit{Wortmann FX 63{-}137} is us
   \includegraphics[width=\linewidth]{Figures/da40airfoil.png}
   \caption{Wortmann FX 63{-}137 airfoil modeled on simulated Diamond DA-40 aircraft.}
 \end{figure}
-\clearpage
+
 \subsection{Landing Gear Model}
 Although not calculated often, the modeling of the aircraft's landing gear are important and should not be overlooked. However, because of the flight paths investigated in this thesis focus solely on the aircraft during flight, a simplified dynamic model is used to describe the forces and moments acting on the landing gear during landing. It should be noted that the aerodynamic calculations of the landing gear occur in the aerodynamically modeling section, while this section focuses on the moments and forces generated from the runway opposing the weight of the aircraft.
 
@@ -589,7 +627,6 @@ In Equation~\ref{eq:ldgmoments}, \(x^i\), \(y^i\), and \(z^i\) represent the mom
 
 As a final note, it should be made clear that the forces and moments that act upon the landing gear if and only if a tire has made contact with the ground, for computational efficiency.
 
-\clearpage
 \subsection{Forces and Moments Calculations}
 The final product of all the aforementioned systems sums to 2 things~-~the forces and moments acting on the body of the aircraft. This work demonstrates the high-fidelity modelling of engines, propellers, landing gear, and aerodynamic forces and moments the simulated flight vehicles generates while in flight. The final step of these calculations is to add them together in the body-fixed \(X\), \(Y\), and \(Z\) directions. This is demonstrated by Equation~\ref{eq:sumForce} and Equation~\ref{eq:sumMoments}.
 
@@ -615,12 +652,14 @@ For commercial flights, it is important for the aircraft to know where the final
 
 \subsection{Calculating Controller Commands}
 
-
+\clearpage
 \section{Control Scheme}
 
+\clearpage
 \section{Sensor Modeling}
 \subsection{Onboard sensors}
 
+\clearpage
 \chapter{GPS Simulator and Software Defined Receiver}
 Since 1993, the Global Positioning System (GPS) has provided users with capable hardware to determine their global position within seconds and in recent developments, a centimeter-level position error. GPS can be explained in 3 components: the satellite vehicles in space, control and transmission of signals, and the receiver processing component.
 
@@ -640,11 +679,13 @@ GPS satellites have undergone multiple improvements and upgrades since the first
   \end{tabular}
 \end{table}
 
-
+\clearpage
 \chapter{Sensor Fusion Algorithm}
 %% Background/Introduction
+\clearpage
 \section{Sensor Fusion Architectures}
 % Types of Sensor Fusion algorithms
+\clearpage
 \section{Deeply Coupled GPS and FVDM Navigation Filter}
 % Deeply Coupled Integration
 \subsection{Update \textit{a priori}}
@@ -653,11 +694,11 @@ GPS satellites have undergone multiple improvements and upgrades since the first
 % Measurement Update
 \subsection{Fault Detection}
 % fault Detection and Exclusions
-
+\clearpage
 \chapter{Scenario Implementation and Results}
-
+\clearpage
 \chapter{Conclusion and Future Work}
-
+\clearpage
 \appendix
 \chapter*{Appendix A\addcontentsline{toc}{chapter}{Appendices}}
 \begin{figure}\label{fig:atmos}
