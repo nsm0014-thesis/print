@@ -263,12 +263,12 @@ Global Reference Frames are critical for GPS receiver to calculate position and 
   \centering
   \begin{tabular}{cccc}
     \toprule
-    Property                   & WGS84 Value     & Units  \\
+    \textbf{Property}          & \textbf{WGS84 Value} & \textbf{Units} \\
     \midrule
-    Equatorial Radius, \(R_0\) & 6,378,137.0     & meters \\
-    Polar Radius, \(R_P\)      & 6,356,752.31425 & meters \\
-    Flattening, \(f\)          & 1/298.257223563 &        \\
-    Eccentricity, \(e\)        & 0.0818181808425 &        \\
+    Equatorial Radius, \(R_0\) & 6,378,137.0          & meters         \\
+    Polar Radius, \(R_P\)      & 6,356,752.31425      & meters         \\
+    Flattening, \(f\)          & 1/298.257223563      &                \\
+    Eccentricity, \(e\)        & 0.0818181808425      &                \\
     \bottomrule
   \end{tabular}
 \end{table}
@@ -280,7 +280,60 @@ Global Reference Frames are critical for GPS receiver to calculate position and 
 \end{figure}
 
 % How the reference frames are calculated (DCMs)
-\subsection{A Note on Direction Cosine Matrices}
+\section{Reference Frame Transformations}
+Reference frame transformations are critical to any sensor fusion algorithm in order to properly add vectors of different frames together. Reference frame transformations range in complexity, the simplest being a transformation of the NED frame into the East-North-Up reference frame. A more complex transformation could be the global ECEF frame into the body frame and vice versa. The reference frame transformation used in this thesis are described in the following subsections.
+
+\subsection{ECEF to LLA}
+
+One of the more complicated reference frame transformations is between the two global frames, ECEF and LLA\@. The conversion from LLA to ECEF is provided first in Equations~\ref{eq:meridiancurvature},~\ref{eq:transversecurvature},~\ref{eq:lla2ecefx},~\ref{eq:lla2ecefy}, and~\ref{eq:lla2ecefz}. The variables within these equations are defined in Table~\ref{tbl:wgs84}.
+
+\begin{equation}\label{eq:meridiancurvature}
+  R_N (L) = \frac{R_0 \, \left(1 - e^2\right)}{{\left(1 - e^2 \, \sin^2 {\left(L\right)}\right)}^{3/2}}
+\end{equation}
+
+Equation~\ref{eq:meridiancurvature}, \(R_N (L)\) describes the one the two radii of curvature. In this case, the meridian radius of curvature describes the north to south motion. The second radii of curvature (Equation~\ref{eq:transversecurvature}) describes the east to west motion and is known as the transverse radius of curvature (\(R_E (L) \)).
+
+\begin{equation}\label{eq:transversecurvature}
+  R_E (L) = \frac{R_0}{\sqrt{1 - e^2 \, \sin^2 {\left(L\right)}}}
+\end{equation}
+
+After the transverse radius of curvature is calculated, it used with the LLA positions to calculate the ECEF \(X\), \(Y\), and \(Z\) positions as shown in Equations~\ref{eq:lla2ecefx},~\ref{eq:lla2ecefy}, and~\ref{eq:lla2ecefz}.
+
+\begin{equation}\label{eq:lla2ecefx}
+  X_{ECEF} = \left(R_E (L) + h\right) \, \cos \left(L\right) \, \cos \left(\lambda\right)
+\end{equation}
+
+\begin{equation}\label{eq:lla2ecefy}
+  Y_{ECEF} = \left(R_E (L) + h\right) \, \cos \left(L\right) \, \sin \left(\lambda\right)
+\end{equation}
+
+\begin{equation}\label{eq:lla2ecefz}
+  Z_{ECEF} = \left[\left(1 - e^2\right) \, R_E (L) + h\right] \sin \left(L\right)
+\end{equation}
+
+The ECEF to LLA conversion is more complicated. In order to calculate \(L\) in Equation~\ref{eq:ecef2llaL}, \(h\) from Equation~\ref{eq:ecef2llaaltitude} must be calculated {--} and vice versa. The correct way to solve for positions in the LLA reference frame is iteratively until the difference between positions from iteration to iteration is near-zero.
+
+\begin{equation}\label{eq:ecef2llaL}
+  L = \textrm{atan2}\left(\frac{Z_{ECEF} \left[R_E (L) + h\right]}{\sqrt{X_{ECEF}^2 + Y^2_{ECEF}} \, \left[ \left(1 - e^2\right) R_E (L) + h\right]}\right)
+\end{equation}
+
+\begin{equation}\label{eq:ecef2llalambda}
+  \lambda = \textrm{atan}\left(\frac{Y_{ECEF}}{X_{ECEF}}\right)
+\end{equation}
+
+\begin{equation}\label{eq:ecef2llaaltitude}
+  h = \frac{\sqrt{X_{ECEF}^2 + Y^2_{ECEF}}}{\cos\left(L\right)} - R_E (L)
+\end{equation}
+
+
+\subsection{ECEF to Local}
+
+\subsection{ECEF to Body}
+
+\subsection{Wind to Body}
+
+\subsection{Propeller to Body}
+
 
 \clearpage
 \section{Dynamic Vehicle Model}
