@@ -406,10 +406,18 @@ Along with the aforementioned atmospheric parameters, wind is a vital modeling p
 
 \subsection{Piston Engine Model}
 % Overview of Piston and Propeller Model
-Small general aviation aircraft generate propulsive forces through use of an engine that spins a shaft which is connected to a propeller. The engine modeled and simulated is a piston, air-cooled engine. The components of the engine that produce the power are described below.
+Small general aviation aircraft generate propulsive forces through use of an engine that spins a shaft which is connected to a propeller. The engine modeled and simulated is a piston, air-cooled engine. The typical aircraft piston engine is modeled as a four-stroke otto cycle~\cite{raymerAircraftDesignConceptual2018}. The otto cycle is a well-known thermodynamic theory that relies on a large air mass flow rate to generate power~\cite{gudmundssonGeneralAviationAircraft2014}. The components of the engine that produce the power are described below.
 
 % Manifold Pressure
-Because the engine is air-cooled, one of more important component is the engine manifold. The engine inlet manifold is a set of vents that allow the ambient air to feed directly into the combustion chambers where the oxygen in the air is used in combination with the fuel to generate power. Based on the commanded throttle input, these manifold vents can be closed or open to let in more or less air, and in return the engine delivers a proportional amount of power to the shaft. This proportional amount is called the \textit{Power Factor} and is queried at every time step in the simulation as seen in Figure~\ref{fig:PFLUT}.
+Because the engine is air-cooled, one of more important component is the engine manifold. The engine inlet manifold is a set of vents that allow the ambient air to feed directly into the combustion chambers where the oxygen in the air is used in combination with the fuel to generate power. Based on the commanded throttle input, these manifold vents can be closed or open to let in more or less air, and in return the engine delivers a proportional amount of power to the shaft. The power production from the engine is heavily reliant on the density of air. The Gagg and Ferrar model (Equation~\ref{eq:gaggandferrar}) relates power production to the density of air.
+
+\begin{equation}\label{eq:gaggandferrar}
+\textrm{power} = \textrm{power}_{0}\left(\frac{\rho}{\rho_0} - \frac{1 - \rho/\rho_0}{7.55}\right)
+\end{equation}
+
+
+
+This proportional amount is called the \textit{Power Factor} and is queried at every time step in the simulation as seen in Figure~\ref{fig:PFLUT}.
 
 \begin{figure}[!ht]\label{fig:PFLUT}
   \centering
