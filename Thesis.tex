@@ -577,30 +577,85 @@ In all phases of flight, aircraft must be efficient at generating lift forces on
   \caption{Subsonic wind tunnel in Auburn University's Aerodynamics Laboratory.}
 \end{figure}
 
+\subsubsection{Airfoils}
 % What is an airfoil
-For the aircraft presented in this thesis, a \textit{Wortmann FX 63{-}137} is used. Figure~\ref{fig:airfoil} shows the side profile. The name of the airfoil fully defines its aerodynamic shape.
-
-% Different Wing Shapes
-
-% Tail Shapes/ functionalities
-
-% Flaps, what do they do, how do they work
-
-% Wing tips
-
-% CFD Modeling
-
-% Strip Theory Modeling
-
-
-
-
+For the aircraft presented in this thesis, a \textit{Wortmann FX 63{-}137} airfoil (Figure~\ref{fig:airfoil}) is used on the wings and a \textit{NACA 0012} airfoil (Figure~\ref{fig:naca0012}) is used for the horizontal tail.
 
 \begin{figure}[!ht]\label{fig:airfoil}
   \centering
   \includegraphics[width=\linewidth]{Figures/da40airfoil.png}
-  \caption{Wortmann FX 63{-}137 airfoil modeled on simulated Diamond DA-40 aircraft.}
+  \caption{Wortmann FX 63{-}137 airfoil modeled on simulated Diamond DA-40 aircraft wings.}
 \end{figure}
+
+\begin{figure}[!ht]\label{fig:naca0012}
+  \centering
+  \includegraphics[width=\linewidth]{Figures/naca0012.png}
+  \caption{NACA 0012 airfoil used for the horizontal tail on the simulated Diamond DA-40 aircraft.}
+\end{figure}
+
+The name of the airfoil fully defines its aerodynamic shape. Airfoil design has evolved along with the nomenclature for airfoil families. The \textit{Wortmann FX 63{-}137} airfoil belongs to a family of \textit{laminar-flow} airfoils pioneered by Dr.Franz Xavier Wortmann~\cite{raymerAircraftDesignConceptual2018}. These airfoils have their own naming conventions as specified by Table~\ref{tbl:wortmanndigits}.
+
+\begin{table}[!ht]\label{tbl:wortmanndigits}
+  \caption{Table describing the definition in each digit for Wortmann F.X. airfoils.}
+  \centering
+  \begin{tabular}{clc}
+    \toprule
+    \textbf{Digit{(s)}} & \textbf{Meaning}                 & \textbf{\textit{Wortmann FX 63{-}137}} \\
+    \midrule
+    1~-~2               & Development Year                 & \(1963\)                               \\
+    3~-~5               & \(t/c\) Ratio \(\times \, 1000\) & \(0.137\)                              \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+The horizontal tail is modeled using a \textit{NACA 0012} airfoil, belonging to the family of airfoils first developed by NACA in the 1930's. Table~\ref{tbl:naca4digits} specifies NACA standard naming convention for their 4-digit family of airfoils.
+
+\begin{table}[!ht]\label{tbl:naca4digits}
+  \caption{Table describing the definition in each digit for NACA 4-digit airfoils.}
+  \centering
+  \begin{tabular}{clc}
+    \toprule
+    \textbf{Digit{(s)}} & \textbf{Meaning}                             & \textbf{\textit{NACA 0012}} \\
+    \midrule
+    1                   & Percent of Camber                            & 0 (Symmetrical)             \\
+    2                   & Location of Maximum Camber \(\times \, 0.1\) & 0 (Symmetrical)             \\
+    3~-~4               & \(t/c\) Ratio \(\times \, 100\)              & 0.12                        \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+The shape of the airfoil affects the performance of the wing in different flight conditions. Aircraft designers will narrow the \"field\" of airfoils down based on a handful of parameters. These can include a design lift coefficient, where aircraft with higher \textit{wing-loading} require airfoils with higher lift coefficients. The same can be said about the design \textit{Reynold's Number} (Equation~\ref{eq:reynoldsnumber}), where a faster aircraft (even supersonic) will require an airfoil built to sustain great lifting characteristics at higher speeds.
+
+\begin{equation}\label{eq:reynoldsnumber}
+  Re = \frac{\rho \, V \, L}{\mu}
+\end{equation}
+
+The Reynold's Number is a dimension-less property that allows aerodynamicists to predict fluid flow given different environments (high-altitude, low-altitude, underwater, etc\ldots). Reynold's Number is a function of multiple fluid properties including the density, \( \rho \), dynamic viscosity, \( \mu \), characteristic length (i.e.\ wing chord), \(L\), and the velocity, \(V\). Given that simulated aircraft in this work will be flying at an altitude of \(1000\) meters, and a speed of \(40\) meters per second, we can approximate the Reynold's Number to be
+
+\begin{equation}\label{eq:recalc}
+  Re = \frac{(1.112) \, (40) \, (1.4)}{1.81\times10^-5} \; = \;  2,647,078.
+\end{equation}
+
+This Reynold's Number is considered relatively low, which allows the \textit{Wortmann FX 63{-}137} airfoil to be great choice for the Diamond DA-40 based on it's predicted lift coefficient at different angle of attacks (Figure~\ref{fig:xfoil}). Choosing the camber or curve of the airfoil is also an important consideration when choosing the shape of the wing. Having a wing with camber allows lift to be generated even with no angle of attack. It is common for aircraft today to have airfoils designed with camber as they allow the aircraft to generate lift without applying great amounts of control surface deflections. The tail airfoil (\textit{NACA 0012}) does not have any camber applied to it. This is most likely because the design positions the horizontal tail far above the incident angle, so it is still able to generate forces and moments even when the aircraft is at low angles of attack.
+
+It should be noted that many, many factors go into choosing and designing the correct airfoil for any aircraft {--} only a few were covered in this section. For more information on airfoil design and performance characteristics, the reader should follow up with the work of~\cite{972HowAirfoil,AerodynamicsforengineersJohnBertin}.
+
+\begin{figure}[!ht]\label{fig:xfoil}
+  \centering
+  \includegraphics[width=0.5\linewidth]{Figures/liftvsalpha.png}
+  \caption{Lift Coefficient at various angles of attack for the \textit{Wortmann FX 63{-}137} airfoil. Generated using Xfoil~\cite{zotero-6685} from~\cite{WORTMANNFX63137}.}
+\end{figure}
+
+\subsubsection{Aerodynamic Principles}
+
+Now that the proper airfoil has been chosen and modeled, it needs to be extruded into a 3-dimensional structure known as a wing.
+
+\subsubsection{Strip Theory and Downwash Model}
+
+\subsubsection{Other Considerations}
+
+
+
 
 \subsection{Landing Gear Model}
 Although not calculated often, the modeling of the aircraft's landing gear are important and should not be overlooked. However, because of the flight paths investigated in this thesis focus solely on the aircraft during flight, a simplified dynamic model is used to describe the forces and moments acting on the landing gear during landing. It should be noted that the aerodynamic calculations of the landing gear occur in the aerodynamically modeling section, while this section focuses on the moments and forces generated from the runway opposing the weight of the aircraft.
