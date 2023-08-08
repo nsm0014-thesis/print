@@ -402,7 +402,7 @@ where \(P_0\) and \(\rho_0\) are atmospheric layer values for pressure and densi
 
 where \(a\) is the speed of sound in meters per second and \( \gamma \) is the ratio of specific heats. Figure~\ref{fig:atmos} describes these atmospheric parameters from MSL to 85,000 meters above sea level.
 
-Along with the aforementioned atmospheric parameters, wind is a vital modeling parameter for flight vehicles. For smaller SWAP flight vehicles, small gusts of wind can greatly affect their dynamics~\cite{raymerAircraftDesignConceptual2018}. This thesis uses an updated version of the Horizontal Wind Model~\cite{drobEmpiricalModelEarth2008,drobUpdateHorizontalWind2015} using collected satellite data from the Nation Oceanic and Atmospheric Administration (NOAA). The model accepts the current position of the flight vehicle to provide a predicted wind vector in the meridional and zonal reference frame. Implementation of the ISA model and calculation of winds can be found under \textit{Atmosphere.m} in~\cite{millerNsm0014thesis1969}.
+Along with the aforementioned atmospheric parameters, wind is a vital modeling parameter for flight vehicles. For smaller SWAP flight vehicles, small gusts of wind can greatly affect their dynamics~\cite{raymerAircraftDesignConceptual2018}. This thesis uses an updated version of the Horizontal Wind Model~\cite{drobEmpiricalModelEarth2008,drobUpdateHorizontalWind2015} using collected satellite data from the Nation Oceanic and Atmospheric Administration (NOAA). The model accepts the current position of the flight vehicle to provide a predicted wind vector in the meridional and zonal reference frame. Implementation of the ISA model and calculation of winds can be found under \textit{Atmosphere.m} in~\cite{millerNsm0014thesis2023}.
 
 \subsection{Piston Engine Model}
 % Overview of Piston and Propeller Model
@@ -415,7 +415,7 @@ Because the engine is air-cooled, one of more important component is the engine 
   \textrm{power} = \textrm{power}_{0}\left(\frac{\rho}{\rho_0} - \frac{1 - \rho/\rho_0}{7.55}\right),
 \end{equation}
 
-relates power production to the density of air. Where \(rho\) is the density of the ambient air as a function of altitude (Section~\ref{section:atmos}), \(rho_0\) is the density of ambient air at sea-level on a standard day, and \(\textrm{power}\) is the max engine power provided the density ratio and the nominal power production of the engine. From~\cite{1590000APdf}, the engine modeled in this work has a nominal power output on a sea-level standard day of 600 horsepower (447.42 kiloWatts). Figure~\ref{fig:gaggferrar} shows the power output of the engine modeled in this thesis based on the Gagg and Ferrar model and nominal sea-level power production.
+relates power production to the density of air. Where \(rho\) is the density of the ambient air as a function of altitude (Section~\ref{section:atmos}), \(rho_0\) is the density of ambient air at sea-level on a standard day, and \(\textrm{power}\) is the max engine power provided the density ratio and the nominal power production of the engine. From~\cite{hartzellpropellerHartzellPropellerManual2023}, the engine modeled in this work has a nominal power output on a sea-level standard day of 600 horsepower (447.42 kiloWatts). Figure~\ref{fig:gaggferrar} shows the power output of the engine modeled in this thesis based on the Gagg and Ferrar model and nominal sea-level power production.
 
 \begin{figure}[!ht]\label{fig:gaggferrar}
   \centering
