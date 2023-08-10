@@ -1,0 +1,31 @@
+\chapter{Deeply Integrated Vector Tracking}
+Since 1993, the Global Positioning System (GPS) has provided users with capable hardware to determine their global position within seconds and in recent developments, a centimeter-level position error. GPS can be explained in 3 components: the satellite vehicles in space, control and transmission of signals, and the receiver processing component.
+
+GPS satellites have undergone multiple improvements and upgrades since the first satellites were launched in 1978. These versions of satellites are based on their \textit{block}. Currently, Block III is the most advanced satellite orbiting Earth today. Early versions (Block I) of GPS satellites were used mainly for development and did not transmit signals to the public. Lessons learned from the Block I satellites were fully integrated into the Block II GPS satellites, where GPS became fully operational in 1993. While there were many subtle differences between Block I and Block II satellites, the most important difference is that these new satellites broadcasted a signal on 2 frequencies, coined \textit{L1}, \textit{L2}, and \textit{L2c}, where \textit{L2c} is intended for civilian use. Modern day Block III satellites transmit their signal on the same frequencies that Block II satellites have, with the addition of \textit{L5}. Table provides the frequencies that signals are transmitted on.
+
+\begin{table}[h!]\label{tbl:GPSfreq}
+    \centering
+    \begin{tabular}{lc}
+        \toprule
+        \textbf{Name} & \textbf{Frequency [Mhz]} \\
+        \midrule
+        \textit{L1}   & \(1575.42\)              \\
+        \textit{L2}   & \(1227.60\)              \\
+        \textit{L2c}  & \(1227.60\)              \\
+        \textit{L5}   & \(1176.45\)              \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+%% Background/Introduction
+\clearpage
+\section{Sensor Fusion Architectures}
+% Types of Sensor Fusion algorithms
+\clearpage
+\section{Deeply Coupled GPS and FVDM Navigation Filter}
+% Deeply Coupled Integration
+\subsection{Update \textit{a priori}}
+% Time Update
+\subsection{Update \textit{a posteriori}}
+% Measurement Update
+\subsection{Fault Detection}
+% fault Detection and Exclusions
