@@ -713,11 +713,9 @@ Lift is not the only force produced by the wing during flight. When any object m
 \subsubsection{Strip Theory and Downwash Model}
 
 % What is Strip Theory?
+As mentioned earlier, the surface area of the aircraft can be difficult to estimate, leading to poor calculations of lift and drag if done incorrectly. For the aircraft model presented in this thesis, strip theory is a means to better approximate these forces. Strip theory is a process in which the airframe is discretized into independent strips. Flightstream~\cite{FlightStream} is used to generate aerodynamic coefficients for each strip. In Flightstream, the aircraft was evaluated on a range of angles of attack and sideslips. The aircraft was evaluated at a single velocity of 30 meters per second as the velocity component for the coefficient is just a scaling value.
 
-% Why use Strip Theory?
-
-% How does Strip Theory Work?
-As mentioned earlier, the surface area of the aircraft can be difficult to estimate because of the complex shapes that form the aircraft in its final form. In isolation, the wings and other lifting surfaces (\i.e.\ tail or canard) can evaluated using a Computer-aided design or CFD program. However, when meshed with the other aircraft components like the fuselage and attached propellers, lift and drag forces can be to complicated to calculate without a numerical solver. Strip Theory discretizes the aircraft into thousands (millions, depending on the size of the aircraft) or rectangles with known areas. Each of these discretized squares are run through a CFD simulation at various angles of attack, sideslip and velocities and the results are saved to a database. This database is then queried during simulation based on each rectangle's orientation at the current time step.
+Downwash is an aerodynamic property where the finite length of the lifting surfaces results in 3-dimensional flow fields causing reduction in effective angles of attack. To introduce downwash into the model and simulation, a reduced-ordered model utilizing integrated circulation was implemented CITE.
 
 \subsubsection{Other Considerations}
 
