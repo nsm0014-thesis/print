@@ -1,5 +1,17 @@
 [0] Config.pm:307> INFO - This is Biber 2.19
 [0] Config.pm:310> INFO - Logfile is 'Thesis.blg'
-[85] biber-MSWIN64:340> INFO - === 
-[118] Utils.pm:410> ERROR - Thesis.bcf is malformed, last biblatex run probably failed. Deleted Thesis.bbl
-[118] Biber.pm:136> INFO - ERRORS: 1
+[79] biber-MSWIN64:340> INFO - === 
+[114] Biber.pm:419> INFO - Reading 'Thesis.bcf'
+[197] Biber.pm:979> INFO - Found 39 citekeys in bib section 0
+[206] Biber.pm:4419> INFO - Processing section 0
+[214] Biber.pm:4610> INFO - Looking for bibtex file 'Thesis.bib' for section 0
+[395] bibtex.pm:1713> INFO - LaTeX decoding ...
+[3409] bibtex.pm:1519> INFO - Found BibTeX data source 'Thesis.bib'
+[3727] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[3727] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'variable = shifted' with 'variable = non-ignorable'
+[3727] Biber.pm:4239> INFO - Sorting list 'nty/global//global/global' of type 'entry' with template 'nty' and locale 'en-US'
+[3727] Biber.pm:4245> INFO - No sort tailoring available for locale 'en-US'
+[3753] bbl.pm:660> INFO - Writing 'Thesis.bbl' with encoding 'UTF-8'
+[3771] bbl.pm:763> INFO - Output to Thesis.bbl
+[3772] Biber.pm:131> WARN - ISBN '978-1-4799-3274-0 978-1-4799-3272-6 978-1-4799-3271-9' in entry 'rufaSensorFusionUnmanned2014' is invalid - run biber with '--validate_datamodel' for details.
+[3772] Biber.pm:133> INFO - WARNINGS: 1

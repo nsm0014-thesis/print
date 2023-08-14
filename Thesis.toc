@@ -1,0 +1,46 @@
+\contentsline {chapter}{Abstract}{ii}{}%
+\contentsline {chapter}{Acknowledgments}{iv}{}%
+\contentsline {chapter}{\numberline {1}Introduction and Background}{1}{}%
+\contentsline {section}{\numberline {1.1}Prior Art}{3}{}%
+\contentsline {subsection}{\numberline {1.1.1}Sensor Fusion Overview and Variation}{3}{}%
+\contentsline {subsection}{\numberline {1.1.2}Vehicle Dynamic Model Sensor Fusion}{3}{}%
+\contentsline {subsection}{\numberline {1.1.3}Other Types of Flight Vehicle Sensor Fusion}{4}{}%
+\contentsline {section}{\numberline {1.2}Field Contributions}{5}{}%
+\contentsline {section}{\numberline {1.3}Thesis Outline}{5}{}%
+\contentsline {chapter}{\numberline {2}Flight Vehicle Dynamics Model}{6}{}%
+\contentsline {section}{\numberline {2.1}Reference Frames}{7}{}%
+\contentsline {subsection}{\numberline {2.1.1}Flight Vehicle Reference Frame}{7}{}%
+\contentsline {subsection}{\numberline {2.1.2}Propeller Reference Frame}{7}{}%
+\contentsline {subsection}{\numberline {2.1.3}Local Wind Axes Reference Frame}{8}{}%
+\contentsline {subsection}{\numberline {2.1.4}Local Navigation Reference Frame}{9}{}%
+\contentsline {subsection}{\numberline {2.1.5}Global Reference Frames}{10}{}%
+\contentsline {section}{\numberline {2.2}Reference Frame Transformations}{12}{}%
+\contentsline {subsection}{\numberline {2.2.1}ECEF to LLA}{12}{}%
+\contentsline {subsection}{\numberline {2.2.2}ECEF to Local}{13}{}%
+\contentsline {subsection}{\numberline {2.2.3}Local to Body}{14}{}%
+\contentsline {section}{\numberline {2.3}Atmosphere Model}{14}{}%
+\contentsline {section}{\numberline {2.4}Aerodynamic Principles}{16}{}%
+\contentsline {subsection}{\numberline {2.4.1}Airfoils}{16}{}%
+\contentsline {subsection}{\numberline {2.4.2}Wing Geometry}{19}{}%
+\contentsline {section}{\numberline {2.5}Aero-Propulsive Forces}{22}{}%
+\contentsline {subsection}{\numberline {2.5.1}Piston Engine Model}{23}{}%
+\contentsline {subsection}{\numberline {2.5.2}Propeller Modeling}{25}{}%
+\contentsline {subsection}{\numberline {2.5.3}Strip Theory and Downwash Model}{30}{}%
+\contentsline {section}{\numberline {2.6}Landing Gear Model}{31}{}%
+\contentsline {section}{\numberline {2.7}Forces and Moments Calculations}{33}{}%
+\contentsline {chapter}{\numberline {3}Deeply Integrated Vector Tracking}{34}{}%
+\contentsline {section}{\numberline {3.1}Sensor Fusion Architectures}{35}{}%
+\contentsline {section}{\numberline {3.2}Deeply Coupled GPS and FVDM Navigation Filter}{36}{}%
+\contentsline {subsection}{\numberline {3.2.1}Update \textit {a priori}}{36}{}%
+\contentsline {subsection}{\numberline {3.2.2}Update \textit {a posteriori}}{36}{}%
+\contentsline {subsection}{\numberline {3.2.3}Fault Detection}{36}{}%
+\contentsline {chapter}{\numberline {4}Simulation Environment}{37}{}%
+\contentsline {section}{\numberline {4.1}Guidance System}{37}{}%
+\contentsline {subsection}{\numberline {4.1.1}Waypoint Generation}{37}{}%
+\contentsline {subsection}{\numberline {4.1.2}Calculating Controller Commands}{37}{}%
+\contentsline {section}{\numberline {4.2}Control Scheme}{38}{}%
+\contentsline {section}{\numberline {4.3}Sensor Modeling}{39}{}%
+\contentsline {subsection}{\numberline {4.3.1}Onboard sensors}{39}{}%
+\contentsline {chapter}{\numberline {5}Scenario Implementation and Results}{40}{}%
+\contentsline {chapter}{\numberline {6}Conclusion and Future Work}{41}{}%
+\contentsline {chapter}{Appendices}{42}{}%
