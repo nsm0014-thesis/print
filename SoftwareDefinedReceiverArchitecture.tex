@@ -26,19 +26,36 @@ The signals received by an antenna must be down converted and digitized before t
     \centering
     \begin{tabular}{cccc}
         \toprule
-        Name & Abbreviation & Application \\
+        Name                        & Abbreviation & Application \\
         \midrule
-        Oxidized Crystal Oscillator & OCXO & \\
-        Oxidized Crystal Oscillator & OCXO & \\
-        Oxidized Crystal Oscillator & OCXO & \\
-        Oxidized Crystal Oscillator & OCXO & \\
+        Oxidized Crystal Oscillator & OCXO         &             \\
+        Oxidized Crystal Oscillator & OCXO         &             \\
+        Oxidized Crystal Oscillator & OCXO         &             \\
+        Oxidized Crystal Oscillator & OCXO         &             \\
         \bottomrule
     \end{tabular}
 \end{table}
 
-The purpose in this mixing process is to transform the signal into a more manageable intermediate frequency while still maintaining the same modulation and Doppler applied to the signal.  
+The purpose in this mixing process is to transform the signal into a more manageable intermediate frequency while still maintaining the same modulation and Doppler applied to the signal. Figure~\ref{fig:frontend} describes the process on converting the analog, continuous signal into a discrete, digitized IF signal in block diagram form.
+
+\begin{figure}[!ht]\label{fig:frontend}
+    \centering
+    \includegraphics[width=\linewidth]{Figures/frontend.drawio.png}
+    \caption{Block diagram of a software defined receiver front end}
+\end{figure}
 
 \section{Acquisition}
+Once the received signals are converted to a discrete, continuous form, the receiver will determine which satellites are transmitting and in-view. Acquisition correlates local replicas of a signal with the received data. In order for there to be a large correlation magnitude, pseudo-random number (PRN) codes must be within 1-chip and the frequency of the carrier wave must also be within 250 hertz of the true frequency. Correlation with the carrier frequency can be difficult due to the trajectory of the satellite, and even more difficult if the collection perform is also moving. The motion of the satellites with respect to the receiver bring a change to the carrier frequency known as the Doppler shift. For the algorithms in acquisition to successfully determine which satellites are in-view of the receiver, it is beneficial to correlate with each satellite for the specified constellation, at each code offset, and at a wide range of carrier frequency offsets.
+
+A modern, ubiquitous approach to correlating the local replica signals with the received data is using a Parallel Code Phase Search (PCPS) algorithm in which the correlations occur in the frequency domain~\cite{scottRapidSignalAcquisition}. PCPS parallelizes the PRN code offset search space by converting the space from the time to frequency domain. This process is shown in Figure~\ref{fig:PCPS}.
+
+\begin{figure}[!ht]\label{fig:PCPS}
+    \centering
+    \includegraphics[width=\linewidth]{Figures/PCPS.drawio.png}
+    \caption{Block diagram of the PCPS acquisition algorithm applied to GPS L1 C/A signal modulation.}
+\end{figure}
+
+To start, the local replicas of the carrier wave are multiplied with the received data across both inphase and quadrature channels in the complex number space. These resulting multiplications are summed together and passed through a Fast-Fourier Transform (FFT) to convert the vectors into the frequency domain. The second step involves converting the PRN codes of the satellites within the specified constellation to the frequency domain and then applying the complex conjugate to frequency-based, PRN vectors. Multiplying the PRN replicas with the transformed carrier replicas provides the user with an auto-correlation in the frequency domain. To appreciate the correlation magnitudes, the output is passed though an Inverse FFT, converting the correlation values from a frequency domain, complex vector to a time domain, real vector. The last step requires squaring the absolute value of this vector and then processing the next satellite until all satellites in the constellation are processed. If a correlation exceeds a certain magnitude, its location in the matrix of correlations indicates the estimated PRN code delay and Doppler shift carrier frequency for that particular satellite. The resolution of the PCPS algorithm greatly depends on the grid of Doppler search bins; for a static receiver processing GPS L1 C/A transmissions, a typical resolution is \(-15,000\) to \(15,000\) Hertz in bins of \(500\) Hertz.
 
 \section{Tracking Loops}
 \subsection{Code Phase Tracking}
