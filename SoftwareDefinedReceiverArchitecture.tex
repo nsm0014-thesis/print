@@ -61,12 +61,43 @@ To start, the local replicas of the carrier wave are multiplied with the receive
 Acquisition provides initial estimates of code delay and carrier frequency for each satellite that is in-view of the receiver. However, because of the motion of the satellites and the receiver (if not static), the delays of the code and changes in the carrier frequencies must continue to be estimated. Tracking performs this process by opening a channel for each in-view satellite. For the duration of the recording, a number of algorithms within tracking continue to correlate the local receiver replica with the received signal data. For scalar tracking, Figure~\ref{fig:scalartracking} describes the flow of how these algorithms produce accurate code replicas for the receiver to calculate satellite PVT solutions.
 
 \begin{figure}[!ht]\label{fig:scalartracking}
-\centering
-\includegraphics[width=0.5\linewidth]{Figures/scalartracking.png}
-\caption{Flow diagram of scalar tracking algorithms.}
+    \centering
+    \includegraphics[width=0.5\linewidth]{Figures/scalartracking.png}
+    \caption{Flow diagram of scalar tracking algorithms.}
 \end{figure}
 
 \subsection{Correlators}
+For a receiver to know it is replicating the signal correctly, it generates several correlators that are defined by the error in frequency, phase, and code delay between the replicated signal and the received signal data~(Equation~\ref{eq:correlators}).
+
+\begin{equation}\label{eq:correlators}
+    \begin{split}
+        IP(k) & = A\,R(\epsilon)\,D(k)\,\cos\left(\pi \,f_{err}\,T + \theta_{err}\right) + \eta_{IP}\\
+        QP(k) & = A\,R(\epsilon)\,D(k)\,\cos\left(\pi \,f_{err}\,T + \theta_{err}\right) + \eta_{QP}\\
+        IE(k) & = A\,R(\epsilon + d)\,D(k)\,\cos\left(\pi \,f_{err}\,T + \theta_{err}\right) + \eta_{IE}\\
+        QE(k) & = A\,R(\epsilon + d)\,D(k)\,\cos\left(\pi \,f_{err}\,T + \theta_{err}\right) + \eta_{QE}\\
+        IL(k) & = A\,R(\epsilon - d)\,D(k)\,\cos\left(\pi \,f_{err}\,T + \theta_{err}\right) + \eta_{IL}\\
+        QL(k) & = A\,R(\epsilon - d)\,D(k)\,\cos\left(\pi \,f_{err}\,T + \theta_{err}\right) + \eta_{QL}\\
+    \end{split}
+\end{equation}
+
+This correlation process is also referred to as \textit{integration and dump} in the literature as receivers will calculate the different correlators and dump the received signal data for that integration period, \(T\). The integration period is usually set as the number of seconds for a full code cycle. In GPS L1 C/A, \(T\) is \(0.001\) seconds. The amplitude (Equation~\ref{eq:amplitude}) is the measure of received signal power as a function of the integration period, frequency error (\(f_{err}\)), and carrier-to-noise ratio \(\left(\frac{C}{N_0}\right)\).
+
+\begin{equation}\label{eq:amplitude}
+    A = \sqrt{2\,T\,\frac{C}{N_0}}\, \frac{\sin\left(\pi \, f_{err} \, T \right)}{\pi \, f_{err} \, T}
+\end{equation}
+
+The rest of the terms in Equation~\ref{eq:correlators} are as follows: \(\theta_{err}\) is the error phase, described as the difference between phase of the replicated signal and the received signal data, \(R(\epsilon)\) is the auto-correlation function defined by Equation~\ref{eq:autocorrelation}, where \(\epsilon \) describes the error in code phase. Finally, \(\eta \) describes unmodeled process noise on each of the correlators.
+
+\begin{equation}\label{eq:autocorrelation}
+    R(\epsilon) =
+    \begin{cases}
+    1 - \vert \epsilon \vert & \epsilon \leq 1 \\
+    0                        & \epsilon > 1    \\
+\end{cases}
+\end{equation}
+
+
+
 \subsection{Discriminators and Loop Filters}
 
 \section{Navigation Algorithms}
