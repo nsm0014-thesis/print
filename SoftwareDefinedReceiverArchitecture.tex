@@ -67,7 +67,7 @@ Acquisition provides initial estimates of code delay and carrier frequency for e
 \end{figure}
 
 \subsection{Correlators}
-For a receiver to know it is replicating the signal correctly, it generates several correlators that are defined by the error in frequency, phase, and code delay between the replicated signal and the received signal data~(Equation~\ref{eq:correlators}).
+For a receiver to know it is replicating the signal correctly, it generates several correlators that are defined by the error in frequency, phase, and code phase between the replicated signal and the received signal data~(Equation~\ref{eq:correlators}).
 
 \begin{equation}\label{eq:correlators}
     \begin{split}
@@ -86,21 +86,78 @@ This correlation process is also referred to as \textit{integration and dump} in
     A = \sqrt{2\,T\,\frac{C}{N_0}}\, \frac{\sin\left(\pi \, f_{err} \, T \right)}{\pi \, f_{err} \, T}
 \end{equation}
 
-The rest of the terms in Equation~\ref{eq:correlators} are as follows: \(\theta_{err}\) is the error phase, described as the difference between phase of the replicated signal and the received signal data, \(R(\epsilon)\) is the auto-correlation function defined by Equation~\ref{eq:autocorrelation}, where \(\epsilon \) describes the error in code phase. Finally, \(\eta \) describes unmodeled process noise on each of the correlators.
+The rest of the terms in Equation~\ref{eq:correlators} are as follows: \(\theta_{err}\) is the phase error, described as the difference between phase of the replicated signal and the received signal data, \(R(\epsilon)\) is the auto-correlation function defined by Equation~\ref{eq:autocorrelation}, where \(\epsilon \) describes the error in code phase. Finally, \(\eta \) describes unmodeled process noise on each of the correlators.
 
 \begin{equation}\label{eq:autocorrelation}
     R(\epsilon) =
     \begin{cases}
-    1 - \vert \epsilon \vert & \epsilon \leq 1 \\
-    0                        & \epsilon > 1    \\
-\end{cases}
+        1 - \vert \epsilon \vert & \epsilon \leq 1 \\
+        0                        & \epsilon > 1    \\
+    \end{cases}
 \end{equation}
 
-
-
 \subsection{Discriminators and Loop Filters}
+Once the correlators are calculated for a single integration period, discriminators use them to calculate errors in phase, frequency, and code phase. While a number of discriminators exist for each error term, the discriminators presented in this work are the most optimal for low and high carrier-to-noise ratios at the cost of being computationally expensive. Hardware receivers that must work in real-time may use simpler, faster discriminators.
+
+The estimated error in phase is generated using a Costas loop discriminator. It applies an arc-tangent function to the in-phase and quadrature prompt correlators to calculate the error in carrier phase from the most recent replicated signal (Equation~\ref{eq:PLLdisc})
+
+\begin{equation}\label{eq:PLLdisc}
+    \phi_{PLL} = \arctan\left(\frac{QP}{IP}\right) \frac{1}{2\pi} \approx \theta_{err} + \eta_{PLL}
+\end{equation}
+
+The discriminator is divided by \(2 \pi \) to covert the error from radians to cycles. The Costa discriminator differs from other PLL discriminators as it is immune to bit integers on the data inverting. However, in more dynamic scenarios, the FLL discriminator may be more heavily relied upon as the Costas discriminator due to its high sensitivity.
+
+The FLL discriminator derives its error by analyzing the change in carrier phase error across a single integration period
+
+\begin{equation}\label{eq:FLLdisc}
+    \phi_{FLL} = \arctan2\left(cross,dot\right) \, \frac{1}{2\pi \,T} \approx f_{err} + \eta_{FLL},
+\end{equation}
+where
+\begin{equation}\label{eq:crossdot}
+    \begin{split}
+        cross & = IP_1\,QP_2 - IP_2\,QP_1\\
+        dot & = IP_1\,IP_2 + QP_1\,QP_2. \\
+    \end{split}
+\end{equation}
+Conventionally, \(\left(IP,QP\right)_1\) are correlators in the middle of the integration period. The FLL discriminator is not as sensitive to dynamic stress and can handle changes in frequencies up to 500 Hertz.
+
+The code phase error is determined using a DLL discriminator. It takes the early and late correlators that are shifted by a constant chip spacing, \(d\), to determine if the current replicated signal is advanced or delayed relative to the received signal data. Equation~\ref{eq:DLLdisc} describes the DLL discriminator utilized in this work.
+
+\begin{equation}\label{eq:DLLdisc}
+    \phi_{DLL} = \frac{\sqrt{IE^2 + QE^2} - \sqrt{IL^2 + QL^2}}{2 \sqrt{IE^2 + QE^2} + \sqrt{IL^2 + QL^2}} \approx \epsilon + \eta_{DLL}
+\end{equation}
+
+The DLL discriminator produces code phase errors within \(\frac{1}{2}\) chips, but becomes unstable if the correlator errors are greater than \(\frac{3}{2}\) chips from the true code phase. This is allowable as errors of this magnitude are beyond the linear pull-in range of the DLL loop filter.
+
+For scalar tracking, loop filters apply the errors aforementioned to more accurately replicate the signal for the next integration period. For this work, a second-order PLL with a first-order FLL assist is used to tracking changes in carrier frequency and phase (Figure~\ref{fig:PLL}).
+
+\begin{figure}[!ht]\label{fig:PLL}
+    \centering
+    \includegraphics[width=\linewidth]{Figures/PLL.png}
+    \caption{Discrete block diagram of the PLL-FLL loop filters used in this work.}
+\end{figure}
+
+The natural-radian frequency, \(\omega_0\), is set by the user, and common values for processing GPS L1 C/A exists in~\cite{kaplanUnderstandingGPSPrinciples2006}.
+
+The DLL loop filter works in a similar fashion, but without the FLL loop filter assist and the addition of the output of the PLL-FLL loop filter to aid in replicating the true code phase (Figure~\ref{fig:DLL}).
+
+\begin{figure}[!ht]\label{fig:DLL}
+    \centering
+    \includegraphics[width=\linewidth]{Figures/DLL.png}
+    \caption{Discrete block diagram of the DLL loop filter used in this work.}
+\end{figure}
+
+In Figure~\ref{fig:DLL}, \(sf\) is known as the scale factor, 
+\begin{equation}\label{eq:sf}
+sf = \frac{R_c}{f_L},
+\end{equation}
+
+where \(R_c\) is the spreading code rate, and \(f_L\) is the signal carrier frequency. For GPS L1 C/A, these are \(1.023 \times 10^6\) and \(1575.420 \times 10^6\), respectively.
+
+If the correlators, discriminators, and loop filters are correctly working in tandem, the replicated signal should accurately represent the received signal data and the receiver can decode the bits that translate to the broadcast navigation message from each satellite. A handful of subframes in the navigation message provide satellite ephemeris, or orbital parameters, that the receiver can use to propagate satellite PVT and determine its position through time. 
 
 \section{Navigation Algorithms}
+
 \subsection{GNSS Measurements}
 \subsection{Open-Loop Architectures}
 \subsection{Vector Tracking}
