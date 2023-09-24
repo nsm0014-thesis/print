@@ -119,7 +119,7 @@ where
         dot & = IP_1\,IP_2 + QP_1\,QP_2. \\
     \end{split}
 \end{equation}
-Conventionally, \(\left(IP,QP\right)_1\) are correlators in the middle of the integration period. The FLL discriminator is not as sensitive to dynamic stress and can handle changes in frequencies up to 500 Hertz.
+Conventionally, \({\left(IP,QP\right)}_1\) are correlators in the middle of the integration period. The FLL discriminator is not as sensitive to dynamic stress and can handle changes in frequencies up to 500 Hertz.
 
 The code phase error is determined using a DLL discriminator. It takes the early and late correlators that are shifted by a constant chip spacing, \(d\), to determine if the current replicated signal is advanced or delayed relative to the received signal data. Equation~\ref{eq:DLLdisc} describes the DLL discriminator utilized in this work.
 
@@ -147,18 +147,76 @@ The DLL loop filter works in a similar fashion, but without the FLL loop filter 
     \caption{Discrete block diagram of the DLL loop filter used in this work.}
 \end{figure}
 
-In Figure~\ref{fig:DLL}, \(sf\) is known as the scale factor, 
+In Figure~\ref{fig:DLL}, \(sf\) is known as the scale factor,
 \begin{equation}\label{eq:sf}
-sf = \frac{R_c}{f_L},
+    sf = \frac{R_c}{f_L},
 \end{equation}
 
 where \(R_c\) is the spreading code rate, and \(f_L\) is the signal carrier frequency. For GPS L1 C/A, these are \(1.023 \times 10^6\) and \(1575.420 \times 10^6\), respectively.
 
-If the correlators, discriminators, and loop filters are correctly working in tandem, the replicated signal should accurately represent the received signal data and the receiver can decode the bits that translate to the broadcast navigation message from each satellite. A handful of subframes in the navigation message provide satellite ephemeris, or orbital parameters, that the receiver can use to propagate satellite PVT and determine its position through time. 
+If the correlators, discriminators, and loop filters are correctly working in tandem, the replicated signal should accurately represent the received signal data and the receiver can decode the bits that translate to the broadcast navigation message from each satellite. A handful of subframes in the navigation message provide satellite ephemeris, or orbital parameters, that the receiver can use to propagate satellite PVT and determine its position through time.
 
 \section{Navigation Algorithms}
+Once the signal is accurately replicated and correctly decoded, the receiver begins to estimate a PVT solution. A position solution is found due to trilateration, meaning if there exists at least three unique ranges from known locations, than a position solution exists. Parallel to finding the position solution, receiver velocity can be found in the same way, except this time, using range rates. This sections describes calculating the ranges and range rates, and how they are used in the navigation processor for an estimated PVT solution.
 
-\subsection{GNSS Measurements}
+\subsection{GPS Measurements}
+There exists three main measurements from GPS satellites. The first of the three is pseudorange. By definition, it is the total time of transit from transmission to reception of the signal by the receiver. This value is then multiplied by the speed of light, providing this transit time in units of meters (Equation~\ref{eq:psr_time}).
+
+\begin{equation}\label{eq:psr_time}
+    \tilde{\rho}^j = (t_r - t_t^j)\,c
+\end{equation}
+
+In order to calculate a pseudorange, \(\rho \), from the \(j^{th}\) satellite The transmitted time of the signal, \(t_t\), is subtracted from the received time, \(t_r\), and then multiplied by the speed of light in vacuum, \(c\), as described before. For the rest of the work presented in this thesis, variables with \(\tilde{}\) represent a measurement. The pseudorange from Equation~\ref{eq:psr_time} is a measurement because both the receiver clock and satellite clock have inherit biases and drifts that perturb their values from their truth. In addition to the errors in the clocks, the signal in space travels through the atmosphere, delaying the signal until it reaches the receiver. We can change Equation~\ref{eq:psr_time} such that these errors and delays are modeled. Describing the pseudorange in meters gives us,
+
+\begin{equation}\label{eq:psr_meters}
+    \tilde{\rho}^j = r_u^j + c\,t^j + c\,t_u + I^i_u + T^i_u+ M^i_u + \eta^i_{\rho},
+\end{equation}
+where,
+\begin{equation}\label{eq:range_meters}
+    r^j_u = \sqrt{{\left(x^j - x_u\right)}^2 + {\left(y^j - y_u\right)}^2 + {\left(z^j - z_u\right)}^2},
+\end{equation}
+
+\(t_u\) is the clock bias of the user, \(t^j\) is the clock bias of the \(j^{th}\) satellite, \(I\) is the ionospheric delay, \(T\) is the tropospheric delay, \(M\) is the delay of multipath, and \(\eta \) is additive Gaussian white noise all at time \(i\).
+
+Positioning with GPS is possible because of the atomic clocks on board of each satellite. These clocks are highly stable and allow the Time of Week (TOW) to be transmitted in the data message for which the receiver decodes. Although the on board clocks are incredibly stable, the PRN sequence cannot be precisely transmitted at every millisecond. Fortunately, these clock errors are modeled in the data message, so \(t^j\) can be removed from the pseudorange equation. Clocks on board receivers are not quite as stable, and the received time of the signal is not known upon a cold start. A solution to this problem is initialize the received time to the first satellite transmit time and add a nominal offset of \(66.7\) milliseconds. This offset stems from back of the envelope calculation based on the distance between MEO satellite orbits and the center of the Earth (Equation~\ref{eq:nominalOffset}).
+
+\begin{equation}\label{eq:nominalOffset}
+    {\left(t_u - t^{j} \right)}^{i = 0} = \frac{d_{MEO}}{c} \approx \frac{20000000}{299792458} \approx 0.0667
+\end{equation}
+
+The addition of the unknown receiver clock bias adds a fourth dimension to the trilateration position solution. This effectively requires that the receiver needs the ranges from four satellites to estimate \(x_u\), \(y_u\), \(z_u\), and \(t_u\).
+
+The second measurement from GPS satellites is pseudorange-rate. By definition, pseudorange-rate is the measurement of the line of sight velocity that can be directly derived from changes in carrier frequency, also known as the Doppler frequency (Equation~\ref{eq:psrdot_time}).
+
+\begin{equation}\label{eq:psrdot_time}
+    \tilde{\dot{\rho}} = - \frac{\left(f_c - f_{IF}\right)\,c}{f_t}
+\end{equation}
+
+Above, \(f_c\) is the estimated frequency of the carrier wave, \(f_{IF}\) is the receiver intermediate frequency, and \(f_t\) is the nominal transmit frequency. Another way to represent pseudorange-rate measurement is by deriving Equation~\ref{eq:psr_meters} with respect to time. This geometric representation is seen in Equation~\ref{eq:psrdot_meters}.
+
+\begin{equation}\label{eq:psrdot_meters}
+    \tilde{\dot{\rho}} = \dot{r}_u^j + c\,\dot{t}_u + \dot{I}^i_u + \dot{T}^i_u + \eta^i_{\dot{\rho}}
+\end{equation}
+
+From Equation~\ref{eq:psrdot_meters}, it is assumed that the atomic clocks on board the satellites are stable enough such that the clock drift term is \(0\). The same can be said for \(\dot{M}^i_u\) where the error-rate due to multipath is miniscule.
+
+Similar to the pseudorange measurement, if the receiver clock was perfect, only three satellites would be needed to measure pseudorange-rate. However, because of the instability in the receiver clock, the drift biases the frequencies. Therefore, four pseudorange-rate are still required in order to calculate receiver velocities.
+
+The last measurement from GPS satellites is estimate of noise on a signal. The receiver utilizes a Carrier-to-Noise density ratio (\(C/N_0\)) to determine the quality of pseudorange and pseudorange-rate measurements from each satellite. Equation~\ref{eq:CN0} demonstrates how \(C/N_0\) is calculated in this work.
+
+\begin{equation}\label{eq:CN0}
+    \frac{C}{N_0} = 10\,\log_{10} {\left(\frac{\tilde{A} - 4\hat{\sigma_{eta}^2}}{2\,T\hat{\sigma_{eta}^2}}\right)}
+\end{equation}
+
+Where,
+
+\begin{equation}\label{eq:ampitude}
+\tilde{A} = {\left(IE +IL\right)}^2 + {\left(QE + QL\right)}^2
+\end{equation}
+
+is the measured power of the accurately tracked signal using correlators defined in a previous section.\(\sigma_{eta}^2\) is the variance in correlators that are the result of a shifting the replicated signal far outside of any correlation with the data of the received signal data. This work shifts these correlators by \(100\),\(200\), \(300\) chips each. Furthermore, this variance is filtered with a moving average using a ratio of \(99:1\) between the current calculated variance and the previous filtered variance. Shifting the replicated signal by a large number of chip and then correlating the shifted signal with the received signal data is computationally expensive, but is necessary if using a Bayesian estimator or weighted least squares approach in both open-loop and vector tracking navigation algorithms. 
+
+
 \subsection{Open-Loop Architectures}
 \subsection{Vector Tracking}
 
