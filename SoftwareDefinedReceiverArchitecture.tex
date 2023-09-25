@@ -208,7 +208,7 @@ However, WNLS tries to estimate the errors between the true states and the estim
     \end{bmatrix}^T
 \end{equation}
 
-These error states are then mapped to measurement residuals using the observation matrix, \(\mathbf{H}\) (Equation~\ref{eq:Hmat},~\ref{eq:Y}).\(\mathbf{H}\) is defined by the Jacobian of \(\mathbf{Y}\) with respect to \(\delta\hat{\mathbf{x}}\), or in a mathematical form,
+These error states are then mapped to measurement residuals using the observation matrix, \(\mathbf{H}\) (Equation~\ref{eq:Hmat}).\(\mathbf{H}\) is defined by the Jacobian of \(\mathbf{Y}\) with respect to \(\delta\hat{\mathbf{x}}\), or in a mathematical form,
 
 \begin{equation}\label{eq:Jacobian}
     \mathbf{H} = \frac{\partial \mathbf{Y}}{\partial \delta\hat{\mathbf{x}}}.
@@ -272,7 +272,7 @@ is the variance of the pseudorange-rate measurement from the \(j^{th}\) satellit
 Once the above matrices are created, the WNLS algorithm (Equation~\ref{eq:wnls}) can be performed iteratively until the magnitude of the error state vector is small, meaning the algorithm has converged.
 
 \begin{equation}\label{eq:wnls}
-    \delta\hat{\mathbf{x}} = {\left(\mathbf{H}^{T}\mathbf{W}\mathbf{H}\right)^{-1}\,\mathbf{W}\mathbf{Y}}
+    \delta\hat{\mathbf{x}} = {{\left(\mathbf{H}^{T}\mathbf{W}\mathbf{H}\right)}^{-1}\,\mathbf{W}\mathbf{Y}}
 \end{equation}
 
 Once an initial receiver position has been found, vector tracking channels can open and closed form PVT solution can start to be processed. Vector tracking loops and algorithms are discussed in the next chapter.
