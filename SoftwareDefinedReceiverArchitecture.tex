@@ -1,40 +1,8 @@
-\chapter{GNSS Software Defined Receiver Architecture}
-Since 1993, the Global Positioning System (GPS) has provided users with capable hardware to determine their global position within seconds and in recent developments, a centimeter-level position error. GPS can be explained in 3 components: the satellite vehicles in space, control and transmission of signals, and the receiver processing component.
-
-GPS satellites have undergone multiple improvements and upgrades since the first satellites were launched in 1978. These versions of satellites are based on their \textit{block}. Currently, Block III is the most advanced satellite orbiting Earth today. Early versions (Block I) of GPS satellites were used mainly for development and did not transmit signals to the public. Lessons learned from the Block I satellites were fully integrated into the Block II GPS satellites, where GPS became fully operational in 1993. While there were many subtle differences between Block I and Block II satellites, the most important difference is that these new satellites broadcasted a signal on 2 frequencies, coined \textit{L1}, \textit{L2}, and \textit{L2c}, where \textit{L2c} is intended for civilian use. Modern day Block III satellites transmit their signal on the same frequencies that Block II satellites have, with the addition of \textit{L5}. Table provides the frequencies that signals are transmitted on.
-
-\begin{table}[h!]\label{tbl:GPSfreq}
-    \centering
-    \begin{tabular}{lc}
-        \toprule
-        \textbf{Name} & \textbf{Frequency [Mhz]} \\
-        \midrule
-        \textit{L1}   & \(1575.42\)              \\
-        \textit{L2}   & \(1227.60\)              \\
-        \textit{L2c}  & \(1227.60\)              \\
-        \textit{L5}   & \(1176.45\)              \\
-        \bottomrule
-    \end{tabular}
-\end{table}
-%% Background/Introduction
+\chapter{GPS Software Defined Receiver Architecture}
+Since 1993, the Global Positioning System (GPS) has provided users with capable hardware to determine their global position within seconds and in recent developments, at centimeter-level position error. The focus of this chapter revolves around the inner-workings of a scalar-tracking software defined receiver, capable of processing GPS L1 C/A. Split into four sections, the chapter begins with an explanation on how the receiver discretized and digitizes the continuous, low-power signal collected by the antenna. Following that, details about how the receivers knows what satellites are transmitting to it are described. The third section draws on the different algorithms in scalar tracking that allow the received signal data to be replicated and decode for satellite orbital parameters that play an important role in the last section. Wrapping up this chapter, an overview on the weighted nonlinear least squares algorithm is provided along with detailed descriptions of the three measurements that each satellite is indirectly broadcasting to the receiver.
 
 \section{Front End}
-The signals received by an antenna must be down converted and digitized before the processing of the signal can take place. The \textit{Front End} of the receiver performs this conversion through a series of amplifiers, filters, and a Analog-to-Digital Converter (ADC). First, a signal is received by a Right-Hand Circularly Polarized (RHCP) antenna. The antenna can be passive, but for scenarios where long cables are used, a powered, active antenna may be necessary. Because of the low received signal power that GNSS constellations provide, the signal is amplified through a series of Low Noise Amplifiers (LNA) and Band Pass Filters (BPF). The LNA raise the power of the received GPS signal and the BPF act as a first-step in removing non-GPS signals from processing. The last stage is passing the continuous received signal through the ADC where the signal is converted to digitized samples at a frequency of the receiver-embedded oscillator. The oscillator is filtered using a phase lock loop, described later. Table~\ref{tbl:clocks} provides a description of the clock typically utilized on GNSS hardware receivers.
-
-\begin{table}[!ht]\label{tbl:clocks}
-    \caption{Typical clocks embedded on hardware GNSS receivers.}
-    \centering
-    \begin{tabular}{cccc}
-        \toprule
-        Name                        & Abbreviation & Application \\
-        \midrule
-        Oxidized Crystal Oscillator & OCXO         &             \\
-        Oxidized Crystal Oscillator & OCXO         &             \\
-        Oxidized Crystal Oscillator & OCXO         &             \\
-        Oxidized Crystal Oscillator & OCXO         &             \\
-        \bottomrule
-    \end{tabular}
-\end{table}
+The signals received by an antenna must be down converted and digitized before the processing of the signal can take place. The \textit{Front End} of the receiver performs this conversion through a series of amplifiers, filters, and a Analog-to-Digital Converter (ADC). First, a signal is received by a Right-Hand Circularly Polarized (RHCP) antenna. The antenna can be passive, but for scenarios where long cables are used, a powered, active antenna may be necessary. Because of the low received signal power that GNSS constellations provide, the signal is amplified through a series of Low Noise Amplifiers (LNA) and Band Pass Filters (BPF). The LNA raise the power of the received GPS signal and the BPF act as a first-step in removing non-GPS signals from processing. The last stage is passing the continuous received signal through the ADC where the signal is converted to digitized samples at a frequency of the receiver-embedded oscillator. The oscillator is filtered using a phase lock loop, described later.
 
 The purpose in this mixing process is to transform the signal into a more manageable intermediate frequency while still maintaining the same modulation and Doppler applied to the signal. Figure~\ref{fig:frontend} describes the process on converting the analog, continuous signal into a discrete, digitized IF signal in block diagram form.
 
@@ -218,9 +186,96 @@ is the measured power of the accurately tracked signal using correlators defined
 
 
 \subsection{Open-Loop Architectures}
-Open-loop architectures are navigation algorithms that provide no feedback to the tracking scheme described in the previous section. In benign, static and constant velocity scenarios, these algorithms still provide accurate PVT solutions and are critical for a closed-loop architecture like vector tracking to work properly. The following section describes two of the most common open-loop architectures, Weighted Nonlinear Least Squares (WNLS) and the Extended Kalman Filter (EKF).
+Open-loop architectures are navigation algorithms that provide no feedback to the tracking scheme described in the previous section. In benign, static and constant velocity scenarios, these algorithms still provide accurate PVT solutions and are critical for a closed-loop architecture like vector tracking to work properly. The following section covers Weight Nonlinear Least Squares (WNLS), the method used to initialize the vector tracking algorithms in this work.
 
+The state vector for receiver initialization comprises the position and velocities of the receiver in the Earth-Centered, Earth-Fixed (ECEF) frame, along with receiver clock bias and clock drift terms (Equation~\ref{eq:WLSstates})
 
-\subsection{Vector Tracking}
+\begin{equation}\label{eq:WLSstates}
+    \hat{\mathbf{x}} =
+    \begin{bmatrix}
+        \hat{x}_u & \hat{\dot{x}}_u & \hat{y}_u & \hat{\dot{y}}_u & \hat{z}_u & \hat{\dot{z}}_u & c\hat{t}_u & c\hat{\dot{t}}_u \\
+    \end{bmatrix}^T
+\end{equation}
+
+For the rest of the work presented in this thesis, variables with a \({\left(\;\hat{}\;\right)} \) represent an estimate of that variable. In Equation~\ref{eq:WLSstates}, \(T\) simply means the transpose of the array.
+
+However, WNLS tries to estimate the errors between the true states and the estimated states (Equation~\ref{eq:errorStates}).
+
+\begin{equation}\label{eq:errorStates}
+    \delta\hat{\mathbf{x}} =
+    \begin{bmatrix}
+        \delta\hat{x}_u & \delta\hat{\dot{x}}_u & \delta\hat{y}_u & \delta\hat{\dot{y}}_u & \delta\hat{z}_u & \delta\hat{\dot{z}}_u & c\delta\hat{t}_u & c\delta\hat{\dot{t}}_u \\
+    \end{bmatrix}^T
+\end{equation}
+
+These error states are then mapped to measurement residuals using the observation matrix, \(\mathbf{H}\) (Equation~\ref{eq:Hmat},~\ref{eq:Y}).\(\mathbf{H}\) is defined by the Jacobian of \(\mathbf{Y}\) with respect to \(\delta\hat{\mathbf{x}}\), or in a mathematical form,
+
+\begin{equation}\label{eq:Jacobian}
+    \mathbf{H} = \frac{\partial \mathbf{Y}}{\partial \delta\hat{\mathbf{x}}}.
+\end{equation}
+
+If we define \(\mathbf{Y}\) as
+\begin{equation}\label{eq:Z}
+    \mathbf{Y} =
+    \begin{bmatrix}
+        {\tilde{\rho}^1 - \hat{\rho}^1}\,, & {\tilde{\dot{\rho}}^1 - \hat{\dot{\rho}}^1}\,, & \hdots & {\tilde{\rho}^1 - \hat{\rho}^1}\, , & {\tilde{\dot{\rho}}^1 - \hat{\dot{\rho}}^1}
+    \end{bmatrix}
+\end{equation}
+
+and then find the Jacobian of \(\mathbf{H}\), a relationship forms between the pseudoranges and pseudorange-rates and the ECEF position and velocity estimates of the receiver in the form of a unit vector (Equation~\ref{eq:unitVector}).
+
+\begin{equation}\label{eq:unitVector}
+    \mathbf{u}^j_{x,y,z} = \frac{\begin{bmatrix}
+            x^j - x_u\, , & y^j - y_u\, , & z^j - z_u \\
+        \end{bmatrix}
+    }{r^j_u}
+\end{equation}
+
+Because the bias and drift of the clocks directly correspond to there error states, they are noted with a \(1\).
+
+\begin{equation}\label{eq:Hmat}
+    \mathbf{H} =
+    \begin{bmatrix}
+        -u_x^1 & 0      & -u_y^1 & 0      & -u_z^1 & 0      & 1      & 0      \\
+        0      & -u_x^1 & 0      & -u_y^1 & 0      & -u_z^1 & 0      & 1      \\
+        \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots \\
+        -u_x^j & 0      & -u_y^j & 0      & -u_z^j & 0      & 1      & 0      \\
+        0      & -u_x^j & 0      & -u_y^j & 0      & -u_z^j & 0      & 1      \\
+    \end{bmatrix}
+\end{equation}
+
+The last piece in WNLS algorithm is defining the weights, \(\mathbf{W}\).\(\mathbf{W}\) is utilized by the algorithm to place more trust in satellites with high \(C/N_0\) compared to satellites with lower \(C/N_0\). The weighting matrix is shown in Equation~\ref{eq:weights}.
+
+\begin{equation}\label{eq:weights}
+    \mathbf{W} = \begin{bmatrix}
+        \sigma^2_{\rho^1} & 0                       & 0      & 0                 & 0                       \\
+        0                 & \sigma^2_{\dot{\rho}^1} & 0      & 0                 & 0                       \\
+        0                 & 0                       & \ddots & 0                 & 0                       \\
+        0                 & 0                       & 0      & \sigma^2_{\rho^j} & 0                       \\
+        0                 & 0                       & 0      & 0                 & \sigma^2_{\dot{\rho}^j} \\
+    \end{bmatrix}^{-1}
+\end{equation}
+
+Where
+\begin{equation}\label{eq:psrVar}
+    \sigma^2_{\rho^j} = \frac{\lambda^2_{code}}{2T^2{\left(\frac{C}{N_0}^2\right)}} + \frac{\lambda^2_{code}}{4T\frac{C}{N_0}}
+\end{equation}
+
+is the variance of the pseudorange measurement from the \(j^{th}\) satellite and
+
+\begin{equation}\label{eq:psrdotvar}
+    \sigma^2_{\dot{\rho}^j} = {\left(\frac{\lambda_{carrier}}{\pi T}\right)}^2\,{\left(\frac{2}{T^2{\left(\frac{C}{N_0}^2\right)}} + \frac{2}{T \frac{C}{N_0}}\right)}
+\end{equation}
+
+is the variance of the pseudorange-rate measurement from the \(j^{th}\) satellite. In Equations~\ref{eq:psrVar} and~\ref{eq:psrdotvar}, \(\lambda_{code}\) is the wavelength of data signal and \(\lambda_{carrier}\) is the wavelength of the carrier signal. In this case, \(C/N_0\) is specified in Hertz.
+
+Once the above matrices are created, the WNLS algorithm (Equation~\ref{eq:wnls}) can be performed iteratively until the magnitude of the error state vector is small, meaning the algorithm has converged.
+
+\begin{equation}\label{eq:wnls}
+    \delta\hat{\mathbf{x}} = {\left(\mathbf{H}^{T}\mathbf{W}\mathbf{H}\right)^{-1}\,\mathbf{W}\mathbf{Y}}
+\end{equation}
+
+Once an initial receiver position has been found, vector tracking channels can open and closed form PVT solution can start to be processed. Vector tracking loops and algorithms are discussed in the next chapter.
 
 \section{Conclusions}
+The architecture of a scalar-tracking software defined received was explained. For more information on any of the subsections discussed in this chapter, detailed descriptions of each can be found in the literature. Because the focus of this thesis is vector tracking, the meaning of this chapter was to provide the reader with a fundamental understanding of tracking loops that will be expanded on further in the next chapter.
