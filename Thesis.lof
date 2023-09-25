@@ -1,0 +1,38 @@
+\addvspace {10pt}
+\contentsline {figure}{\numberline {1.1}{\ignorespaces Aircraft with a larger Max Takeoff Operating Weight (MTOW) typically have more space for more complex sensor suites compared to their General Aviation counterparts\nobreakspace {}\blx@tocontentsinit {0}\cite {AircraftCharacteristicsDatabase}.}}{1}{}%
+\addvspace {10pt}
+\contentsline {figure}{\numberline {2.1}{\ignorespaces Pilot flying Diamond DA-40 single propeller aircraft\nobreakspace {}-\nobreakspace {}the focus of the collection platform for this thesis. (Adapted from\nobreakspace {}\blx@tocontentsinit {0}\cite {DiamondAircraftDA40}.)}}{6}{}%
+\contentsline {figure}{\numberline {2.2}{\ignorespaces Standard flight vehicle reference frame used in this work.\nobreakspace {}\blx@tocontentsinit {0}\cite {peetSpacecraftAircraftDynamics}}}{8}{}%
+\contentsline {figure}{\numberline {2.3}{\ignorespaces Yellow propeller nacelle on the front of a general aviation aircraft.}}{8}{}%
+\contentsline {figure}{\numberline {2.4}{\ignorespaces The reference frame used to model the dynamic of the propeller in this work\nobreakspace {}\blx@tocontentsinit {0}\cite {vanarnhemEngineeringMethodEstimate2020}.}}{9}{}%
+\contentsline {figure}{\numberline {2.5}{\ignorespaces Flight vehicle reference frame and local wind reference frame (dotted lines) (Adapted from\nobreakspace {}\blx@tocontentsinit {0}\cite {ForceBalanceCoordinates}).}}{9}{}%
+\contentsline {figure}{\numberline {2.6}{\ignorespaces North-East-Down Reference Frame\nobreakspace {}-\nobreakspace {}the local reference frame used in this thesis.}}{10}{}%
+\contentsline {figure}{\numberline {2.7}{\ignorespaces ECEF and geodetic reference frames as used in this thesis.}}{11}{}%
+\contentsline {figure}{\numberline {2.8}{\ignorespaces Subsonic wind tunnel in Auburn University's Aerodynamics Laboratory.}}{16}{}%
+\contentsline {figure}{\numberline {2.9}{\ignorespaces Wortmann FX 63{-}137 airfoil modeled on simulated Diamond DA-40 aircraft wings.}}{17}{}%
+\contentsline {figure}{\numberline {2.10}{\ignorespaces NACA 0012 airfoil used for the horizontal tail on the simulated Diamond DA-40 aircraft.}}{17}{}%
+\contentsline {figure}{\numberline {2.11}{\ignorespaces Lift Coefficient at various angles of attack for the \textit {Wortmann FX 63{-}137} airfoil. Generated using Xfoil\nobreakspace {}\blx@tocontentsinit {0}\cite {drelaXfoilSubsonicAirfoil} from\nobreakspace {}\blx@tocontentsinit {0}\cite {WORTMANNFX63137}.}}{19}{}%
+\contentsline {figure}{\numberline {2.12}{\ignorespaces Standard properties for a wing that defines it geometries.}}{20}{}%
+\contentsline {figure}{\numberline {2.13}{\ignorespaces (a) Gliders typically have a high aspect ratio to maintain flight.\ (b) Fighter jets will have low aspect ratio wings to limit the moment generated out at the wingtips.}}{20}{}%
+\contentsline {figure}{\numberline {2.14}{\ignorespaces Comparison of different aspect ratios and their affect on the wing lift coefficient. Note that wings with higher aspect ratios tend to stall at lower angles of attack compared to their lower aspect ratio counter parts.}}{21}{}%
+\contentsline {figure}{\numberline {2.15}{\ignorespaces Pressure gradient and subsequent lift produced onto an airfoil. The continuous white line in the middle signifies the freestream incident wind.}}{22}{}%
+\contentsline {figure}{\numberline {2.16}{\ignorespaces Power output for modeled engine as a function of aircraft altitude.}}{24}{}%
+\contentsline {figure}{\numberline {2.17}{\ignorespaces Power factor look up table for modeled engine.}}{24}{}%
+\contentsline {figure}{\numberline {2.18}{\ignorespaces Brake specific fuel consumption look up table for modeled engine.}}{25}{}%
+\contentsline {figure}{\numberline {2.19}{\ignorespaces Collection of historic wood and steel propellers\nobreakspace {}\blx@tocontentsinit {0}\cite {ianHowIdentifyHistoric2016}.}}{26}{}%
+\contentsline {figure}{\numberline {2.20}{\ignorespaces Analyzing 3-blade propeller through Flightstream\nobreakspace {}\blx@tocontentsinit {0}\cite {FlightStream}.}}{27}{}%
+\contentsline {figure}{\numberline {2.21}{\ignorespaces Static propeller thrust for the modelled propeller (Adapted from\nobreakspace {}\blx@tocontentsinit {0}\cite {GeneralizedMethodPropeller}).}}{28}{}%
+\contentsline {figure}{\numberline {2.22}{\ignorespaces Horizontal and vertical strips that are analyzed for aerodynamic coefficients in FlightStream\nobreakspace {}\blx@tocontentsinit {0}\cite {AerodynamicStripTheory2021}.}}{30}{}%
+\contentsline {figure}{\numberline {2.23}{\ignorespaces Mass-spring damper system, representing the components of landing gear on the aircraft (adapted from\nobreakspace {}\blx@tocontentsinit {0}\cite {xingStrengthAnalysisDiagonal2012}).}}{31}{}%
+\contentsline {figure}{\numberline {2.24}{\ignorespaces Identification of the landing gear components on the Diamond DA40.}}{32}{}%
+\addvspace {10pt}
+\contentsline {figure}{\numberline {3.1}{\ignorespaces Block diagram of a software defined receiver front end}}{36}{}%
+\contentsline {figure}{\numberline {3.2}{\ignorespaces Block diagram of the PCPS acquisition algorithm applied to GPS L1 C/A signal modulation.}}{36}{}%
+\contentsline {figure}{\numberline {3.3}{\ignorespaces Flow diagram of scalar tracking algorithms.}}{38}{}%
+\contentsline {figure}{\numberline {3.4}{\ignorespaces Discrete block diagram of the PLL-FLL loop filters used in this work.}}{41}{}%
+\contentsline {figure}{\numberline {3.5}{\ignorespaces Discrete block diagram of the DLL loop filter used in this work.}}{41}{}%
+\addvspace {10pt}
+\addvspace {10pt}
+\addvspace {10pt}
+\addvspace {10pt}
+\contentsline {figure}{\numberline {1}{\ignorespaces Absolute temperature, ambient pressure, air density, and speed of sound using the ISA model.}}{55}{}%

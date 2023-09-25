@@ -211,13 +211,16 @@ The last measurement from GPS satellites is estimate of noise on a signal. The r
 Where,
 
 \begin{equation}\label{eq:ampitude}
-\tilde{A} = {\left(IE +IL\right)}^2 + {\left(QE + QL\right)}^2
+    \tilde{A} = {\left(IE +IL\right)}^2 + {\left(QE + QL\right)}^2
 \end{equation}
 
-is the measured power of the accurately tracked signal using correlators defined in a previous section.\(\sigma_{eta}^2\) is the variance in correlators that are the result of a shifting the replicated signal far outside of any correlation with the data of the received signal data. This work shifts these correlators by \(100\),\(200\), \(300\) chips each. Furthermore, this variance is filtered with a moving average using a ratio of \(99:1\) between the current calculated variance and the previous filtered variance. Shifting the replicated signal by a large number of chip and then correlating the shifted signal with the received signal data is computationally expensive, but is necessary if using a Bayesian estimator or weighted least squares approach in both open-loop and vector tracking navigation algorithms. 
+is the measured power of the accurately tracked signal using correlators defined in a previous section.\(\sigma_{eta}^2\) is the variance in correlators that are the result of a shifting the replicated signal far outside of any correlation with the data of the received signal data. This work shifts these correlators by \(100\),\(200\), \(300\) chips each. Furthermore, this variance is filtered with a moving average using a ratio of \(99:1\) between the current calculated variance and the previous filtered variance. Shifting the replicated signal by a large number of chip and then correlating the shifted signal with the received signal data is computationally expensive, but is necessary if using a Bayesian estimator or weighted least squares approach in both open-loop and vector tracking navigation algorithms.
 
 
 \subsection{Open-Loop Architectures}
+Open-loop architectures are navigation algorithms that provide no feedback to the tracking scheme described in the previous section. In benign, static and constant velocity scenarios, these algorithms still provide accurate PVT solutions and are critical for a closed-loop architecture like vector tracking to work properly. The following section describes two of the most common open-loop architectures, Weighted Nonlinear Least Squares (WNLS) and the Extended Kalman Filter (EKF).
+
+
 \subsection{Vector Tracking}
 
 \section{Conclusions}
