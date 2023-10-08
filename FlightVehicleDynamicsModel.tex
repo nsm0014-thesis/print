@@ -12,7 +12,7 @@ The aircraft simulated and modelled in this thesis is the Diamond DA-40 single p
 Reference frames and their transformations are a critical component to any navigation algorithm. Precise determination of a flight vehicle requires the knowledge of its position, velocity, and orientation. Reference frames describe the orientation of the flight vehicle in a global or local reference point. Because different components of the FVDM are physically located and oriented at unique locations of the Diamond DA-40, multiple reference frames are used to describe the forces and moments these components generate due to their placement. In order for the cumulative summation of all forces and moments generated at certain time step, reference frames transformation are used to coordinate local forces and moments into a congruent reference frame such that these calculations are performed properly. This section describes the different reference frames used in this work for the FVDM\@.
 % The different reference frames on the aircraft model
 % Body
-\subsection{Flight Vehicle Reference Frame}
+\subsection{Flight Vehicle Reference Frame}\label{section:FVRF}
 The flight vehicle reference frame or body frame describes the reference frame with origin at the center of mass of the modeled Diamond DA-40. The body frame maintains alignment shown in Figure~\ref{fig:flightvehiclereferenceframe} and remains fixed to the flight vehicle at all times. The flight vehicle reference frame is essential to the FVDM as all forces and moments are added together in the body frame before integration into global and local pose states.
 
 \begin{figure}[!ht]
@@ -191,7 +191,7 @@ Along with the aforementioned atmospheric parameters, wind is a vital modeling p
 
 \section{Aerodynamic Principles}\label{section:aerodynamic}
 % Section Overview
-In all phases of flight, aircraft must be efficient at generating lift forces on the airframe to sustain flight. Since the early 1920's, the National Advisory Committee for Aeronautics (NACA) started testing oblique elliptical shapes in wind tunnels known as \textit{airfoils}. Airfoils affect all aspects of flight including cruise speed, takeoff and landing speed and distance, and overall aerodynamic efficiency. Before the modern computer, airfoils were designed and developed in wind tunnels. A wind tunnel is a machine that generates straight-line \textit{wind} to simulate the testing object flying through the air (Figure~\ref{fig:windtunnel}). This subsection provides an overview about how lift is generated for an airplane, how strip theory is used to propagate lift and drag, and details covering the airfoil used for the Diamond DA-40.
+In all phases of flight, the surfaces on any aircraft generate two aerodynamic forces {--} \textit{lift} and \textit{drag} along with an aerodynamic moment vector. Prior to the modern computer, these forces and moments were derived from swaths of wind tunnel~\ref{fig:windtunnel} data under various conditions. Today, during the research and development phase of modern production aircraft, these aerodynamics components can be determined using Computation Fluid Dynamic programs such as \textit{Flightsteam}~\cite{FlightStream}. This subsections provides the modelling equations for the surfaces of the airplane that generate lift, drag and moments during simulation.
 
 \begin{figure}[!ht]\label{fig:windtunnel}
     \centering
@@ -199,108 +199,6 @@ In all phases of flight, aircraft must be efficient at generating lift forces on
     \caption{Subsonic wind tunnel in Auburn University's Aerodynamics Laboratory.}
 \end{figure}
 
-\subsection{Airfoils}
-% What is an airfoil
-For the aircraft presented in this thesis, a \textit{Wortmann FX 63{-}137} airfoil (Figure~\ref{fig:airfoil}) is used on the wings and a \textit{NACA 0012} airfoil (Figure~\ref{fig:naca0012}) is used for the horizontal tail.
-
-\begin{figure}[!ht]\label{fig:airfoil}
-    \centering
-    \includegraphics[width=\linewidth]{Figures/da40airfoil.png}
-    \caption{Wortmann FX 63{-}137 airfoil modeled on simulated Diamond DA-40 aircraft wings.}
-\end{figure}
-
-\begin{figure}[!ht]\label{fig:naca0012}
-    \centering
-    \includegraphics[width=\linewidth]{Figures/naca0012.png}
-    \caption{NACA 0012 airfoil used for the horizontal tail on the simulated Diamond DA-40 aircraft.}
-\end{figure}
-
-The name of the airfoil fully defines its aerodynamic shape. Airfoil design has evolved along with the nomenclature for airfoil families. The \textit{Wortmann FX 63{-}137} airfoil belongs to a family of \textit{laminar-flow} airfoils pioneered by Dr.Franz Xavier Wortmann~\cite{raymerAircraftDesignConceptual2018}. These airfoils have their own naming conventions as specified by Table~\ref{tbl:wortmanndigits}.
-
-\begin{table}[!ht]\label{tbl:wortmanndigits}
-    \caption{Table describing the definition in each digit for Wortmann F.X. airfoils.}
-    \centering
-    \begin{tabular}{clc}
-        \toprule
-        \textbf{Digit{(s)}} & \textbf{Meaning}                 & \textbf{\textit{Wortmann FX 63{-}137}} \\
-        \midrule
-        1~-~2               & Development Year                 & \(1963\)                               \\
-        3~-~5               & \(t/c\) Ratio \(\times \, 1000\) & \(0.137\)                              \\
-        \bottomrule
-    \end{tabular}
-\end{table}
-
-The horizontal tail is modeled using a \textit{NACA 0012} airfoil, belonging to the family of airfoils first developed by NACA in the 1930's. Table~\ref{tbl:naca4digits} specifies NACA standard naming convention for their 4-digit family of airfoils.
-
-\begin{table}[!ht]\label{tbl:naca4digits}
-    \caption{Table describing the definition in each digit for NACA 4-digit airfoils.}
-    \centering
-    \begin{tabular}{clc}
-        \toprule
-        \textbf{Digit{(s)}} & \textbf{Meaning}                             & \textbf{\textit{NACA 0012}} \\
-        \midrule
-        1                   & Percent of Camber                            & 0 (Symmetrical)             \\
-        2                   & Location of Maximum Camber \(\times \, 0.1\) & 0 (Symmetrical)             \\
-        3~-~4               & \(t/c\) Ratio \(\times \, 100\)              & 0.12                        \\
-        \bottomrule
-    \end{tabular}
-\end{table}
-
-The shape of the airfoil affects the performance of the wing in different flight conditions. Aircraft designers will narrow the \"field\" of airfoils down based on a handful of parameters. These can include a design lift coefficient, where aircraft with higher \textit{wing-loading} require airfoils with higher lift coefficients. The same can be said about the design \textit{Reynold's Number} (Equation~\ref{eq:reynoldsnumber}), where a faster aircraft (even supersonic) will require an airfoil built to sustain great lifting characteristics at higher speeds.
-
-\begin{equation}\label{eq:reynoldsnumber}
-    Re = \frac{\rho \, V \, L}{\mu}
-\end{equation}
-
-The Reynold's Number is a dimension-less property that allows aerodynamicists to predict fluid flow given different environments (high-altitude, low-altitude, underwater, etc\ldots). Reynold's Number is a function of multiple fluid properties including the density, \( \rho \), dynamic viscosity, \( \mu \), characteristic length (i.e.\ wing chord), \(L\), and the velocity, \(V\). Given that simulated aircraft in this work will be flying at an altitude of \(1000\) meters, and a speed of \(40\) meters per second, we can approximate the Reynold's Number to be
-
-\begin{equation}\label{eq:recalc}
-    Re = \frac{(1.112) \, (40) \, (1.4)}{1.81\times10^-5} \; = \;  2,647,078.
-\end{equation}
-
-This Reynold's Number is considered relatively low, which allows the \textit{Wortmann FX 63{-}137} airfoil to be great choice for the Diamond DA-40 based on it's predicted lift coefficient at different angle of attacks (Figure~\ref{fig:xfoil}). Choosing the camber or curve of the airfoil is also an important consideration when choosing the shape of the wing. Having a wing with camber allows lift to be generated even with no angle of attack. It is common for aircraft today to have airfoils designed with camber as they allow the aircraft to generate lift without applying great amounts of control surface deflections. The tail airfoil (\textit{NACA 0012}) does not have any camber applied to it. This is most likely because the design positions the horizontal tail far above the incident angle, so it is still able to generate forces and moments even when the aircraft is at low angles of attack.
-
-It should be noted that many, many factors go into choosing and designing the correct airfoil for any aircraft {--} only a few were covered in this section. For more information on airfoil design and performance characteristics, the reader should follow up with the work of~\cite{972HowAirfoil,AerodynamicsforengineersJohnBertin}.
-
-\begin{figure}[!ht]\label{fig:xfoil}
-    \centering
-    \includegraphics[width=0.5\linewidth]{Figures/liftvsalpha.png}
-    \caption{Lift Coefficient at various angles of attack for the \textit{Wortmann FX 63{-}137} airfoil. Generated using Xfoil~\cite{drelaXfoilSubsonicAirfoil} from~\cite{WORTMANNFX63137}.}
-\end{figure}
-
-\subsection{Wing Geometry}
-% Wing Geometry
-Now that the proper airfoil has been chosen and modeled, it needs to be extruded into a 3-dimensional structure known as a wing. Similar to the airfoil, wing design is very intricate and has an entire field dedicated to performance enhancements. This section will provide an overview of general wing geometries and how they affect the aircraft to generate both lift and drag.
-
-The aircraft wing manufactured today is a complex, intricate process that takes weeks to produce. Because of the oblique shapes and variable surfaces, it is hard to estimate the performance of the wing without testing it in a giant wind tunnel. To circumvent this process, the wing can be approximated as a \textit{reference} shape for general performance calculations (Figure~\ref{fig:winggeometry}).
-
-\begin{figure}[!ht]\label{fig:winggeometry}
-    \centering
-    \includegraphics[width=.75\linewidth]{Figures/Winggeometry.png}
-    \caption{Standard properties for a wing that defines it geometries.}
-\end{figure}
-
-Not defined in Figure~\ref{fig:winggeometry} is the aspect ratio. The Wright Brothers were the first to investigate aspect ratio as they discovered that a high aspect ratio wing has less drag than a low aspect ratio wing. For a tapered wing, the aspect ratio can be defined as (Equation~\ref{eq:AR})
-
-\begin{equation}\label{eq:AR}
-    AR = \frac{b^2}{S},
-\end{equation}
-
-where AR is the aspect ratio, b is the span of the wing, and S is the wing area. Figure~\ref{fig:AR} shows the difference between a glider and a fighter jet, where both have very different aspect ratios.
-
-\begin{figure}[!ht]\label{fig:AR}
-    \centering
-    \includegraphics[width=0.75\linewidth]{Figures/lowhighar.png}
-    \caption{(a) Gliders typically have a high aspect ratio to maintain flight.\ (b) Fighter jets will have low aspect ratio wings to limit the moment generated out at the wingtips.}
-\end{figure}
-
-For the Diamond-DA40 that is modeled in this thesis, it has an aspect ratio of 7 {--} standard for general aviation aircraft of similar size and weight. Figure~\ref{fig:ARPLOT} shows the affect that aspect ratio has on lift.
-
-\begin{figure}[!ht]\label{fig:ARPLOT}
-    \centering
-    \includegraphics[width=0.75\linewidth]{Figures/ARvLift.png}
-    \caption{Comparison of different aspect ratios and their affect on the wing lift coefficient. Note that wings with higher aspect ratios tend to stall at lower angles of attack compared to their lower aspect ratio counter parts.}
-\end{figure}
 % How is lift generated?
 
 A wing produces lift by allowing the air to move faster over the top of the airfoil. Bernoulli's principle equation (Equation~\ref{eq:bern})
@@ -323,16 +221,48 @@ The lift generated by the wing and subsequently the aircraft can calculated usin
     L = \frac{C_L \, \rho \, V^2 \, A}{2},
 \end{equation}
 
-where \(L\) is the lifting force, \(C_L\) is the lift coefficient for the aircraft or specific body, \( \rho \) is the density of fluid, \(V\) is the velocity of the fluid, and \(A\) is the surface area of aircraft or specific body. While most of the variables for calculating the lifting force for the aircraft are straightforward or easy to find, calculating the area can be difficult. The aircraft model in this thesis utilizes \textit{Strip Theory} to approximate the surface area and the aerodynamic forces during simulation.\textit{Strip Theory} is covered in great detail in the following small section.
+where \(L\) is the lifting force, \(C_L\) is the lift coefficient for the aircraft or specific body, \( \rho \) is the density of fluid, \(V\) is the velocity of the fluid, and \(A\) is the surface area of aircraft or specific body. For the modelling and simulation of the Diamond DA-40 presented in this thesis, the aerodynamic coefficients are approximated using \textit{Strip Theory}.~\textit{Strip Theory} is covered in great detail in the following small section.
 
 % What is drag?
-Lift is not the only force produced by the wing during flight. When any object moves through a fluid it produces drag. For the purpose of the aircraft, drag always opposes the aircraft's motion through air. Similar to Equation~\ref{eq:lift}, drag can be calculated using Equation~\ref{eq:drag}.
+Lift is not the only force produced by the wing during flight. When any object moves through a fluid it produces drag. For the purpose of the modelling and simulation presented in this thesis, drag always opposes the aircraft's motion through air. Similar to Equation~\ref{eq:lift}, drag can be calculated using Equation~\ref{eq:drag}.
 
 \begin{equation}\label{eq:drag}
-    D = \frac{C_D \, \rho \, V^2 \, A}{2}
+    D = \frac{C_D \rho V^2 A}{2}
 \end{equation}
 
+The aerodynamic moments generated during flight of any aircraft are the single reason that control surface deflections cause the aircraft the roll, pitch or yaw in a certain direction. Just like the equations for lift and drag, the total aerodynamic moments is described in equation~\ref{eq:moment}.
 
+\begin{equation}\label{eq:moment}
+    M = \frac{C_M \rho V^2 A}{2}
+\end{equation}
+
+% What is Strip Theory?
+In Equations~\ref{eq:lift},~\ref{eq:drag}, and~\ref{eq:moment}, coefficients need to be defined in order to calculate the aerodynamic forces and moments correctly. If known before hand, these coefficients can be calculate programmatically.~Equation~\ref{eq:CL} describes the equation for finding the lift coefficient.
+
+\begin{equation}\label{eq:CL}
+    C_L = C_{L_0} + C_{L_\alpha}\alpha + C_{L_q}\frac{qc}{2V} + C_{L_{\delta_e}}\delta_e
+\end{equation}
+
+Where \(C_{L_0}\) is the zero angle of attack lift coefficient, \(C_{L_\alpha}\) is the lift coefficient due to angle of attack, \(\alpha \) is the angle of attack,\(C_{L_q}\) is the lift coefficient due to the dynamic pressure, \(q\), and \(C_{L_{\delta_e}}\) is the lift coefficient due to the elevator deflection, \(\delta_e\).~\(c\) is the chord length of the wing and \(V\) is the speed of the aircraft. Equation~\ref{eq:CD} describes the equation for find the drag coefficient.
+
+\begin{equation}\label{eq:CD}
+    C_D = C_{D_0} + K\,C_{L}^2
+\end{equation}
+
+Where \(C_{D_0}\) is the zero angle of attack lift coefficient and \(K\) is the lift induced drag coefficient of the aircraft. The aerodynamic moment coefficient is split into three components, each defined by the direction that act about the flight vehicle (described by Section~\ref{section:FVRF}). The rolling moment coefficient is described as
+
+
+The surface area and lift, drag, and moments coefficients of the entire aircraft can be difficult to estimate, leading to poor calculations of lift and drag and moments if done incorrectly. For the aircraft model presented in this thesis, strip theory is a means to better approximate these forces and moments. Figure~\ref{fig:strips} draws the horizontal and vertical strips the aircraft is discretized into. Their reference frame is static and is defined by the strips position and orientation relative to the center of mass of the aircraft. To rotate the aerodynamic forces generated from each strip, a simple \( \psi-\theta-\phi \) transformation is used.
+
+\begin{figure}[!ht]\label{fig:strips}
+    \centering
+    \includegraphics[width=0.75\linewidth]{Figures/horvertstrips.png}
+    \caption{Horizontal and vertical strips that are analyzed for aerodynamic coefficients in FlightStream~\cite{AerodynamicStripTheory2021}.}
+\end{figure}
+
+Strip theory is a process in which the airframe is discretized into independent strips. Flightstream~\cite{FlightStream} is used to generate aerodynamic coefficients for each strip. In Flightstream, the aircraft was evaluated on a range of angles of attack and sideslips, along with different control surface deflections. The aircraft was evaluated at a single velocity of 30 meters per second as the velocity component for the coefficient is just a scaling value.
+
+Downwash is an aerodynamic property where the finite length of the lifting surfaces results in 3-dimensional flow fields causing reduction in effective angles of attack. To introduce downwash into the model and simulation, a reduced-ordered model utilizing integrated circulation was implemented~\cite{bhandariGeneticAlgorithmOptimization2023,ahujaIntegratedComputationalAeroacoustics2022}\@.
 
 \section{Aero-Propulsive Forces}
 
@@ -500,21 +430,6 @@ A handful of steps, provided below, list the necessary calculations needed to si
     \item[5.] Calculate \(T\) using Equation~\ref{eq:thrust}.
     \item[6.] The moment generated by the propeller is simply the cross-product between the thrust and moment arm between the tip of the propeller and the nacelle of propeller.
 \end{itemize}
-
-\subsection{Strip Theory and Downwash Model}
-
-% What is Strip Theory?
-As mentioned earlier, the surface area of the aircraft can be difficult to estimate, leading to poor calculations of lift and drag if done incorrectly. For the aircraft model presented in this thesis, strip theory is a means to better approximate these forces. Figure~\ref{fig:strips} draws the horizontal and vertical strips the aircraft is discretized into. Their reference frame is static and is defined by the strips position and orientation relative to the center of mass of the aircraft. To rotate the aerodynamic forces generated from each strip, a simple \( \psi-\theta-\phi \) transformation is used.
-
-\begin{figure}[!ht]\label{fig:strips}
-    \centering
-    \includegraphics[width=0.75\linewidth]{Figures/horvertstrips.png}
-    \caption{Horizontal and vertical strips that are analyzed for aerodynamic coefficients in FlightStream~\cite{AerodynamicStripTheory2021}.}
-\end{figure}
-
-Strip theory is a process in which the airframe is discretized into independent strips. Flightstream~\cite{FlightStream} is used to generate aerodynamic coefficients for each strip. In Flightstream, the aircraft was evaluated on a range of angles of attack and sideslips. The aircraft was evaluated at a single velocity of 30 meters per second as the velocity component for the coefficient is just a scaling value.
-
-Downwash is an aerodynamic property where the finite length of the lifting surfaces results in 3-dimensional flow fields causing reduction in effective angles of attack. To introduce downwash into the model and simulation, a reduced-ordered model utilizing integrated circulation was implemented~\cite{bhandariGeneticAlgorithmOptimization2023,ahujaIntegratedComputationalAeroacoustics2022}\@.
 
 \section{Landing Gear Model}
 Although not calculated often, the modeling of the aircraft's landing gear are important and should not be overlooked. However, because of the flight paths investigated in this thesis focus solely on the aircraft during flight, a simplified dynamic model is used to describe the forces and moments acting on the landing gear during landing. It should be noted that the aerodynamic calculations of the landing gear occur in the aerodynamically modeling section, while this section focuses on the moments and forces generated from the runway opposing the weight of the aircraft.
