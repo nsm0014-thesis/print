@@ -1,8 +1,17 @@
-\chapter{Vector Tracking Software Defined Receiver}
+\chapter{Proposed Navigation Filter Architecture}
+Scalar tracking loops discussed in Chapter~3 are critically important to receivers as they adapt the replica signal to match the receiver signal data for proper decoding. However, these scalar loop filters assume a static noise bandwidth, regardless of receiver or satellite dynamics. If either platforms have unmodeled dynamics unknown before processing, these bandwidths can permit too much noise into the navigation processing solution or, do not allow enough of the signal to be processed, neglecting these dynamics. One solution to this problem is implementing an adaptive Kalman filter to optimally select bandwidths~\cite{}. In this case, the Kalman filter estimates the proper bandwidth based on discriminator residuals, but is agnostic to the dynamics of the receiver or the satellite dynamics. The addition of an adaptive Kalman filter is in an improvement, but leaves a lot to be desired as each channel is still be tracked individually, resulting in low-powered channels having a high likelihood of being lost.
 
-\clearpage
-\section{Scalar Tracking}
-% Types of Sensor Fusion algorithms
+Another, more optimal, solution is to estimate the receiver and satellite dynamics at every integration period. This requires an updated estimate of the navigation solution to be updated at every integration period, which is suitable as long as four satellites are transmitting to the receiver. This approach combines the adaptive bandwidth from~\cite{} along with knowledge of the receiver and satellite dynamics stemming from the navigation solution. This closed-loop approach is known as \textit{vector tracking} and will be discussed in greater detail later on in this chapter. Specifically, the Vector Delay and Frequency Lock Loop (VFDLL) is the vector tracking implementation used in this thesis.
+
+To build on the attractive approach that vector tracking brings to processing received signal data, the novelty of this work proposes an addendum to the existing navigation filter architecture by adding a Flight Vehicle Dynamic Model (FVDM) to predict the trajectory of flight vehicle in time to better assist with the processing of the signal. Along wth the discussion of vector tracking, this chapter will describe the process model in the Extended Kalman Filter (EKF), and the measurement update that provides corrections to estimated state of the receiver in time.
+\section{Vector Delay and Frequency Lock Loop}
+Vector tracking first utilized a Vector Delay Lock Loop (VDLL) and was proposed by~\cite{}. In a VDLL, the EKF provides continuous estimates of the code frequency, updating the DLL, improving overall tracking performance. Later on,~\cite{}, explores tracking both code frequency and carrier frequency in an EKF, coined the VDFLL. This method showed great improvements over scalar tracking algorithms and moderate improvements over the VDLL. The VFDLL proves best when tracking weaker GNSS signals under high dynamic stress~\cite{}. Furthermore, recent analyses from~\cite{} prove the VFDLL has improved resilance to multipath delay as well. A block diagram of the VFDLL is shown in Figure~\ref{fig:VFDLL}.
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=0.45\linewidth]{Figures/VectorTracking.drawio.png}
+    \caption{Block diagram of the VFDLL used in this work}\label{fig:VFDLL}
+\end{figure}
 \clearpage
 \section{Deeply Coupled GPS and FVDM Navigation Filter}
 % Deeply Coupled Integration
@@ -10,5 +19,5 @@
 % Time Update
 \subsection{Update \textit{a posteriori}}
 % Measurement Update
-\subsection{Fault Detection}
-% fault Detection and Exclusions
+
+\section{Conclusions}
