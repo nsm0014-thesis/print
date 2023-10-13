@@ -13,15 +13,88 @@ Vector tracking first utilized a Vector Delay Lock Loop (VDLL) and was proposed 
     \caption{Block diagram of the VFDLL used in this work}\label{fig:VFDLL}
 \end{figure}
 
-From Figure~\ref{fig:VFDLL}, the \textit{RF Front End} block refers to the discussion in Section~3.1. The signal correlation block represent Equation~\ref{eq:correlators} and also the the FLL and DLL discriminators specified in Equations~\ref{eq:FLLdisc} and~\ref{eq:DLLdisc}, respectively. The basic flow of the VFDLL requires the receiver to know its position and the positions of the satellites \textit{a priori}. Preferably, initial positions and satellite positions that fed into the VFDLL are from processing the received signal for a length of time required to decode the navigation message using scalar tracking discussed in Chapter 3. The requirements of the EKF in Figure~\ref{fig:VFDLL} are residual pseudorange and pseudorange-rates in the form of outputs from the discriminators. The EKF uses the measurements from the current signal correlations to improve the position estimate of the receiver. Using the ephemeris of the satellites and the corrected position estimates, new code phase and carrier frequency estimates are generated for the next integration period. To improve the estimated position from the EKF, the FVDM is used as the process model to propagate the non-linear motion of the aircraft in time. The next section covers the time update and measurement update within the EKF.
+From Figure~\ref{fig:VFDLL}, the \textit{RF Front End} block refers to the discussion in Section~3.1. The signal correlation block represent Equation~\ref{eq:correlators} and also the the FLL and DLL discriminators specified in Equations~\ref{eq:FLLdisc} and~\ref{eq:DLLdisc}, respectively. The basic flow of the VFDLL requires the receiver to know its position and the positions of the satellites \textit{a priori}. Preferably, initial positions and satellite positions that fed into the VFDLL are from processing the received signal for a length of time required to decode the navigation message using scalar tracking discussed in Chapter 3. The requirements of the EKF in Figure~\ref{fig:VFDLL} are residual pseudorange and pseudorange-rates in the form of outputs from the discriminators. The EKF uses the measurements from the current signal correlations to improve the position estimate of the receiver. Using the ephemeris of the satellites and the corrected position estimates, new code phase and carrier frequency estimates are generated for the next integration period. To improve the estimated position from the EKF, the FVDM is used as the process model to propagate the non-linear motion of the aircraft in time. The next section covers the time update and measurement update within the EKF\@.
 \clearpage
 \section{Deeply Coupled GPS and FVDM Navigation Filter}
+As stated previously, the VFDLL replaces the scalar DLLs and FLLs with a single EKF\@. This sections describes the design of the EKF for the proposed navigation filter. The EKF for this work represents a position-state filter where the state vector is defined by Equation~\ref{eq:stateVector}.
 
+\begin{equation}\label{eq:stateVector}
+    \mathbf{X} =
+    \begin{bmatrix}
+        \mathbf{X}_V & \mathbf{X}_{\omega} & \mathbf{X}_P & \mathbf{X}_{\psi} & \mathbf{X}_t \\
+    \end{bmatrix}^T
+\end{equation}
 
+The essential elements for the state vector are sectioned into five terms.~\(\mathbf{X}_V\) (Equation~\ref{eq:velVector}) describes the velocity states of the aircraft from Earth to body with respect to the Local Navigation frame.
+
+\begin{equation}\label{eq:velVector}
+    \mathbf{X}_V =
+    \begin{bmatrix}
+        V_N & V_E & V_D \\
+    \end{bmatrix}
+\end{equation}
+
+The angular rates (\(\mathbf{X}_{\omega}\)) are represented from inertial to body and kept in the body frame (Equation~\ref{eq:omegaVector}).
+
+\begin{equation}\label{eq:omegaVector}
+    \mathbf{X}_{\omega} =
+    \begin{bmatrix}
+        p_{ib}^b & q_{ib}^b & r_{ib}^b \\
+    \end{bmatrix}
+\end{equation}
+
+The position estimates of the aircraft are from Earth to body with respect to the Local Navigation frame (Equation~\ref{eq:posVector}), similar to the velocity states.
+
+\begin{equation}\label{eq:posVector}
+    \mathbf{X}_P =
+    \begin{bmatrix}
+        \lambda_{eb}^n & L_{eb}^n & h_{eb}^n \\
+    \end{bmatrix}
+\end{equation}
+
+Equation~\ref{eq:eulVector} represents the Euler angles of the aircraft, represented from Earth to body.
+
+\begin{equation}\label{eq:eulVector}
+    \mathbf{X}_{\psi} =
+    \begin{bmatrix}
+        \phi_{bn} & \theta_{bn} & \psi_{bn} \\
+    \end{bmatrix}
+\end{equation}
+
+Completing the state vector are the clock terms that represent estimates of the clock bias and clock drift of the receiver during flight (Equation~\ref{eq:clkVector}). The clock bias and clock drift are scaled by the speed of light (\(c\)) to give them units of meters and meters/second, respectively. 
+
+\begin{equation}\label{eq:clkVector}
+    \mathbf{X}_t = \begin{bmatrix}
+        c\delta t & c\delta\dot{t} \\
+    \end{bmatrix}
+\end{equation}
+
+The dynamics of the aircraft are defined by
 
 \begin{equation}\label{eq:eulerIntegration}
-    \mathbf{X}_{k} = \dot{\mathbf{X}}\Delta t + \mathbf{X}_{k-1}
+    \dot{\mathbf{X}} = F\left(\mathbf{X},f_{ib}^b,M_{ib}^b\right) + \mathbf{B}_{dyn}w_{dyn} + \mathbf{B}_{clk}w_{clk}
 \end{equation}
+
+where \(\mathbf{B}_{dyn}\) is the noise distribution matrix related to the dynamics (Equation~\ref{eq:Bdyn}).
+
+\begin{equation}\label{eq:Bdyn}
+    \mathbf{B}_w =\begin{bmatrix}
+        1 & 0 & 0 & 0 & 0 & 0   \\
+        0 & 1 & 0 & 0 & 0 & 0   \\
+        0 & 0 & 1 & 0 & 0 & 0   \\
+        0 & 0 & 0 & 1 & 0 & 0   \\
+        0 & 0 & 0 & 0 & 1 & 0   \\
+        0 & 0 & 0 & 0 & 0 & 1   \\
+        0 & 0 & 0 & 0 & 0 & 0   \\
+        0 & 0 & 0 & 0 & 0 & 0   \\
+        0 & 0 & 0 & 0 & 0 & 0   \\
+        0 & 0 & 0 & 0 & 0 & 0   \\
+        0 & 0 & 0 & 0 & 0 & 0   \\
+        0 & 0 & 0 & 0 & 0 & 0   \\
+    \end{bmatrix}
+\end{equation}
+
+~\(w_{dyn}\) is the disturbance vector for the aircraft dynamics. Equation~\ref{eq:Bdyn} shows that only the linear and angular accelerations are affected by the disturbances, but these errors trickle down into the kinematic equations for the position and Euler derivatives.  
 
 \begin{equation}\label{eq:acc}
     \begin{bmatrix}
@@ -104,39 +177,14 @@ From Figure~\ref{fig:VFDLL}, the \textit{RF Front End} block refers to the discu
     \end{bmatrix}
 \end{equation}
 
-\begin{equation}\label{eq:velVector}
-    \mathbf{X}_V =
-    \begin{bmatrix}
-        V_N & V_E & V_D \\
-    \end{bmatrix}
-\end{equation}
 
-\begin{equation}\label{eq:omegaVector}
-    \mathbf{X}_{\omega} =
-    \begin{bmatrix}
-        p_{ib}^b & q_{ib}^b & r_{ib}^b \\
-    \end{bmatrix}
-\end{equation}
 
-\begin{equation}\label{eq:posVector}
-    \mathbf{X}_P =
-    \begin{bmatrix}
-        \lambda_{eb}^n & L{eb}^n & h{eb}^n \\
-    \end{bmatrix}
-\end{equation}
 
-\begin{equation}\label{eq:eulVector}
-    \mathbf{X}_{\psi} =
-    \begin{bmatrix}
-        \phi_{bn} & \theta_{bn} & \psi_{bn} \\
-    \end{bmatrix}
-\end{equation}
 
-\begin{equation}\label{eq:clkVector}
-    \mathbf{X}_t = \begin{bmatrix}
-        c\delta t & c\delta\dot{t} \\
-    \end{bmatrix}
-\end{equation}
+
+
+
+
 
 \begin{equation}\label{eq:pminus}
     \mathbf{P}^-_{k} = \mathbf{\Phi}\mathbf{P}^-_{k-1} \mathbf{\Phi}^T + \mathbf{Q_d}
@@ -155,44 +203,22 @@ From Figure~\ref{fig:VFDLL}, the \textit{RF Front End} block refers to the discu
 \begin{equation}\label{eq:wDyn}
     w_{dyn} = \begin{bmatrix}
         \sigma^2_{V_N} & \sigma^2_{V_E} & \sigma^2_{V_E} & \sigma^2_{p} & \sigma^2_{q} & \sigma^2_{r}
-    \end{bmatrix}
+    \end{bmatrix}^T
 \end{equation}
 
 \begin{equation}\label{eq:wClk}
     w_{clk} = \begin{bmatrix}
         \sigma^2_b & \sigma^2_d \\
-    \end{bmatrix}
+    \end{bmatrix}^T
 \end{equation}
 
 \begin{equation}\label{eq:Phi}
     \mathbf{\Phi} = \textrm{expm}(\mathbf{F}\Delta t)
 \end{equation}
 
-\begin{equation}\label{eq:stateVector}
-    \mathbf{X} =
-    \begin{bmatrix}
-        \mathbf{X}_V & \mathbf{X}_{\omega} & \mathbf{X}_P & \mathbf{X}_{\psi} & \mathbf{X}_t \\
-    \end{bmatrix}^T
-\end{equation}
 
-\begin{equation}\label{eq:Bw}
-    \mathbf{B}_w =\begin{bmatrix}
-        1 & 0 & 0 & 0 & 0 & 0 & 0  & 0  \\
-        0 & 1 & 0 & 0 & 0 & 0 & 0  & 0  \\
-        0 & 0 & 1 & 0 & 0 & 0 & 0  & 0  \\
-        0 & 0 & 0 & 1 & 0 & 0 & 0  & 0  \\
-        0 & 0 & 0 & 0 & 1 & 0 & 0  & 0  \\
-        0 & 0 & 0 & 0 & 0 & 1 & 0  & 0  \\
-        0 & 0 & 0 & 0 & 0 & 0 & 0  & 0  \\
-        0 & 0 & 0 & 0 & 0 & 0 & 0  & 0  \\
-        0 & 0 & 0 & 0 & 0 & 0 & 0  & 0  \\
-        0 & 0 & 0 & 0 & 0 & 0 & 0  & 0  \\
-        0 & 0 & 0 & 0 & 0 & 0 & 0  & 0  \\
-        0 & 0 & 0 & 0 & 0 & 0 & 0  & 0  \\
-        0 & 0 & 0 & 0 & 0 & 0 & -1 & 0  \\
-        0 & 0 & 0 & 0 & 0 & 0 & 0  & -1 \\
-    \end{bmatrix}
-\end{equation}
+
+
 
 \begin{equation}\label{eq:L}
     \mathbf{K}_k = \mathbf{P}^-_k \mathbf{H}^T_k\left(\mathbf{H}_k\mathbf{P}^-_k\mathbf{H}^T_k + \mathbf{R}_k\right)^{-1}
@@ -235,8 +261,8 @@ From Figure~\ref{fig:VFDLL}, the \textit{RF Front End} block refers to the discu
 \begin{equation}\label{eq:cOmega}
     \mathbf{C}_{\omega} =
     \begin{bmatrix}
-        1 & \tan(\theta)\sin(\theta)   & \tan(\theta)\cos(\phi)     \\
-        0 & \cos(\phi)                 & -\sin(\phi)                \\
+        1 & \tan(\theta)\sin(\theta)    & \tan(\theta)\cos(\phi)      \\
+        0 & \cos(\phi)                  & -\sin(\phi)                 \\
         0 & {\sin(\phi)}/{\cos(\theta)} & {\cos(\phi)}/{\cos(\theta)} \\
     \end{bmatrix}
 \end{equation}
