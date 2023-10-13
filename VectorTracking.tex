@@ -61,7 +61,7 @@ Equation~\ref{eq:eulVector} represents the Euler angles of the aircraft, represe
     \end{bmatrix}
 \end{equation}
 
-Completing the state vector are the clock terms that represent estimates of the clock bias and clock drift of the receiver during flight (Equation~\ref{eq:clkVector}). The clock bias and clock drift are scaled by the speed of light (\(c\)) to give them units of meters and meters/second, respectively. 
+Completing the state vector are the clock terms that represent estimates of the clock bias and clock drift of the receiver during flight (Equation~\ref{eq:clkVector}). The clock bias and clock drift are scaled by the speed of light (\(c\)) to give them units of meters and meters/second, respectively.
 
 \begin{equation}\label{eq:clkVector}
     \mathbf{X}_t = \begin{bmatrix}
@@ -72,29 +72,48 @@ Completing the state vector are the clock terms that represent estimates of the 
 The dynamics of the aircraft are defined by
 
 \begin{equation}\label{eq:eulerIntegration}
-    \dot{\mathbf{X}} = F\left(\mathbf{X},f_{ib}^b,M_{ib}^b\right) + \mathbf{B}_{dyn}w_{dyn} + \mathbf{B}_{clk}w_{clk}
+    \dot{\mathbf{X}} = F\left(\mathbf{X},f_{ib}^b,M_{ib}^b\right) + \mathbf{B}_{dyn}w_{dyn} + \mathbf{B}_{clk}w_{clk},
 \end{equation}
 
 where \(\mathbf{B}_{dyn}\) is the noise distribution matrix related to the dynamics (Equation~\ref{eq:Bdyn}).
 
 \begin{equation}\label{eq:Bdyn}
-    \mathbf{B}_w =\begin{bmatrix}
-        1 & 0 & 0 & 0 & 0 & 0   \\
-        0 & 1 & 0 & 0 & 0 & 0   \\
-        0 & 0 & 1 & 0 & 0 & 0   \\
-        0 & 0 & 0 & 1 & 0 & 0   \\
-        0 & 0 & 0 & 0 & 1 & 0   \\
-        0 & 0 & 0 & 0 & 0 & 1   \\
-        0 & 0 & 0 & 0 & 0 & 0   \\
-        0 & 0 & 0 & 0 & 0 & 0   \\
-        0 & 0 & 0 & 0 & 0 & 0   \\
-        0 & 0 & 0 & 0 & 0 & 0   \\
-        0 & 0 & 0 & 0 & 0 & 0   \\
-        0 & 0 & 0 & 0 & 0 & 0   \\
-    \end{bmatrix}
+    \mathbf{B}_{dyn} =\begin{bmatrix}
+        \mathbf{I}_{6,6} & \mathbf{0}_{6,2} \\
+        \mathbf{0}_{8,6} & \mathbf{0}_{8,2} \\
+    \end{bmatrix}_{14,8}
 \end{equation}
 
-~\(w_{dyn}\) is the disturbance vector for the aircraft dynamics. Equation~\ref{eq:Bdyn} shows that only the linear and angular accelerations are affected by the disturbances, but these errors trickle down into the kinematic equations for the position and Euler derivatives.  
+\(w_{dyn}\) is the disturbance vector for the aircraft dynamics, as shown in Equation~\ref{eq:wDyn}. Equation~\ref{eq:Bdyn} shows that only the linear and angular accelerations are affected by the disturbances, but these errors trickle down into the kinematic equations for the position and Euler derivatives.
+
+\begin{equation}\label{eq:wDyn}
+    w_{dyn} = \begin{bmatrix}
+        \sigma^2_{V_N} & \sigma^2_{V_E} & \sigma^2_{V_E} & \sigma^2_{p} & \sigma^2_{q} & \sigma^2_{r}
+    \end{bmatrix}^T
+\end{equation}
+
+\(\mathbf{B}_{clk}\) and \(w_{clk}\) are the noise distribution matrix (Equation~\ref{eq:Bclk}) and clock variance vector (Equation~\ref{eq:wClk}), respectively.
+
+\begin{equation}\label{eq:Bclk}
+    \mathbf{B}_{dyn} =\begin{bmatrix}
+        \mathbf{0}_{6,6} & \mathbf{0}_{12,2} \\
+        \mathbf{0}_{8,6} & -\mathbf{I}_{2,2} \\
+    \end{bmatrix}_{14,8}
+\end{equation}
+
+\begin{equation}\label{eq:wClk}
+    w_{clk} = \begin{bmatrix}
+        \sigma^2_b & \sigma^2_d \\
+    \end{bmatrix}^T
+\end{equation}
+
+\(\sigma^2_b\) and \(\sigma^2_d\) are rule of thumb variances based on the clock embedded into the receiver. For the receiver simulated in this work, an Oven Controlled Crystal Oscillator (OCXO) is used. More information on calculating the clock variance based on oscillator type can be found in~\cite{}.
+
+\(F\) is a set of non-linear equations that define the motion of the aircraft as a function of the current state in time (\(\mathbf{X}\)), the forces in the body frame (\(f_{ib}^b\)) and the moments about the body frame (\(M_{ib}^b\)). Calculation of the forces and moments were discussed in Chapter 2.
+
+Calculations of the forces and moments and moments must be done in the body frame. Rotating all of the equations that build the total forces and moments acting onto the airframe into a global or local navigation reference frame would induce more complexity than necessary. However, because of the measurements generated from the correlators and discriminators are composed in the ECEF reference frame, the FVDM must be propagated in a reference frame that respective the curvature of the Earth in a global frame. For this work, the equations of motion are rotated into the local navigation frame.
+
+The state derivatives of the velocity components are defined in Equation~\ref{eq:acc}.
 
 \begin{equation}\label{eq:acc}
     \begin{bmatrix}
@@ -109,6 +128,42 @@ where \(\mathbf{B}_{dyn}\) is the noise distribution matrix related to the dynam
         V_D \\
     \end{bmatrix}
 \end{equation}
+
+The first term above represents the forces acting onto the airframe with respect to the body frame divided by the mass of aircraft, \(m\). For the purposes of this work, the mass of the aircraft is held constant. This specific force vector is rotated into the local navigation frame using \(\mathbf{C}_b^n\), defined in Equation~\ref{eq:ECEF2LNDCM}. The latter term in Equation~\ref{eq:acc} represents the rotation rate (Equation~\ref{eq:earthrotation}) of the Earth in skew-symettric form and the transport rate (Equation~\ref{eq:transportrate}) in skew-symettric form, both rotated into the local navigation frame and multiplied by the current velocity of the aircraft.
+
+\begin{equation}\label{eq:earthrotation}
+    \mathbf{\Omega}_{ie}^n =
+    \omega_{ie}\begin{bmatrix}
+        0                          & \sin\left(L_{eb}^n\right) & 0                          \\
+        -\sin\left(L_{eb}^n\right) & 0                         & -\cos\left(L_{eb}^n\right) \\
+        0                          & \cos\left(L_{eb}^n\right) & 0                          \\
+    \end{bmatrix}
+\end{equation}
+
+Where \(\omega_{ie}\) is \(7.27\times10^{-5}\) radians/second.
+
+\begin{equation}\label{eq:transportrate}
+    \mathbf{\Omega}_{en}^n = \begin{bmatrix}
+        0                & -\omega_{en,z}^n & -\omega_{en,y}^n \\
+        \omega_{en,z}^n  & 0                & -\omega_{en,x}^n \\
+        -\omega_{en,y}^n & \omega_{en,x}^n  & 0                \\
+    \end{bmatrix}
+\end{equation}
+
+Where
+
+\begin{equation}\label{eq:omega_en_n}
+    \omega_{en}^n =
+    \begin{bmatrix}
+        V_E/(R_E + h_{eb}^n)               \\
+        -V_N/(R_N + h_{eb}^n)              \\
+        V_E\tan(L_{eb}^n)/(R_E + h_{eb}^n) \\
+    \end{bmatrix}
+\end{equation}
+
+Above, \(R_E\) and \(R_N\) refer to the meridian and transverse radii of curvature as described in Equations~\ref{eq:meridiancurvature} and~\ref{eq:transversecurvature}, respectively.
+
+The derivatives of the angular rates are defined as
 
 \begin{equation}\label{eq:angacc}
     \begin{bmatrix}
@@ -129,9 +184,11 @@ where \(\mathbf{B}_{dyn}\) is the noise distribution matrix related to the dynam
             r \\
         \end{bmatrix}
         \right)
-        \right]
+        \right],
 \end{equation}
+where \(\mathbf{I}_{cg}^b\) are the mass moments of inertia for the aircraft. For the purpose of this work, the aircraft is modelled symmetrically about each of the axes such that \(\mathbf{I}_{cg}^b\) only has terms along the diagonal.
 
+The local navigation frame position derivatives are described by Equation~\ref{eq:posrate}.
 \begin{equation}\label{eq:posrate}
     \begin{bmatrix}
         \dot{\lambda}_{eb}^n \\
@@ -144,6 +201,8 @@ where \(\mathbf{B}_{dyn}\) is the noise distribution matrix related to the dynam
         -V_D                                                             \\
     \end{bmatrix}\\
 \end{equation}
+
+The derivatives of the Euler angles are seen in Equation~\ref{eq:eulerRates}
 
 \begin{equation}\label{eq:eulerRates}
     \begin{bmatrix}
@@ -162,6 +221,19 @@ where \(\mathbf{B}_{dyn}\) is the noise distribution matrix related to the dynam
     \right)
 \end{equation}
 
+Calculation of the Euler rates is difference between the current angular rates of the aircraft and the rotation of the Earth along with the transport rate, similar to how the linear acceleration is calculated in Equation~\ref{eq:acc}. This difference is rotated by \(\mathbf{C}_{\omega}\) defined by Equation~\ref{eq:cOmega}.
+
+\begin{equation}\label{eq:cOmega}
+    \mathbf{C}_{\omega} =
+    \begin{bmatrix}
+        1 & \tan(\theta)\sin(\theta)    & \tan(\theta)\cos(\phi)      \\
+        0 & \cos(\phi)                  & -\sin(\phi)                 \\
+        0 & {\sin(\phi)}/{\cos(\theta)} & {\cos(\phi)}/{\cos(\theta)} \\
+    \end{bmatrix}
+\end{equation}
+
+The last of the state derivatives are the clock terms. Both the clock drift and clock drift rate are scaled by the speed of light to give them units of \(\frac{m}{s}\) and \(\frac{m}{s^2}\).
+
 \begin{equation}\label{eq:clkRates}
     \begin{bmatrix}
         c\delta \dot{t} \\
@@ -177,22 +249,35 @@ where \(\mathbf{B}_{dyn}\) is the noise distribution matrix related to the dynam
     \end{bmatrix}
 \end{equation}
 
+Once the state derivatives are calculated using the aforementioned equations of motions, they are integrated using Euler integrations to propagate the states forward in time. This provides the EKF with the predicted states for the current time step.
 
-
-
-
-
-
-
-
+The other part of the prediction step in the EKF is form the predicted covariance matrix \(\mathbf{P}^-_{k}\). This is defined by Equation~\ref{eq:pminus}.
 
 \begin{equation}\label{eq:pminus}
     \mathbf{P}^-_{k} = \mathbf{\Phi}\mathbf{P}^-_{k-1} \mathbf{\Phi}^T + \mathbf{Q_d}
 \end{equation}
 
+\( \mathbf{\Phi}\) is defined as the state transition matrix. The state transition matrix is composed of \(\mathbf{X}\) and the relationship with each state derivative \( \dot{\mathbf{X}}\). This done by taking the Jacobian and is represented by Equation~\ref{eq:stateJacobian}.
+
+\begin{equation}\label{eq:stateJacobian}
+    \mathbf{J} = \frac{\partial \dot{\mathbf{X}}_{14,1}}{\partial \mathbf{X}_{14,1}}
+\end{equation}
+
+The evaluated Jacobian \(\mathbf{J}\) is a square 14 row, 14 column matrix that varies as function of the forces and moments in time. These forces and moments can vary based on the disturbances and the controls inputs, so it must be evaluated at every time step. Because of the complexity of the Jacobian, it is solved using the symbolic toolbox in MATLAB.
+
+The state propagation is continuous, but \(\mathbf{Phi}\) is discrete. This means that the Jacobian must be discretized. The discretization of the Jacobian from continuous to discrete is introduced by Equation~\ref{eq:Phi}
+
+\begin{equation}\label{eq:Phi}
+    \mathbf{\Phi} = \textrm{expm}(\mathbf{J}\Delta t)
+\end{equation}
+
+The discrete process noise covariance (\(\mathbf{Q}_d\)) encapsulates the disturbances onto the aircraft dynamics such that the EKF can better correct the states during the measurement update. To transform the process noise from continuous to discrete, Equation~\ref{eq:Qd} is used.
+
 \begin{equation}\label{eq:Qd}
     \mathbf{Q_d} = \mathbf{\Phi}\mathbf{B}_w \left(ww^T\right) \mathbf{B}_w^T \mathbf{\Phi}^T \Delta t
 \end{equation}
+
+Above, \(\mathbf{B}_w\) is the noise distribution matrix that is augmented with \(\mathbf{B}_{dyn}\) and and \(\mathbf{B}_{clk}\).~\(w\) is the disturbance vector and is formed by concatenating the dynamic state disturbances and the clock term disturbances together (Equation~\ref{eq:w}). For the work presented in this thesis, the time step (\(\Delta t\)) is \( \frac{1}{200}\) seconds.
 
 \begin{equation}\label{eq:w}
     w = \begin{bmatrix}
@@ -200,24 +285,7 @@ where \(\mathbf{B}_{dyn}\) is the noise distribution matrix related to the dynam
     \end{bmatrix}
 \end{equation}
 
-\begin{equation}\label{eq:wDyn}
-    w_{dyn} = \begin{bmatrix}
-        \sigma^2_{V_N} & \sigma^2_{V_E} & \sigma^2_{V_E} & \sigma^2_{p} & \sigma^2_{q} & \sigma^2_{r}
-    \end{bmatrix}^T
-\end{equation}
-
-\begin{equation}\label{eq:wClk}
-    w_{clk} = \begin{bmatrix}
-        \sigma^2_b & \sigma^2_d \\
-    \end{bmatrix}^T
-\end{equation}
-
-\begin{equation}\label{eq:Phi}
-    \mathbf{\Phi} = \textrm{expm}(\mathbf{F}\Delta t)
-\end{equation}
-
-
-
+Once the state and covariance prediction are calculated, the \textit{a priori} part of the EKF is complete. The EKF will continue to accumulate prediction of the state and covariance until measurements from the vector tracking receiver are available. The next section covers the measurement update of the EKF, correcting the predicted covariance and predicted states.
 
 
 \begin{equation}\label{eq:L}
@@ -258,14 +326,7 @@ where \(\mathbf{B}_{dyn}\) is the noise distribution matrix related to the dynam
     \end{bmatrix}
 \end{equation}
 
-\begin{equation}\label{eq:cOmega}
-    \mathbf{C}_{\omega} =
-    \begin{bmatrix}
-        1 & \tan(\theta)\sin(\theta)    & \tan(\theta)\cos(\phi)      \\
-        0 & \cos(\phi)                  & -\sin(\phi)                 \\
-        0 & {\sin(\phi)}/{\cos(\theta)} & {\cos(\phi)}/{\cos(\theta)} \\
-    \end{bmatrix}
-\end{equation}
+
 % Deeply Coupled Integration
 \subsection{Update \textit{a priori}}
 % Time Update

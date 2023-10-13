@@ -1,0 +1,31 @@
+\addvspace {10pt}
+\contentsline {figure}{\numberline {1.1}{\ignorespaces Aircraft with a larger Max Takeoff Operating Weight (MTOW) typically have more space for more complex sensor suites compared to their General Aviation counterparts\nobreakspace {}\blx@tocontentsinit {0}\cite {AircraftCharacteristicsDatabase}.}}{1}{}%
+\addvspace {10pt}
+\contentsline {figure}{\numberline {2.1}{\ignorespaces Pilot flying Diamond DA-40 single propeller aircraft\nobreakspace {}-\nobreakspace {}the focus of the collection platform for this thesis\nobreakspace {}\blx@tocontentsinit {0}\cite {DiamondAircraftDA40}.}}{6}{}%
+\contentsline {figure}{\numberline {2.2}{\ignorespaces Standard flight vehicle reference frame used in this work.\nobreakspace {}\blx@tocontentsinit {0}\cite {peetSpacecraftAircraftDynamics}}}{7}{}%
+\contentsline {figure}{\numberline {2.3}{\ignorespaces The reference frame used to model the dynamic of the propeller in this work\nobreakspace {}\blx@tocontentsinit {0}\cite {vanarnhemEngineeringMethodEstimate2020}.}}{8}{}%
+\contentsline {figure}{\numberline {2.4}{\ignorespaces Flight vehicle reference frame and local wind reference frame (dotted lines) (Adapted from\nobreakspace {}\blx@tocontentsinit {0}\cite {ForceBalanceCoordinates}).}}{9}{}%
+\contentsline {figure}{\numberline {2.5}{\ignorespaces ECEF and geodetic reference frames as used in this thesis.}}{10}{}%
+\contentsline {figure}{\numberline {2.6}{\ignorespaces Subsonic wind tunnel in Auburn University's Aerodynamics Laboratory.}}{15}{}%
+\contentsline {figure}{\numberline {2.7}{\ignorespaces Pressure gradient and subsequent lift produced onto an airfoil. The continuous white line in the middle signifies the freestream incident wind.}}{16}{}%
+\contentsline {figure}{\numberline {2.8}{\ignorespaces Horizontal and vertical strips that are analyzed for aerodynamic coefficients in FlightStream\nobreakspace {}\blx@tocontentsinit {0}\cite {AerodynamicStripTheory2021}.}}{18}{}%
+\contentsline {figure}{\numberline {2.9}{\ignorespaces Power output for modeled engine as a function of aircraft altitude.}}{20}{}%
+\contentsline {figure}{\numberline {2.10}{\ignorespaces Power factor look up table for modeled engine.}}{21}{}%
+\contentsline {figure}{\numberline {2.11}{\ignorespaces Brake specific fuel consumption look up table for modeled engine.}}{22}{}%
+\contentsline {figure}{\numberline {2.12}{\ignorespaces Collection of historic wood and steel propellers\nobreakspace {}\blx@tocontentsinit {0}\cite {ianHowIdentifyHistoric2016}.}}{22}{}%
+\contentsline {figure}{\numberline {2.13}{\ignorespaces Analyzing 3-blade propeller through Flightstream\nobreakspace {}\blx@tocontentsinit {0}\cite {FlightStream}.}}{23}{}%
+\contentsline {figure}{\numberline {2.14}{\ignorespaces Static propeller thrust for the modelled propeller (Adapted from\nobreakspace {}\blx@tocontentsinit {0}\cite {GeneralizedMethodPropeller}).}}{25}{}%
+\contentsline {figure}{\numberline {2.15}{\ignorespaces Mass-spring damper system, representing the components of landing gear on the aircraft (adapted from\nobreakspace {}\blx@tocontentsinit {0}\cite {xingStrengthAnalysisDiagonal2012}).}}{27}{}%
+\contentsline {figure}{\numberline {2.16}{\ignorespaces Identification of the landing gear components on the Diamond DA40.}}{28}{}%
+\addvspace {10pt}
+\contentsline {figure}{\numberline {3.1}{\ignorespaces Block diagram of a software defined receiver front end.}}{32}{}%
+\contentsline {figure}{\numberline {3.2}{\ignorespaces Block diagram of the PCPS acquisition algorithm applied to GPS L1 C/A signal modulation.}}{33}{}%
+\contentsline {figure}{\numberline {3.3}{\ignorespaces Flow diagram of scalar tracking algorithms.}}{34}{}%
+\contentsline {figure}{\numberline {3.4}{\ignorespaces Discrete block diagram of the PLL-FLL loop filters used in this work.}}{37}{}%
+\contentsline {figure}{\numberline {3.5}{\ignorespaces Discrete block diagram of the DLL loop filter used in this work.}}{37}{}%
+\addvspace {10pt}
+\contentsline {figure}{\numberline {4.1}{\ignorespaces Block diagram of the VFDLL used in this work}}{46}{}%
+\addvspace {10pt}
+\addvspace {10pt}
+\addvspace {10pt}
+\contentsline {figure}{\numberline {1}{\ignorespaces Absolute temperature, ambient pressure, air density, and speed of sound using the ISA model.}}{61}{}%
