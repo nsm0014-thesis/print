@@ -14,7 +14,7 @@ Vector tracking first utilized a Vector Delay Lock Loop (VDLL) and was proposed 
 \end{figure}
 
 From Figure~\ref{fig:VFDLL}, the \textit{RF Front End} block refers to the discussion in Section~3.1. The signal correlation block represent Equation~\ref{eq:correlators} and also the the FLL and DLL discriminators specified in Equations~\ref{eq:FLLdisc} and~\ref{eq:DLLdisc}, respectively. The basic flow of the VFDLL requires the receiver to know its position and the positions of the satellites \textit{a priori}. Preferably, initial positions and satellite positions that fed into the VFDLL are from processing the received signal for a length of time required to decode the navigation message using scalar tracking discussed in Chapter 3. The requirements of the EKF in Figure~\ref{fig:VFDLL} are residual pseudorange and pseudorange-rates in the form of outputs from the discriminators. The EKF uses the measurements from the current signal correlations to improve the position estimate of the receiver. Using the ephemeris of the satellites and the corrected position estimates, new code phase and carrier frequency estimates are generated for the next integration period. To improve the estimated position from the EKF, the FVDM is used as the process model to propagate the non-linear motion of the aircraft in time. The next section covers the time update and measurement update within the EKF\@.
-\clearpage
+
 \section{Deeply Coupled GPS and FVDM Navigation Filter}
 As stated previously, the VFDLL replaces the scalar DLLs and FLLs with a single EKF\@. This sections describes the design of the EKF for the proposed navigation filter. The EKF for this work represents a position-state filter where the state vector is defined by Equation~\ref{eq:stateVector}.
 
@@ -287,24 +287,14 @@ Above, \(\mathbf{B}_w\) is the noise distribution matrix that is augmented with 
 
 Once the state and covariance prediction are calculated, the \textit{a priori} part of the EKF is complete. The EKF will continue to accumulate prediction of the state and covariance until measurements from the vector tracking receiver are available. The next section covers the measurement update of the EKF, correcting the predicted covariance and predicted states.
 
+\subsection{Update \textit{a posteriori}}
+The measurement update in the EKF utilizes the current predicted covariance and measurement covariance to optimally correct the predicted states and predicted covariance. Equation~\ref{eq:L} shows the calculation of the Kalman gain.
 
 \begin{equation}\label{eq:L}
     \mathbf{K}_k = \mathbf{P}^-_k \mathbf{H}^T_k\left(\mathbf{H}_k\mathbf{P}^-_k\mathbf{H}^T_k + \mathbf{R}_k\right)^{-1}
 \end{equation}
 
-\begin{equation}\label{eq:pplus}
-    \mathbf{P}^+_k = \left(\mathbf{I} - \mathbf{K}_k\mathbf{H}_k\right)\mathbf{P}^-_k
-\end{equation}
-
-\begin{equation}\label{eq:xplus}
-    \mathbf{X}_k^+ = \mathbf{X}^-_k + \mathbf{K}_k\Delta Z
-\end{equation}
-
-\begin{equation}\label{eq:deltaZ}
-    \Delta z = \begin{bmatrix}
-        \Delta\dot{\rho}^{\,1} & \Delta{\rho}^{\,1} & \hdots & \Delta\dot{\rho}^{\,j} & \Delta{\rho}^{\,j} \\
-    \end{bmatrix}^T
-\end{equation}
+The Kalman gain, \(\mathbf{K}\) is a function of the observation matrix, \(\mathbf{H}\), measurement covariance matrix, \(\mathbf{R}\), and the predicted covariance, described previously. The observation matrix maps the residual pseudorange and pseudorange rates to the local navigation states. This is demonstrated by Equation~\ref{eq:H}.
 
 \begin{equation}\label{eq:H}
     \mathbf{H}_k = \begin{bmatrix}
@@ -312,6 +302,8 @@ Once the state and covariance prediction are calculated, the \textit{a priori} p
         \mathbf{0}_{1,3}       & \mathbf{0}_{1,3} & \mathbf{h}^j_{\rho p_{1,3}} & \mathbf{0}_{1,3} & -1 & 0  \\
     \end{bmatrix}_{2j,14}
 \end{equation}
+
+Using the predicted estimate of the receiver position Euler attitude, \(\mathbf{H}\) rotates the ECEF residuals to the local navigation frame. There are arrays of zeros where the measurements do not correlate to the states. The rotation of the unit vectors from ECEF to the local navigation frame is shown by Equation~\ref{eq:nav_u} and the rotation for the position measurements is given by Equation~\ref{eq:nav_h}.
 
 \begin{equation}\label{eq:nav_u}
     \mathbf{u}^{n,j} = \mathbf{C}_e^n \mathbf{u}^{e,j}
@@ -326,11 +318,25 @@ Once the state and covariance prediction are calculated, the \textit{a priori} p
     \end{bmatrix}
 \end{equation}
 
+The measurement covariance matrix was described as the weighting measurement, \(\mathbf{W}\), in Chapter 3. The variances of the measurements are still calculated as a function of the carrier-to-noise ratio. Once the Kalman gain is calculated for the current time step, it can be used with the measurement vector, \(\Delta z\), to update the predicted state estimate (Equation~\ref{eq:deltaZ} and~\ref{eq:xplus}).
 
-% Deeply Coupled Integration
-\subsection{Update \textit{a priori}}
-% Time Update
-\subsection{Update \textit{a posteriori}}
-% Measurement Update
+\begin{equation}\label{eq:deltaZ}
+    \Delta z = \begin{bmatrix}
+        \Delta\dot{\rho}^{\,1} & \Delta{\rho}^{\,1} & \hdots & \Delta\dot{\rho}^{\,j} & \Delta{\rho}^{\,j} \\
+    \end{bmatrix}^T
+\end{equation}
+
+\begin{equation}\label{eq:xplus}
+    \mathbf{X}_k^+ = \mathbf{X}^-_k + \mathbf{K}_k\Delta Z
+\end{equation}
+
+The last step in the measurement update is correcting the predicted covariance (Equation~\ref{eq:pplus}). The predicted covariance will drift based on the process noise covariance matrix and correcting the covariance by using the newly calculated Kalman gain will inform the filter of the confidence in the process model. 
+
+\begin{equation}\label{eq:pplus}
+    \mathbf{P}^+_k = \left(\mathbf{I} - \mathbf{K}_k\mathbf{H}_k\right)\mathbf{P}^-_k
+\end{equation}
+
+After the measurement update of the EKF is complete, the estimated states and covariance matrices redefine the predicted state and covariances, closing the loop in the proposed navigation filter.
 
 \section{Conclusions}
+Vector tracking is a closed loop solution to estimating navigation states in a GPS receiver. The proposed navigation filter augments the existing VFDLL architecture by instantiating the FVDM as the process model in the EKF\@. This chapter covered the differences between scalar and vector tracking loops and expanded on the FVDM is utilized to propagates the states of aircraft while also using correlator-level GPS measurements to correct the states and confidence in time. This chapter covered the additions to the VFDLL architecture that did not exist before. For a more nuanced implementation of the VFDLL, the reader is asked to read the sources cited throughout the chapter for more information.
