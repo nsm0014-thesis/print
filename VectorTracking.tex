@@ -1,11 +1,11 @@
 \chapter{Proposed Navigation Filter Architecture}
-Scalar tracking loops discussed in Chapter~3 are critically important to receivers as they adapt the replica signal to match the receiver signal data for proper decoding. However, these scalar loop filters assume a static noise bandwidth, regardless of receiver or satellite dynamics. If either platforms have unmodeled dynamics unknown before processing, these bandwidths can permit too much noise into the navigation processing solution or, do not allow enough of the signal to be processed, neglecting these dynamics. One solution to this problem is implementing an adaptive Kalman filter to optimally select bandwidths~\cite{}. In this case, the Kalman filter estimates the proper bandwidth based on discriminator residuals, but is agnostic to the dynamics of the receiver or the satellite dynamics. The addition of an adaptive Kalman filter is in an improvement, but leaves a lot to be desired as each channel is still be tracked individually, resulting in low-powered channels having a high likelihood of being lost.
+Scalar tracking loops discussed in Chapter~3 are critically important to receivers as they adapt the replica signal to match the received signal data for proper decoding. However, these scalar loop filters assume a static noise bandwidth, regardless of receiver or satellite dynamics. If either platforms have unmodeled dynamics unknown before processing, these bandwidths can permit too much noise into the navigation processing solution or, do not allow enough of the signal to be processed, neglecting these dynamics. One solution to this problem is implementing an adaptive Kalman filter to optimally select bandwidths~\cite{huangIntegratedAdaptiveKalman2019}. In this case, the Kalman filter estimates the proper bandwidth based on discriminator residuals, but is agnostic to the dynamics of the receiver or the satellite dynamics. The addition of an adaptive Kalman filter is in an improvement, but leaves a lot to be desired as each channel is still be tracked individually, resulting in low-powered channels having a high likelihood of being lost.
 
-Another, more optimal, solution is to estimate the receiver and satellite dynamics at every integration period. This requires an updated estimate of the navigation solution to be updated at every integration period, which is suitable as long as four satellites are transmitting to the receiver. This approach combines the adaptive bandwidth from~\cite{} along with knowledge of the receiver and satellite dynamics stemming from the navigation solution. This closed-loop approach is known as \textit{vector tracking} and will be discussed in greater detail later on in this chapter. Specifically, the Vector Delay and Frequency Lock Loop (VFDLL) is the vector tracking implementation used in this thesis.
+Another, more optimal, solution is to estimate the receiver and satellite dynamics at every integration period. This requires an updated estimate of the navigation solution to be updated at every integration period, which is suitable as long as four satellites are transmitting to the receiver. This approach combines the adaptive bandwidth from~\cite{huangIntegratedAdaptiveKalman2019} along with knowledge of the receiver and satellite dynamics stemming from the navigation solution. This closed-loop approach is known as \textit{vector tracking} and will be discussed in greater detail later on in this chapter. Specifically, the Vector Delay and Frequency Lock Loop (VFDLL) is the vector tracking implementation used in this thesis.
 
-To build on the attractive approach that vector tracking brings to processing received signal data, the novelty of this work proposes an addendum to the existing navigation filter architecture by adding a Flight Vehicle Dynamic Model (FVDM) to predict the trajectory of flight vehicle in time to better assist with the processing of the signal. Along wth the discussion of vector tracking, this chapter will describe the process model in the Extended Kalman Filter (EKF), and the measurement update that provides corrections to estimated state of the receiver in time.
+To build on the attractive approach that vector tracking brings to processing received signal data, the novelty of this work proposes an addendum to the existing navigation filter architecture by adding a Flight Vehicle Dynamic Model (FVDM) to predict the trajectory of flight vehicle to better assist with the processing of the signal. Along wth the discussion of vector tracking, this chapter will describe the proposed process model in the Extended Kalman Filter (EKF), and the measurement update that provides corrections to estimated state of the receiver during processing.
 \section{Vector Delay and Frequency Lock Loop}
-Vector tracking first utilized a Vector Delay Lock Loop (VDLL) and was proposed by~\cite{}. In a VDLL, the EKF provides continuous estimates of the code frequency, updating the DLL, improving overall tracking performance. Later on,~\cite{}, explores tracking both code frequency and carrier frequency in an EKF, coined the VDFLL. This method showed great improvements over scalar tracking algorithms and moderate improvements over the VDLL. The VFDLL proves best when tracking weaker GNSS signals under high dynamic stress~\cite{}. Furthermore, recent analyses from~\cite{} prove the VFDLL has improved resilance to multipath delay as well. A block diagram of the VFDLL is shown in Figure~\ref{fig:VFDLL}.
+Vector tracking first utilized a Vector Delay Lock Loop (VDLL) and was proposed by~\cite{bradfordparkinsonGlobalPositioningSystem1996}. In a VDLL\@, the EKF provides continuous estimates of the code frequency, updating the DLL, improving overall tracking performance. Later on,~\cite{bradfordparkinsonGlobalPositioningSystem1996}, explores tracking both code frequency and carrier frequency in an EKF, coined the VFDLL\@. This method showed great improvements over scalar tracking algorithms and moderate improvements over the VDLL\@. The VFDLL proves best when tracking weaker GNSS signals under high dynamic stress~\cite{lashleyPerformanceAnalysisVector2009}. Furthermore, recent analyses from~\cite{ziedanMultipathChannelEstimation2012} prove the VFDLL has improved resilience to multipath delay as well. A block diagram of the VFDLL is shown in Figure~\ref{fig:VFDLL}.
 
 \begin{figure}[!ht]
     \centering
@@ -52,7 +52,7 @@ The position estimates of the aircraft are from Earth to body with respect to th
     \end{bmatrix}
 \end{equation}
 
-Equation~\ref{eq:eulVector} represents the Euler angles of the aircraft, represented from Earth to body.
+Equation~\ref{eq:eulVector} represents the Euler angles of the aircraft, represented from body to the local navigation frame.
 
 \begin{equation}\label{eq:eulVector}
     \mathbf{X}_{\psi} =
@@ -92,7 +92,7 @@ where \(\mathbf{B}_{dyn}\) is the noise distribution matrix related to the dynam
     \end{bmatrix}^T
 \end{equation}
 
-\(\mathbf{B}_{clk}\) and \(w_{clk}\) are the noise distribution matrix (Equation~\ref{eq:Bclk}) and clock variance vector (Equation~\ref{eq:wClk}), respectively.
+\(\mathbf{B}_{clk}\) and \(w_{clk}\) are the noise distribution matrices (Equation~\ref{eq:Bclk}) and clock variance vector (Equation~\ref{eq:wClk}), respectively.
 
 \begin{equation}\label{eq:Bclk}
     \mathbf{B}_{dyn} =\begin{bmatrix}
@@ -107,7 +107,7 @@ where \(\mathbf{B}_{dyn}\) is the noise distribution matrix related to the dynam
     \end{bmatrix}^T
 \end{equation}
 
-\(\sigma^2_b\) and \(\sigma^2_d\) are rule of thumb variances based on the clock embedded into the receiver. For the receiver simulated in this work, an Oven Controlled Crystal Oscillator (OCXO) is used. More information on calculating the clock variance based on oscillator type can be found in~\cite{}.
+\(\sigma^2_b\) and \(\sigma^2_d\) are rule of thumb variances based on the clock embedded into the receiver. For the receiver simulated in this work, an Oven Controlled Crystal Oscillator (OCXO) is used. More information on calculating the clock variance based on oscillator type can be found in~\cite{Introduction_to_Random_Signals_and_Applied_Kalman_Filtering4th_editionPdf}.
 
 \(F\) is a set of non-linear equations that define the motion of the aircraft as a function of the current state in time (\(\mathbf{X}\)), the forces in the body frame (\(f_{ib}^b\)) and the moments about the body frame (\(M_{ib}^b\)). Calculation of the forces and moments were discussed in Chapter 2.
 
@@ -129,7 +129,7 @@ The state derivatives of the velocity components are defined in Equation~\ref{eq
     \end{bmatrix}
 \end{equation}
 
-The first term above represents the forces acting onto the airframe with respect to the body frame divided by the mass of aircraft, \(m\). For the purposes of this work, the mass of the aircraft is held constant. This specific force vector is rotated into the local navigation frame using \(\mathbf{C}_b^n\), defined in Equation~\ref{eq:ECEF2LNDCM}. The latter term in Equation~\ref{eq:acc} represents the rotation rate (Equation~\ref{eq:earthrotation}) of the Earth in skew-symettric form and the transport rate (Equation~\ref{eq:transportrate}) in skew-symettric form, both rotated into the local navigation frame and multiplied by the current velocity of the aircraft.
+The first term above represents the forces acting onto the airframe with respect to the body frame divided by the mass of aircraft, \(m\). For the purposes of this work, the mass of the aircraft is held constant. This specific force vector is rotated into the local navigation frame using \(\mathbf{C}_b^n\), defined in Equation~\ref{eq:ECEF2LNDCM}. The latter term in Equation~\ref{eq:acc} represents the rotation rate (Equation~\ref{eq:earthrotation}) of the Earth in skew-symmetric form and the transport rate (Equation~\ref{eq:transportrate}) in skew-symmetric form, both rotated into the local navigation frame and multiplied by the current velocity of the aircraft.
 
 \begin{equation}\label{eq:earthrotation}
     \mathbf{\Omega}_{ie}^n =
@@ -221,7 +221,7 @@ The derivatives of the Euler angles are seen in Equation~\ref{eq:eulerRates}
     \right)
 \end{equation}
 
-Calculation of the Euler rates is difference between the current angular rates of the aircraft and the rotation of the Earth along with the transport rate, similar to how the linear acceleration is calculated in Equation~\ref{eq:acc}. This difference is rotated by \(\mathbf{C}_{\omega}\) defined by Equation~\ref{eq:cOmega}.
+Calculation of the Euler rates is the difference between the current angular rates of the aircraft and the rotation of the Earth along with the transport rate, similar to how the linear acceleration is calculated in Equation~\ref{eq:acc}. This difference is rotated by \(\mathbf{C}_{\omega}\) defined by Equation~\ref{eq:cOmega}.
 
 \begin{equation}\label{eq:cOmega}
     \mathbf{C}_{\omega} =
@@ -263,9 +263,9 @@ The other part of the prediction step in the EKF is form the predicted covarianc
     \mathbf{J} = \frac{\partial \dot{\mathbf{X}}_{14,1}}{\partial \mathbf{X}_{14,1}}
 \end{equation}
 
-The evaluated Jacobian \(\mathbf{J}\) is a square 14 row, 14 column matrix that varies as function of the forces and moments in time. These forces and moments can vary based on the disturbances and the controls inputs, so it must be evaluated at every time step. Because of the complexity of the Jacobian, it is solved using the symbolic toolbox in MATLAB.
+The evaluated Jacobian, \(\mathbf{J}\), is a square 14 row, 14 column matrix that varies as function of the forces and moments in time. These forces and moments can vary based on the disturbances and the controls inputs, so \(\mathbf{J}\) must be evaluated at every time step. Because of the complexity of the Jacobian, it is solved using the symbolic toolbox in MATLAB\@.
 
-The state propagation is continuous, but \(\mathbf{Phi}\) is discrete. This means that the Jacobian must be discretized. The discretization of the Jacobian from continuous to discrete is introduced by Equation~\ref{eq:Phi}
+The state propagation is continuous, but \(\mathbf{\Phi}\) is discrete. This means that the Jacobian must be discretized. The discretization of the Jacobian from continuous to discrete is introduced by Equation~\ref{eq:Phi}
 
 \begin{equation}\label{eq:Phi}
     \mathbf{\Phi} = \textrm{expm}(\mathbf{J}\Delta t)
@@ -277,7 +277,7 @@ The discrete process noise covariance (\(\mathbf{Q}_d\)) encapsulates the distur
     \mathbf{Q_d} = \mathbf{\Phi}\mathbf{B}_w \left(ww^T\right) \mathbf{B}_w^T \mathbf{\Phi}^T \Delta t
 \end{equation}
 
-Above, \(\mathbf{B}_w\) is the noise distribution matrix that is augmented with \(\mathbf{B}_{dyn}\) and and \(\mathbf{B}_{clk}\).~\(w\) is the disturbance vector and is formed by concatenating the dynamic state disturbances and the clock term disturbances together (Equation~\ref{eq:w}). For the work presented in this thesis, the time step (\(\Delta t\)) is \( \frac{1}{200}\) seconds.
+Above, \(\mathbf{B}_w\) is the noise distribution matrix that is augmented with \(\mathbf{B}_{dyn}\) and \(\mathbf{B}_{clk}\).~\(w\) is the disturbance vector and is formed by concatenating the dynamic state disturbances and the clock term disturbances together (Equation~\ref{eq:w}). For the work presented in this thesis, the time step (\(\Delta t\)) is \( \frac{1}{200}\) seconds.
 
 \begin{equation}\label{eq:w}
     w = \begin{bmatrix}
@@ -285,16 +285,16 @@ Above, \(\mathbf{B}_w\) is the noise distribution matrix that is augmented with 
     \end{bmatrix}
 \end{equation}
 
-Once the state and covariance prediction are calculated, the \textit{a priori} part of the EKF is complete. The EKF will continue to accumulate prediction of the state and covariance until measurements from the vector tracking receiver are available. The next section covers the measurement update of the EKF, correcting the predicted covariance and predicted states.
+Once the state and covariance prediction are calculated, the \textit{a priori} part of the EKF is complete. The EKF will continue to accumulate predictions of the state and covariance until measurements from the vector tracking receiver are available. The next subsection covers the measurement update of the EKF, correcting the predicted covariance and predicted states.
 
 \subsection{Update \textit{a posteriori}}
 The measurement update in the EKF utilizes the current predicted covariance and measurement covariance to optimally correct the predicted states and predicted covariance. Equation~\ref{eq:L} shows the calculation of the Kalman gain.
 
 \begin{equation}\label{eq:L}
-    \mathbf{K}_k = \mathbf{P}^-_k \mathbf{H}^T_k\left(\mathbf{H}_k\mathbf{P}^-_k\mathbf{H}^T_k + \mathbf{R}_k\right)^{-1}
+    \mathbf{K}_k = \mathbf{P}^-_k \mathbf{H}^T_k{\left(\mathbf{H}_k\mathbf{P}^-_k\mathbf{H}^T_k + \mathbf{R}_k\right)}^{-1}
 \end{equation}
 
-The Kalman gain, \(\mathbf{K}\) is a function of the observation matrix, \(\mathbf{H}\), measurement covariance matrix, \(\mathbf{R}\), and the predicted covariance, described previously. The observation matrix maps the residual pseudorange and pseudorange rates to the local navigation states. This is demonstrated by Equation~\ref{eq:H}.
+The Kalman gain, \(\mathbf{K}\), is a function of the observation matrix, \(\mathbf{H}\), measurement covariance matrix, \(\mathbf{R}\), and the predicted covariance, described previously. The observation matrix maps the residual pseudorange and pseudorange rates to the local navigation states. This is demonstrated by Equation~\ref{eq:H}.
 
 \begin{equation}\label{eq:H}
     \mathbf{H}_k = \begin{bmatrix}
@@ -303,7 +303,7 @@ The Kalman gain, \(\mathbf{K}\) is a function of the observation matrix, \(\math
     \end{bmatrix}_{2j,14}
 \end{equation}
 
-Using the predicted estimate of the receiver position Euler attitude, \(\mathbf{H}\) rotates the ECEF residuals to the local navigation frame. There are arrays of zeros where the measurements do not correlate to the states. The rotation of the unit vectors from ECEF to the local navigation frame is shown by Equation~\ref{eq:nav_u} and the rotation for the position measurements is given by Equation~\ref{eq:nav_h}.
+Using the predicted estimate of the receiver position Euler attitude, \(\mathbf{H}\) rotates the ECEF residuals to the local navigation frame. There are arrays of zeros where the measurements do not correlate to the corresponding states. The rotation of the unit vectors from ECEF to the local navigation frame is shown by Equation~\ref{eq:nav_u} and the rotation for the position measurements is given by Equation~\ref{eq:nav_h}.
 
 \begin{equation}\label{eq:nav_u}
     \mathbf{u}^{n,j} = \mathbf{C}_e^n \mathbf{u}^{e,j}
@@ -318,7 +318,7 @@ Using the predicted estimate of the receiver position Euler attitude, \(\mathbf{
     \end{bmatrix}
 \end{equation}
 
-The measurement covariance matrix was described as the weighting measurement, \(\mathbf{W}\), in Chapter 3. The variances of the measurements are still calculated as a function of the carrier-to-noise ratio. Once the Kalman gain is calculated for the current time step, it can be used with the measurement vector, \(\Delta z\), to update the predicted state estimate (Equation~\ref{eq:deltaZ} and~\ref{eq:xplus}).
+The measurement covariance matrix was described as the weighting matrix, \(\mathbf{W}\), in Chapter 3. The variances of the measurements are still calculated as a function of the carrier-to-noise ratio. Once the Kalman gain is calculated for the current time step, it can be used with the measurement vector, \(\Delta z\), to update the predicted state estimate (Equation~\ref{eq:deltaZ} and~\ref{eq:xplus}).
 
 \begin{equation}\label{eq:deltaZ}
     \Delta z = \begin{bmatrix}
@@ -330,7 +330,7 @@ The measurement covariance matrix was described as the weighting measurement, \(
     \mathbf{X}_k^+ = \mathbf{X}^-_k + \mathbf{K}_k\Delta Z
 \end{equation}
 
-The last step in the measurement update is correcting the predicted covariance (Equation~\ref{eq:pplus}). The predicted covariance will drift based on the process noise covariance matrix and correcting the covariance by using the newly calculated Kalman gain will inform the filter of the confidence in the process model. 
+The last step in the measurement update is correcting the predicted covariance (Equation~\ref{eq:pplus}). The predicted covariance will drift based on the process noise covariance matrix and correcting the covariance by using the newly calculated Kalman gain will inform the filter of the confidence in the process model.
 
 \begin{equation}\label{eq:pplus}
     \mathbf{P}^+_k = \left(\mathbf{I} - \mathbf{K}_k\mathbf{H}_k\right)\mathbf{P}^-_k
@@ -339,4 +339,4 @@ The last step in the measurement update is correcting the predicted covariance (
 After the measurement update of the EKF is complete, the estimated states and covariance matrices redefine the predicted state and covariances, closing the loop in the proposed navigation filter.
 
 \section{Conclusions}
-Vector tracking is a closed loop solution to estimating navigation states in a GPS receiver. The proposed navigation filter augments the existing VFDLL architecture by instantiating the FVDM as the process model in the EKF\@. This chapter covered the differences between scalar and vector tracking loops and expanded on the FVDM is utilized to propagates the states of aircraft while also using correlator-level GPS measurements to correct the states and confidence in time. This chapter covered the additions to the VFDLL architecture that did not exist before. For a more nuanced implementation of the VFDLL, the reader is asked to read the sources cited throughout the chapter for more information.
+Vector tracking is a closed loop solution to estimating navigation states in a GPS receiver. The proposed navigation filter augments the existing VFDLL architecture by instantiating the FVDM as the process model in the EKF\@. This chapter covered the differences between scalar and vector tracking loops and expanded on the utilization of the FVDM to propagates the states of aircraft while also using correlator-level GPS measurements to correct the states and confidence. This chapter provided a general overview of the VFDLL and covered the additions to the VFDLL architecture that did not exist before. For a more nuanced implementation of the VFDLL, the reader is asked to read the sources cited throughout the chapter for more information.
