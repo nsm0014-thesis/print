@@ -1,8 +1,8 @@
 \chapter{GPS Software Defined Receiver Architecture}\label{chpater:scalartracking}
-Since 1993, the Global Positioning System (GPS) has provided users with capable hardware to determine their global position within seconds and in recent developments, at centimeter-level position error. The focus of this chapter revolves around the inner-workings of a scalar-tracking software defined receiver, capable of processing GPS L1 C/A. Split into four sections, the chapter begins with an explanation on how the receiver discretizes and digitizes the continuous, low-power signal collected by the antenna. Following that, details about how the receivers knows what satellites are transmitting to it are described. The third section draws on the different algorithms in scalar tracking that allow the received signal data to be replicated and decoded for satellite orbital parameters that play an important role in the last section. Wrapping up this chapter, an overview on the weighted nonlinear least squares algorithm is provided along with detailed descriptions of the three measurements that each satellite is indirectly broadcasting to the receiver.
+Since 1993, the Global Positioning System (GPS) has provided users with capable hardware to determine their global position within seconds and in recent developments, at centimeter-level position error. The focus of this chapter revolves around the inner-workings of a scalar-tracking software defined receiver, capable of processing GPS L1 C/A. Split into four sections, the chapter begins with an explanation on how the receiver discretizes and digitizes the continuous, low-power signal collected by the antenna. Following that, details about how the receiver knows what satellites are transmitting to it are described. The third section draws on the different algorithms in scalar tracking that allow the received signal data to be replicated and decoded for satellite orbital parameters that play an important role in the last section. Wrapping up this chapter, an overview on the weighted nonlinear least squares algorithm is provided along with detailed descriptions of the three measurements that each satellite is indirectly broadcasting to the receiver.
 
 \section{Front End}
-The signals received by an antenna must be down converted and digitized before the processing of the signal can take place. The \textit{Front End} of the receiver performs this conversion through a series of amplifiers, filters, and a Analog-to-Digital Converter (ADC). First, a signal is received by a Right-Hand Circularly Polarized (RHCP) antenna. The antenna can be passive, but for challenging scenarios, a powered, active antenna may be necessary. Because of the low received signal power that GPS constellations provide, the signal is amplified through a series of Low Noise Amplifiers (LNA) and Band Pass Filters (BPF). The LNA raise the power of the received GPS signal and the BPF act as a first-step in removing non-GPS signals from processing. The last stage is passing the continuous received signal through the ADC where the signal is converted to digitized samples at a frequency of the receiver-embedded oscillator. The oscillator is filtered using a phase lock loop, described later.
+The signals received by an antenna must be down converted and digitized before the processing of the signal can take place. The \textit{Front End} of the receiver performs this conversion through a series of amplifiers, filters, and a Analog-to-Digital Converter (ADC). First, a signal is received by a Right-Hand Circularly Polarized (RHCP) antenna. The antenna can be passive, but for challenging scenarios, a powered, active antenna may be necessary. Because of the low received signal power that GPS constellations provide, the signal is amplified through a series of Low Noise Amplifiers (LNA) and Band Pass Filters (BPF). The LNA raise the power of the received GPS signal and the BPF act as a first-step in removing non-GPS signals from processing. The last stage is passing the continuous received signal through the ADC where the signal is converted to digitized samples at a frequency of the receiver-embedded oscillator. The oscillator is filtered using a phase lock loop (PLL), described later.
 
 The purpose in this mixing process is to transform the signal into a more manageable intermediate frequency while still maintaining the same modulation and Doppler applied to the signal. Figure~\ref{fig:frontend} describes the process on converting the analog, continuous signal into a discrete, digitized IF signal in block diagram form.
 
@@ -13,7 +13,7 @@ The purpose in this mixing process is to transform the signal into a more manage
 \end{figure}
 
 \section{Acquisition}
-Once the received signals are converted to a discrete, continuous form, the receiver will determine which satellites are transmitting and in-view. Acquisition correlates local replicas of a signal with the received data. In order for there to be a large correlation magnitude, pseudo-random number (PRN) codes must be within 1-chip and the frequency of the carrier wave must also be within 250 hertz of the true frequency. Correlation with the carrier frequency can be difficult due to the trajectory of the satellite, and even more difficult if the collection perform is also moving. The motion of the satellites with respect to the receiver bring a change to the carrier frequency known as the Doppler shift. For the algorithms in acquisition to successfully determine which satellites are in-view of the receiver, it is beneficial to correlate with each satellite for the specified constellation, at each code offset, and at a wide range of carrier frequency offsets.
+Once the received signals are converted to a discrete form, the receiver will determine which satellites are transmitting and in-view. Acquisition correlates local replicas of a signal with the received data. In order for there to be a large correlation magnitude, pseudo-random number (PRN) codes must be within 1-chip and the frequency of the carrier wave must also be within 250 hertz of the true frequency. Correlation with the carrier frequency can be difficult due to the motion of the satellite, and even more difficult if the collection platform is also moving. The motion of the satellites with respect to the receiver bring a change to the carrier frequency known as the Doppler shift. For the algorithms in acquisition to successfully determine which satellites are in-view of the receiver, it is beneficial to correlate with each satellite for the specified constellation, at each code offset, and at a wide range of carrier frequency offsets.
 
 A modern, ubiquitous approach to correlating the local replica signals with the received data is using a Parallel Code Phase Search (PCPS) algorithm in which the correlations occur in the frequency domain~\cite{scottRapidSignalAcquisition}. PCPS parallelizes the PRN code offset search space by converting the space from the time to frequency domain. This process is shown in Figure~\ref{fig:PCPS}.
 
@@ -23,7 +23,7 @@ A modern, ubiquitous approach to correlating the local replica signals with the 
     \caption{Block diagram of the PCPS acquisition algorithm applied to GPS L1 C/A signal modulation.}
 \end{figure}
 
-To start, the local replicas of the carrier wave are multiplied with the received data across both inphase and quadrature channels in the complex domain. These resulting multiplications are summed together and passed through a Fast-Fourier Transform (FFT) to convert the vectors into the frequency domain. The second step involves converting the PRN codes of the satellites to the frequency domain and then applying the complex conjugate to frequency-based, PRN vectors. Multiplying the PRN replicas with the transformed carrier replicas provides the user with an auto-correlation in the frequency domain. To appreciate the correlation magnitudes, the output is passed though an Inverse FFT, converting the correlation values from a frequency domain, complex matrix to a time domain, real matrix. The last step requires determining the magnitude of each row in the matrix and then processing the next satellite until all satellites in the constellation are processed. If a correlation exceeds a certain magnitude, its location in the matrix of correlations indicates the estimated PRN code delay and Doppler shift carrier frequency for that particular satellite. The resolution of the PCPS algorithm greatly depends on the grid of Doppler search bins; for a static receiver processing GPS L1 C/A transmissions, a typical resolution is \(-15,000\) to \(15,000\) Hertz in bins of \(500\) Hertz.
+To start, the local replicas of the carrier wave are multiplied with the received data across both in-phase and quadrature channels in the complex domain. These resulting multiplications are summed together and passed through a Fast-Fourier Transform (FFT) to convert the vectors into the frequency domain. The second step involves converting the upsampled PRN codes of the satellites to the frequency domain and then applying the complex conjugate to frequency-based, PRN vectors. Multiplying the PRN replicas with the transformed carrier replicas provides the user with a cross-correlation in the frequency domain. To appreciate the correlation magnitudes, the output is passed through an Inverse FFT, converting the correlation values from a frequency domain, complex matrix to a time domain, matrix. The last step requires determining the magnitude of each row in the matrix and then processing the next satellite until all satellites in the constellation are processed. If a correlation exceeds a certain magnitude, its location in the matrix of correlations indicates the estimated PRN code delay and Doppler shift carrier frequency for that particular satellite. The resolution of the PCPS algorithm greatly depends on the grid of Doppler search bins; for a static receiver processing GPS L1 C/A transmissions, a typical resolution is \(-15,000\) to \(15,000\) Hertz in bins of \(500\) Hertz.
 
 \section{Tracking}
 Acquisition provides initial estimates of code delay and carrier frequency for each satellite that is in-view of the receiver. However, because of the motion of the satellites and the receiver (if not static), the delays of the code and changes in the carrier frequencies must continue to be estimated. Tracking performs this process by opening a channel for each in-view satellite. For the duration of the recording, a number of algorithms within tracking continue to correlate the local receiver replica with the received signal data. For scalar tracking, Figure~\ref{fig:scalartracking} describes the flow of how these algorithms produce accurate code replicas for the receiver to calculate satellite PVT solutions.
@@ -48,7 +48,7 @@ For a receiver to know it is replicating the signal correctly, it generates seve
     \end{split}
 \end{equation}
 
-This correlation process is also referred to as \textit{integration and dump} in the literature as receivers will calculate the different correlators and dump the received signal data for that integration period, \(T\). The integration period is usually set as the number of seconds for a full code cycle. In GPS L1 C/A, \(T\) is \(0.001\) seconds. The amplitude (Equation~\ref{eq:amplitude}) is the measure of received signal power as a function of the integration period, frequency error (\(f_{err}\)), and carrier-to-noise ratio \(\left(\frac{C}{N_0}\right)\).
+This correlation process is also referred to as \textit{integration and dump} in the literature as receivers will calculate the different correlators and dump the received signal data for that integration period, \(T\). The integration period is usually set as the number of seconds for a full code cycle. In GPS L1 C/A, the minimum coherent integration period, \(T\), is \(0.001\) seconds. The amplitude (Equation~\ref{eq:amplitude}) is the measure of received signal power as a function of the integration period, frequency error (\(f_{err}\)), and carrier-to-noise ratio \(\left(\frac{C}{N_0}\right)\).
 
 \begin{equation}\label{eq:amplitude}
     A = \sqrt{2\,T\,\frac{C}{N_0}}\, \frac{\sin\left(\pi \, f_{err} \, T \right)}{\pi \, f_{err} \, T}
@@ -65,7 +65,7 @@ The rest of the terms in Equation~\ref{eq:correlators} are as follows: \(\theta_
 \end{equation}
 
 \subsection{Discriminators and Loop Filters}
-Once the correlators are calculated for a single integration period, discriminators use them to calculate errors in phase, frequency, and code phase. While a number of discriminators exist for each error term, the discriminators presented in this work are the most optimal for low and high carrier-to-noise ratios at the cost of being computationally expensive. Hardware receivers that must work in real-time may use simpler, faster discriminators.
+Once the correlators are calculated for a single integration period, discriminators use them to calculate errors in carrier and code phase. While a number of discriminators exist for each error term, the discriminators presented in this work are the most optimal for low and high carrier-to-noise ratios at the cost of being computationally expensive. Hardware receivers that must work in real-time may use simpler, faster discriminators.
 
 The estimated error in phase is generated using a Costas loop discriminator. It applies an arc-tangent function to the in-phase and quadrature prompt correlators to calculate the error in carrier phase from the most recent replicated signal (Equation~\ref{eq:PLLdisc})
 
@@ -73,7 +73,7 @@ The estimated error in phase is generated using a Costas loop discriminator. It 
     \phi_{PLL} = \arctan\left(\frac{QP}{IP}\right) \frac{1}{2\pi} \approx \theta_{err} + \eta_{PLL}
 \end{equation}
 
-The discriminator is divided by \(2 \pi \) to covert the error from radians to cycles. The Costa discriminator differs from other PLL discriminators as it is immune to bit integers on the data inverting. However, in more dynamic scenarios, the FLL discriminator may be more heavily relied upon as the Costas discriminator due to its high sensitivity.
+The discriminator is divided by \(2 \pi \) to covert the error from radians to cycles. The Costas discriminator differs from other PLL discriminators as it is immune to inversion of the data bit integers. However, in more dynamic scenarios, the FLL discriminator may be more heavily relied upon than the Costas discriminator due to its high sensitivity.
 
 The FLL discriminator derives its error by analyzing the change in carrier phase error across a single integration period
 
@@ -97,7 +97,7 @@ The code phase error is determined using a DLL discriminator. It takes the early
 
 The DLL discriminator produces code phase errors within \(\frac{1}{2}\) chips, but becomes unstable if the correlator errors are greater than \(\frac{3}{2}\) chips from the true code phase. This is allowable as errors of this magnitude are beyond the linear pull-in range of the DLL loop filter.
 
-For scalar tracking, loop filters apply the errors aforementioned to more accurately replicate the signal for the next integration period. For this work, a second-order PLL with a first-order FLL assist is used to tracking changes in carrier frequency and phase (Figure~\ref{fig:PLL}).
+For scalar tracking, loop filters apply the aforementioned errors to more accurately replicate the signal for the next integration period. For this work, a second-order PLL with a first-order FLL assist is used to tracking changes in carrier frequency and phase (Figure~\ref{fig:PLL}).
 
 \begin{figure}[!ht]\label{fig:PLL}
     \centering
@@ -120,12 +120,12 @@ In Figure~\ref{fig:DLL}, \(sf\) is known as the scale factor,
     sf = \frac{R_c}{f_L},
 \end{equation}
 
-where \(R_c\) is the spreading code rate, and \(f_L\) is the signal carrier frequency. For GPS L1 C/A, these are \(1.023 \times 10^6\) Hertz and \(1575.420 \times 10^6\) Hertz, respectively.
+where \(R_c\) is the spreading (PRN) code rate, and \(f_L\) is the signal carrier frequency. For GPS L1 C/A, these are \(1.023 \times 10^6\) Hertz and \(1575.420 \times 10^6\) Hertz, respectively.
 
 If the correlators, discriminators, and loop filters are correctly working in tandem, the replicated signal should accurately represent the received signal data and the receiver can decode the bits that translate to the broadcast navigation message from each satellite. A handful of subframes in the navigation message provide satellite ephemeris, or orbital parameters, that the receiver can use to propagate satellite PVT and determine its position through time.
 
 \section{Navigation Algorithms}
-Once the signal is accurately replicated and correctly decoded, the receiver begins to estimate a PVT solution. A position solution is found due to trilateration, meaning if there exists at least three unique ranges from known locations, than a position solution exists. Parallel to finding the position solution, receiver velocity can be found in the same way, except this time, using range rates. This sections describes calculating the ranges and range rates, and how they are used in the navigation processor for an estimated PVT solution.
+Once the signal is accurately replicated and correctly decoded, the receiver begins to estimate a PVT solution. A position solution is found due to trilateration, meaning if there exists at least three unique ranges from known locations, then a position solution exists. Parallel to finding the position solution, receiver velocity can be found in the same way, using range rates in place of range. This sections describes calculating the ranges and range rates, and how they are used in the navigation processor for an estimated PVT solution.
 
 \subsection{GPS Measurements}
 There exists three main measurements from GPS satellites. The first of the three is pseudorange. By definition, it is the total time of transit from transmission to reception of the signal by the receiver. This value is then multiplied by the speed of light, providing this transit time in units of meters (Equation~\ref{eq:psr_time}).
@@ -168,7 +168,7 @@ Above, \(f_c\) is the estimated frequency of the carrier wave, \(f_{IF}\) is the
 
 From Equation~\ref{eq:psrdot_meters}, it is assumed that the atomic clocks on board the satellites are stable enough such that the clock drift term is \(0\). The same can be said for \(\dot{M}^i_u\) where the error-rate due to multipath is miniscule.
 
-Similar to the pseudorange measurement, if the receiver clock was perfect, only three satellites would be needed to measure pseudorange-rate. However, because of the instability in the receiver clock, the drift biases the frequencies. Therefore, four unique pseudorange-rates are still required in order to calculate receiver velocity.
+Similar to the pseudorange measurement, if the receiver clock was perfect, only three satellites would be needed to measure pseudorange-rate. However, because of the instability in the receiver clock, the drift adds a bias to the frequencies. Therefore, four unique pseudorange-rates are still required in order to calculate receiver velocity.
 
 The last measurement from GPS satellites is estimate of noise on a signal. The receiver utilizes a Carrier-to-Noise density ratio (\(C/N_0\)) to determine the quality of pseudorange and pseudorange-rate measurements from each satellite. Equation~\ref{eq:CN0} demonstrates how \(C/N_0\) is calculated in this work.
 
@@ -208,7 +208,7 @@ However, WNLS tries to estimate the errors between the true states and the estim
     \end{bmatrix}^T
 \end{equation}
 
-These error states are then mapped to measurement residuals using the observation matrix, \(\mathbf{H}\) (Equation~\ref{eq:Hmat}).\(\mathbf{H}\) is defined by the Jacobian of \(\mathbf{Y}\) with respect to \(\delta\hat{\mathbf{x}}\), or in a mathematical form,
+These error states are then mapped to measurement residuals using the observation matrix, \(\mathbf{H}\) (Equation~\ref{eq:Hmat}).~\(\mathbf{H}\) is defined by the Jacobian of \(\mathbf{Y}\) with respect to \(\delta\hat{\mathbf{x}}\), or in a mathematical form,
 
 \begin{equation}\label{eq:Jacobian}
     \mathbf{H} = \frac{\partial \mathbf{Y}}{\partial \delta\hat{\mathbf{x}}}.
@@ -267,7 +267,7 @@ is the variance of the pseudorange measurement from the \(j^{th}\) satellite and
     \sigma^2_{\dot{\rho}^j} = {\left(\frac{\lambda_{carrier}}{\pi T}\right)}^2\,{\left(\frac{2}{T^2{\left(\frac{C}{N_0}^2\right)}} + \frac{2}{T \frac{C}{N_0}}\right)}
 \end{equation}
 
-is the variance of the pseudorange-rate measurement from the \(j^{th}\) satellite. In Equations~\ref{eq:psrVar} and~\ref{eq:psrdotvar}, \(\lambda_{code}\) is the wavelength of data signal and \(\lambda_{carrier}\) is the wavelength of the carrier signal. In this case, \(C/N_0\) is specified in Hertz.
+is the variance of the pseudorange-rate measurement from the \(j^{th}\) satellite. In Equations~\ref{eq:psrVar} and~\ref{eq:psrdotvar}, \(\lambda_{code}\) is the wavelength of data signal and \(\lambda_{carrier}\) is the wavelength of the carrier signal. In this case, \(C/N_0\) is specified in dB-Hz.
 
 Once the above matrices are created, the WNLS algorithm (Equation~\ref{eq:wnls}) can be performed iteratively until the magnitude of the error state vector is small, meaning the algorithm has converged.
 
@@ -275,7 +275,7 @@ Once the above matrices are created, the WNLS algorithm (Equation~\ref{eq:wnls})
     \delta\hat{\mathbf{x}} = {{\left(\mathbf{H}^{T}\mathbf{W}\mathbf{H}\right)}^{-1}\,\mathbf{W}\mathbf{Y}}
 \end{equation}
 
-Once an initial receiver position has been found, vector tracking channels can open and closed form PVT solution can start to be processed. Vector tracking loops and algorithms are discussed in the next chapter.
+Once an initial receiver position has been found, vector tracking channels can open and a closed form PVT solution can start to be processed. Vector tracking loops and algorithms are discussed in the next chapter.
 
 \section{Conclusions}
 The architecture of a scalar-tracking software defined received was explained. For more information on any of the subsections discussed in this chapter, detailed descriptions of each can be found in the literature. Because the focus of this thesis is vector tracking, the meaning of this chapter was to provide the reader with a fundamental understanding of tracking loops that will be expanded on further in the next chapter.
