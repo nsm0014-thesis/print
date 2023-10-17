@@ -1,0 +1,48 @@
+<mxfile host="Electron" modified="2023-10-16T18:02:36.189Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/22.0.0 Chrome/114.0.5735.289 Electron/25.8.3 Safari/537.36" etag="X2JeMO3-IilqORpgrRcR" version="22.0.0" type="device">
+  <diagram name="Page-1" id="YSsVkuyPNy9ZA1uG2HYC">
+    <mxGraphModel dx="740" dy="756" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="wv3fHxCH5PDM68DYIURw-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" edge="1" parent="1" source="wv3fHxCH5PDM68DYIURw-1" target="wv3fHxCH5PDM68DYIURw-9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wv3fHxCH5PDM68DYIURw-1" value="PI Controller&lt;br&gt;&lt;b&gt;P&lt;/b&gt;: 1.00&lt;br&gt;&lt;b&gt;I&lt;/b&gt;: 0.001" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="240" y="260" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="wv3fHxCH5PDM68DYIURw-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" edge="1" parent="1" source="wv3fHxCH5PDM68DYIURw-5" target="wv3fHxCH5PDM68DYIURw-1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wv3fHxCH5PDM68DYIURw-5" value="Heading Reference" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="98" y="265" width="80" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="wv3fHxCH5PDM68DYIURw-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.75;entryDx=0;entryDy=0;" edge="1" parent="1" source="wv3fHxCH5PDM68DYIURw-6" target="wv3fHxCH5PDM68DYIURw-1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wv3fHxCH5PDM68DYIURw-6" value="Current Heading" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="98" y="305" width="80" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="wv3fHxCH5PDM68DYIURw-14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="wv3fHxCH5PDM68DYIURw-9">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="680" y="399.8333333333335" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wv3fHxCH5PDM68DYIURw-9" value="PID Controller&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;&lt;b style=&quot;border-color: var(--border-color);&quot;&gt;P&lt;/b&gt;: 0.1079&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;&lt;b style=&quot;border-color: var(--border-color);&quot;&gt;I&lt;/b&gt;: 0.1333&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;&lt;b style=&quot;border-color: var(--border-color);&quot;&gt;D&lt;/b&gt;: 0.0171" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="480" y="360" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="wv3fHxCH5PDM68DYIURw-11" value="Reference Roll Angle" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="340" y="350" width="80" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="wv3fHxCH5PDM68DYIURw-13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.75;entryDx=0;entryDy=0;" edge="1" parent="1" source="wv3fHxCH5PDM68DYIURw-12" target="wv3fHxCH5PDM68DYIURw-9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wv3fHxCH5PDM68DYIURw-12" value="Current Roll Angle" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="345" y="405" width="70" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="wv3fHxCH5PDM68DYIURw-15" value="Lateral Stick&amp;nbsp;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="640" y="410" width="70" height="30" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
