@@ -4,7 +4,7 @@ The aircraft modeled in this thesis is the Diamond DA-40 single propeller fixed 
 \begin{figure}[!ht]\label{fig:DA40}
     \centering
     \includegraphics[width=.85\linewidth]{Figures/DA40.jpg}
-    \caption{Pilot flying Diamond DA-40 single propeller aircraft~-~the focus of the collection platform for this thesis~\cite{DiamondAircraftDA40}.}
+    \caption{Pilot flying Diamond DA-40 single propeller aircraft~-~the focus of the collection platform for this thesis~\cite{DiamondAircraftDA401969}.}
 \end{figure}
 
 \section{Reference Frames}
@@ -38,7 +38,7 @@ The local wind reference frame is used to calculate the lift and drag generated 
 \begin{figure}[!ht]
     \centering
     \includegraphics[width=0.75\linewidth]{Figures/windaxes.png}
-    \caption{Flight vehicle reference frame and local wind reference frame (dotted lines) (Adapted from~\cite{ForceBalanceCoordinates}).}\label{fig:windframe}
+    \caption{Flight vehicle reference frame and local wind reference frame (dotted lines) (Adapted from~\cite{ForceBalanceCoordinates1969}).}\label{fig:windframe}
 \end{figure}
 
 % Local
@@ -191,7 +191,7 @@ Along with the aforementioned atmospheric parameters, wind is a vital modeling p
 
 \section{Aerodynamic Principles}\label{section:aerodynamic}
 % Section Overview
-In all phases of flight, the surfaces on any aircraft generate two aerodynamic forces {--} \textit{lift} and \textit{drag} along with an aerodynamic moment vector. Prior to the modern computer, these forces and moments were derived from swaths of wind tunnel~(Figure~\ref{fig:windtunnel}) data under various conditions. Today, during the research and development phase of modern production aircraft, these aerodynamics components can be determined using Computation Fluid Dynamic programs such as \textit{FlightStream}~\cite{FlightStream}. This subsections provides the modelling equations for the surfaces of the airplane that generate lift, drag and moments during simulation.
+In all phases of flight, the surfaces on any aircraft generate two aerodynamic forces {--} \textit{lift} and \textit{drag} along with an aerodynamic moment vector. Prior to the modern computer, these forces and moments were derived from swaths of wind tunnel~(Figure~\ref{fig:windtunnel}) data under various conditions. Today, during the research and development phase of modern production aircraft, these aerodynamics components can be determined using Computation Fluid Dynamic programs such as \textit{FlightStream}~\cite{FlightStream2022}. This subsections provides the modelling equations for the surfaces of the airplane that generate lift, drag and moments during simulation.
 
 \begin{figure}[!ht]\label{fig:windtunnel}
     \centering
@@ -277,7 +277,7 @@ For the aircraft model presented in this thesis, strip theory is a means to bett
     \caption{Horizontal and vertical strips that are analyzed for aerodynamic coefficients in FlightStream~\cite{AerodynamicStripTheory2021}.}
 \end{figure}
 
-Strip theory is a process in which a 3D model of the aircraft is discretized into independent strips and then processed through a CFD program to approximate the performance of the aircraft under various flight conditions. FlightStream~\cite{FlightStream} is used to generate aerodynamic coefficients for each strip. In FlightStream, the aircraft was evaluated on a range of angles of attack and sideslips, along with different control surface deflections. The aircraft was evaluated at a single velocity of 30 meters per second as the velocity component for the coefficient is just a scaling value.
+Strip theory is a process in which a 3D model of the aircraft is discretized into independent strips and then processed through a CFD program to approximate the performance of the aircraft under various flight conditions. FlightStream~\cite{FlightStream2022} is used to generate aerodynamic coefficients for each strip. In FlightStream, the aircraft was evaluated on a range of angles of attack and sideslips, along with different control surface deflections. The aircraft was evaluated at a single velocity of 30 meters per second as the velocity component for the coefficient is just a scaling value.
 
 Downwash is an aerodynamic property where the finite length of the lifting surfaces results in 3-dimensional flow fields causing reduction in effective angles of attack. To introduce downwash into the model and simulation, a reduced-ordered model utilizing integrated circulation was implemented~\cite{ahujaIntegratedComputationalAeroacoustics2022,bhandariGeneticAlgorithmOptimization2023}\@.
 
@@ -296,7 +296,7 @@ Because the engine is air-cooled, one of more important components is the engine
     \textrm{power} = \textrm{power}_{0}\left(\frac{\rho}{\rho_0} - \frac{1 - \rho/\rho_0}{7.55}\right),
 \end{equation}
 
-relates power production to the density of air. Where \(\rho\) is the density of the ambient air as a function of altitude (Section~\ref{section:atmos}), \(\rho_0\) is the density of ambient air at sea-level on a standard day, and \(\textrm{power}\) is the max engine power provided the density ratio and the nominal power production of the engine. From~\cite{hartzellpropellerHartzellPropellerManual2023}, the engine modeled in this work has a nominal power output on a sea-level standard day of 600 horsepower (447.42 kW). Figure~\ref{fig:gaggferrar} shows the power output of the engine modeled in this thesis based on the Gagg and Ferrar model and nominal sea-level power production.
+relates power production to the density of air. Where \(\rho \) is the density of the ambient air as a function of altitude (Section~\ref{section:atmos}), \(\rho_0\) is the density of ambient air at sea-level on a standard day, and \(\textrm{power}\) is the max engine power provided the density ratio and the nominal power production of the engine. From~\cite{hartzellpropellerHartzellPropellerManual2023}, the engine modeled in this work has a nominal power output on a sea-level standard day of 600 horsepower (447.42 kW). Figure~\ref{fig:gaggferrar} shows the power output of the engine modeled in this thesis based on the Gagg and Ferrar model and nominal sea-level power production.
 
 \begin{figure}[!ht]\label{fig:gaggferrar}
     \centering
@@ -337,7 +337,7 @@ While the focus of this thesis is not on details in propeller design, it is impo
     \caption{Collection of historic wood and steel propellers~\cite{ianHowIdentifyHistoric2016}.}
 \end{figure}
 
-These propellers had a fixed pitch, meaning they could not rotate up and down during flight~-~severely costing the propeller thrust power. In 1929, Wallace Turnbull invented the variable pitch propeller, allowing pilots to control the pitch the propeller, dramatically increasing propeller efficiency during flight~\cite{ianShortHistoryAircraft2018}. Through time and the advent of computers, Computational Fluid Dynamics (CFD) analyses shaped a handful of equations that define the performance and efficiency of a propeller design. In this work, a three-blade Hartzell~\cite{HartzellPropellerInc} composite propeller is used as it is the Original Equipment Manufacturer (OEM) propeller on the Diamond DA-40 aircraft. This propeller is a variable-pitch constant speed propeller, meaning the pitch of the propeller is optimally adjusted for the current flight condition, while at the same time, maintaining a constant rotational speed to conserve fuel and hold a consistent propeller efficiency (Equation~\ref{eq:propellerefficiency}).
+These propellers had a fixed pitch, meaning they could not rotate up and down during flight~-~severely costing the propeller thrust power. In 1929, Wallace Turnbull invented the variable pitch propeller, allowing pilots to control the pitch the propeller, dramatically increasing propeller efficiency during flight~\cite{ianShortHistoryAircraft2018}. Through time and the advent of computers, Computational Fluid Dynamics (CFD) analyses shaped a handful of equations that define the performance and efficiency of a propeller design. In this work, a three-blade Hartzell~\cite{HartzellPropellerInc1969} composite propeller is used as it is the Original Equipment Manufacturer (OEM) propeller on the Diamond DA-40 aircraft. This propeller is a variable-pitch constant speed propeller, meaning the pitch of the propeller is optimally adjusted for the current flight condition, while at the same time, maintaining a constant rotational speed to conserve fuel and hold a consistent propeller efficiency (Equation~\ref{eq:propellerefficiency}).
 
 Before the simulation is started, the propeller is analyzed through \textit{FlightStream}~\cite{FlightStream}, a surface vorticity flow solver, to analyze the propeller for its lift coefficient (\(C_L\)) at varying flight conditions (Figure~\ref{fig:flightstreamprop}).
 
