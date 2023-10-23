@@ -1,0 +1,36 @@
+
+\begin{thenomenclature} 
+\nomgroup{A}
+  \item [{ADC}]\begingroup Analog-to-Digital Converter\nomeqref {0}\nompageref{vii}
+  \item [{BPF}]\begingroup Band Pass Filters\nomeqref {0}\nompageref{vii}
+  \item [{CFD}]\begingroup Computational Fluid Dynamics\nomeqref {0}\nompageref{vii}
+  \item [{DCM}]\begingroup Direction Cosine Matrix\nomeqref {0}\nompageref{vii}
+  \item [{DOF}]\begingroup Degrees of Freedom\nomeqref {0}\nompageref{vii}
+  \item [{ECEF}]\begingroup Earth-Centered, Earth-Fixed\nomeqref {0}\nompageref{vii}
+  \item [{EKF}]\begingroup Extended Kalman Filter\nomeqref {0}\nompageref{vii}
+  \item [{FFT}]\begingroup Fast-Fourier Transform\nomeqref {0}\nompageref{vii}
+  \item [{FLL}]\begingroup Frequency Lock Loop\nomeqref {0}\nompageref{vii}
+  \item [{FVDM}]\begingroup Flight Vehicle Dynamic Model\nomeqref {0}\nompageref{vii}
+  \item [{GA}]\begingroup General Aviation\nomeqref {0}\nompageref{vii}
+  \item [{GNC}]\begingroup Guidance, Navigation, and Control\nomeqref {0}\nompageref{vii}
+  \item [{GPS}]\begingroup Global Positioning System\nomeqref {0}\nompageref{vii}
+  \item [{GVDM}]\begingroup Ground Vehicle Dynamic Model\nomeqref {0}\nompageref{vii}
+  \item [{ISA}]\begingroup International Standard Atmosphere\nomeqref {0}\nompageref{vii}
+  \item [{LLA}]\begingroup Longitude, Latitude, and Altitude\nomeqref {0}\nompageref{vii}
+  \item [{LNA}]\begingroup Low Noise Amplifiers\nomeqref {0}\nompageref{vii}
+  \item [{MSL}]\begingroup Mean Sea Level\nomeqref {0}\nompageref{vii}
+  \item [{MTOW}]\begingroup Max Takeoff Operating Weight\nomeqref {0}\nompageref{vii}
+  \item [{OEM}]\begingroup Original Equipment Manufacturer\nomeqref {0}\nompageref{vii}
+  \item [{PCPS}]\begingroup Parallel Code Phase Search\nomeqref {0}\nompageref{vii}
+  \item [{PLL}]\begingroup Phase Lock Loops\nomeqref {0}\nompageref{vii}
+  \item [{PRN}]\begingroup Pseudo-Random Number\nomeqref {0}\nompageref{vii}
+  \item [{RHCP}]\begingroup Right-Hand Circularly Polarized\nomeqref {0}\nompageref{vii}
+  \item [{TOW}]\begingroup Time of Week\nomeqref {0}\nompageref{vii}
+  \item [{UKF}]\begingroup Unscented Kalman Filter\nomeqref {0}\nompageref{vii}
+  \item [{UWB}]\begingroup Ultra-Wide Band\nomeqref {0}\nompageref{vii}
+  \item [{VDLL}]\begingroup Vector Delay Lock Loop\nomeqref {0}\nompageref{vii}
+  \item [{VFDLL}]\begingroup Vector Frequency and Delay Lock Loop\nomeqref {0}\nompageref{vii}
+  \item [{WGS84}]\begingroup World Geodetic System 1984\nomeqref {0}\nompageref{vii}
+  \item [{WNLS}]\begingroup Weighted Non-Linear Least Squares\nomeqref {0}\nompageref{vii}
+
+\end{thenomenclature}

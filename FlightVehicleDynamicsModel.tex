@@ -7,22 +7,22 @@ The aircraft modeled in this thesis is the Diamond DA-40 single propeller fixed 
     \caption{Pilot flying Diamond DA-40 single propeller aircraft~-~the focus of the collection platform for this thesis~\cite{DiamondAircraftDA401969}.}
 \end{figure}
 
-\section{Reference Frames}
+\section{\textbf{Reference Frames}}
 % What are reference frames
 Reference frames and their transformations are a critical component to any navigation algorithm. Precise determination of a flight vehicle requires the knowledge of its position, velocity, and orientation. Reference frames describe the orientation of the flight vehicle with respect to a global or local reference point. Because different components of the FVDM are physically located and oriented at unique locations of the Diamond DA-40, multiple reference frames are used to describe the forces and moments these components generate due to their placement. In order for the summation of forces and moments generated at a current moment, reference frame transformations are used to coordinate local forces and moments into a congruent reference frame such that these calculations are performed properly. This section describes the different reference frames used in this work for the FVDM\@.
 % The different reference frames on the aircraft model
 % Body
-\subsection{Flight Vehicle Reference Frame}\label{section:FVRF}
+\subsection{\textbf{Flight Vehicle Reference Frame}}\label{section:FVRF}
 The flight vehicle reference frame or body frame describes the reference frame with origin at the center of mass of the modeled Diamond DA-40. The body frame maintains alignment shown in Figure~\ref{fig:flightvehiclereferenceframe} and remains fixed to the flight vehicle at all times. The flight vehicle reference frame is essential to the FVDM as all forces and moments are added together in the body frame before integration into global and local pose states. In the flight vehicle reference frame, \(x\) always points through the nose of the aircraft, \(y\) points to the right, or \textit{starboard} side of the aircraft, and \(z\) points through the bottom of the aircraft.
 
 \begin{figure}[!ht]
     \centering
     \includegraphics[width=0.60\linewidth]{Figures/bodyframe.png}
-    \caption{Standard flight vehicle reference frame used in this work.~\cite{peetSpacecraftAircraftDynamics}}\label{fig:flightvehiclereferenceframe}
+    \caption{Standard flight vehicle reference frame used in this work.~\cite{peetSpacecraftAircraftDynamics2021}}\label{fig:flightvehiclereferenceframe}
 \end{figure}
 \clearpage
 % Prop
-\subsection{Propeller Reference Frame}
+\subsection{\textbf{Propeller Reference Frame}}
 The propeller reference frame describes the axis about which the propeller rotates with origin to the propeller nacelle, as seen in Figure~\ref{fig:propframe}. Propeller \textit{pitch}, as it is referenced in this thesis is a rotation about the \textit{y} axis, while the blades of the propeller rotate about the \textit{x} axis. This axis remains remains fixed in orientation and position (the frame origin being the propeller nacelle).~\( \phi{}\) from Figure~\ref{fig:propframe} describes the twist of the blade. The blade twist is a design choice of the propeller manufacturer. The twist of the blade helps the propeller produce more thrust, but is not used in any reference frame calculations.
 
 \begin{figure}[!ht]
@@ -32,7 +32,7 @@ The propeller reference frame describes the axis about which the propeller rotat
 \end{figure}
 
 % Wind
-\subsection{Local Wind Reference Frame}
+\subsection{\textbf{Local Wind Reference Frame}}
 The local wind reference frame is used to calculate the lift and drag generated from their respective components with origin at the center of mass of the modeled Diamond DA-40. The orientation of the reference frame changes such that \(\Psi \) remains parallel with the trajectory of the aircraft and \(\alpha \) remains parallel to the ground below. In literature, \( \Psi \) and \(\alpha \) are referred to as the \textit{sideslip} and \textit{angle of attack} of the aircraft during flight. Sideslip can be thought of as the left or right direction of the aircraft with respect to the incident free stream and angle of attack is the up or down direction of aircraft with respect to the incident freestream.
 
 \begin{figure}[!ht]
@@ -42,10 +42,10 @@ The local wind reference frame is used to calculate the lift and drag generated 
 \end{figure}
 
 % Local
-\subsection{Local Navigation Reference Frame}
+\subsection{\textbf{Local Navigation Reference Frame}}
 A local navigation frame is necessary to define the orientation of the flight vehicle. This work implements a North-East-Down reference frame in which the axes are aligned with the topographic directions: North, East, and vertical as seen in Figure~\ref{fig:globalframes} by \(X_n\),\(Y_n\), and \(Z_n\). The origin of the local reference frame is defined at the initial position in the flight vehicle dynamics model and the navigation algorithm. The Euler attitude angles are used to describe the orientation of the Diamond DA-40 relative to the local navigation frame. When the aircraft has no roll pitch, or yaw, this equates to the aircraft flying perfectly tangential to Earth's ellipsoid, with the nose of the aircraft pointing towards the North.
 
-\subsection{Global Reference Frames}
+\subsection{\textbf{Global Reference Frames}}
 Global Reference Frames are critical for GPS receiver to calculate position and velocity. In summary, a position from a receiver is based on distances between the receiver and any visible satellites. As all GPS satellites operate in orbit around the Earth, the global reference frame provides a suitable solution that encompasses both satellite and receiver position and velocities. In this thesis, two global reference frames are used. The Earth-Centered, Earth-Fixed (ECEF) and the geodetic reference system. The ECEF reference frame is considered the standard global reference frame used as it works well for defining both positions and velocities for satellites and receivers, but falls short when it comes to visualization as the origin of the ECEF frame is the center of the Earth. The geodetic reference frame is an alternative frame that allows a visualization advantage by defining positions based on the surface of the Earth. Both LLA and ECEF reference frames utilize the World Geodetic System 1984 (WGS84) to describe Earth's geoid and gravitational field as function of parameters in Table~\ref{tbl:wgs84}. Visualization of both reference frames can be seen in Figure~\ref{fig:globalframes}.
 
 \begin{table}[!ht]
@@ -71,12 +71,12 @@ Global Reference Frames are critical for GPS receiver to calculate position and 
 
 % How the reference frames are calculated (DCMs)
 \clearpage
-\section{Reference Frame Transformations}
+\section{\textbf{Reference Frame Transformations}}
 Reference frame transformations are critical to any sensor fusion algorithm in order to properly add vectors of different frames together. Reference frame transformations range in complexity, the simplest being a transformation of the NED frame into the East-North-Up reference frame. A more complex transformation could be the global ECEF frame into the body frame and vice versa. The reference frame transformation used in this thesis are described in the following subsections.
 
-\subsection{ECEF to LLA}
+\subsection{\textbf{ECEF to LLA}}
 
-One of the more complicated reference frame transformations is between the two global frames, ECEF and LLA\@. The conversion from LLA to ECEF is provided first in Equations~\ref{eq:meridiancurvature},~\ref{eq:transversecurvature},~\ref{eq:lla2ecefx},~\ref{eq:lla2ecefy}, and~\ref{eq:lla2ecefz}. The variables within these equations are defined in Table~\ref{tbl:wgs84}.
+One of the more complicated reference frame transformations is between the two global frames, ECEF and Longitude, Latitude, and Altitude (LLA). The conversion from LLA to ECEF is provided first in Equations~\ref{eq:meridiancurvature},~\ref{eq:transversecurvature},~\ref{eq:lla2ecefx},~\ref{eq:lla2ecefy}, and~\ref{eq:lla2ecefz}. The variables within these equations are defined in Table~\ref{tbl:wgs84}.
 
 \begin{equation}\label{eq:meridiancurvature}
     R_N (L) = \frac{R_0 \, \left(1 - e^2\right)}{{\left(1 - e^2 \, \sin^2 {\left(L\right)}\right)}^{3/2}}
@@ -117,7 +117,7 @@ The ECEF to LLA conversion is more complicated. In order to calculate the longit
 \end{equation}
 
 
-\subsection{ECEF to Local}
+\subsection{\textbf{ECEF to Local}}
 The conversion from the ECEF reference frame to the local navigation reference frame can be done by forming a Direction Cosine Matrix (DCM),
 
 \begin{equation}\label{eq:ECEF2LNDCM}
@@ -131,7 +131,7 @@ The conversion from the ECEF reference frame to the local navigation reference f
 
 and then multiplying the ECEF position vector to produce a position in the NED frame as discussed previously. In Equation~\ref{eq:ECEF2LNDCM}, \(C^{\textrm{n}}_{\textrm{e}}\) describes the DCM used for the transformation. The notation follows such that the subscript (e) is the position in the original reference frame and the superscript (n) is the reference frame the position is being rotated into. This thesis will always follow this notation to avoid any confusion.
 
-\subsection{Local to Body}
+\subsection{\textbf{Local to Body}}
 Similar to the conversion of ECEF to the local navigation frame, the conversion from the local navigation to the flight vehicle reference frame can be done by forming the DCM (Equation~\ref{eq:321DCM}).
 \begin{equation}\label{eq:321DCM}
     C^{\textrm{b}}_{\textrm{n}} =
@@ -151,8 +151,8 @@ If one wanted to convert position from the flight vehicle to ECEF reference fram
 
 It should be noted that any of these DCM reference frame transformations can be inverted by simply transposing the final transformation matrix.
 
-\section{Atmosphere Model}\label{section:atmos}
-In order to more accurately calculate a handful of dynamics models studied in this work, a model of Earth's atmosphere is needed to provided ambient temperature, pressure, density, speed of sound, and wind. This thesis uses the International Standard Atmosphere (ISA) model to approximate ambient temperature, ambient pressure, ambient density, and the speed of sound given a certain height above Mean Sea Level (MSL). Using an assumed linear distribution for temperature as a function of altitude, the ISA model assumes hydrostatic equilibrium as seen by Equation~\ref{eq:2.1},
+\section{\textbf{Atmosphere Model}}\label{section:atmos}
+In order to more accurately calculate a handful of dynamics models studied in this work, a model of Earth's atmosphere is needed to provided ambient temperature, pressure, density, speed of sound, and wind. This thesis uses the ISA model to approximate ambient temperature, ambient pressure, ambient density, and the speed of sound given a certain height above Mean Sea Level (MSL). Using an assumed linear distribution for temperature as a function of altitude, the ISA model assumes hydrostatic equilibrium as seen by Equation~\ref{eq:2.1},
 
 \begin{equation}
     \frac{dP}{dh} = -\rho \, g,
@@ -186,12 +186,16 @@ where \(P_0\) and \(\rho_0\) are atmospheric layer values for pressure and densi
 \end{equation}
 
 where \(a\) is the speed of sound in meters per second and \( \gamma \) is the ratio of specific heats. Figure~\ref{fig:atmos} describes these atmospheric parameters from MSL to 85,000 meters above sea level.
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{Figures/atmosphericparameters.png}\label{fig:atmos}
+    \caption{Absolute temperature, ambient pressure, air density, and speed of sound using the ISA model.}
 
-Along with the aforementioned atmospheric parameters, wind is a vital modeling parameter for flight vehicles. For smaller SWAP flight vehicles, small gusts of wind can greatly affect their dynamics~\cite{raymerAircraftDesignConceptual2018}. This thesis uses an updated version of the Horizontal Wind Model~\cite{drobEmpiricalModelEarth2008,drobUpdateHorizontalWind2015} using collected satellite data from the Nation Oceanic and Atmospheric Administration (NOAA). The model accepts the current position of the flight vehicle to provide a predicted wind vector in the meridional and zonal reference frame. Implementation of the ISA model and calculation of winds can be found under \textit{Atmosphere.m} in~\cite{millerNsm0014thesis2023}.
+\end{figure}
 
-\section{Aerodynamic Principles}\label{section:aerodynamic}
+\section{\textbf{Aerodynamic Principles}}\label{section:aerodynamic}
 % Section Overview
-In all phases of flight, the surfaces on any aircraft generate two aerodynamic forces {--} \textit{lift} and \textit{drag} along with an aerodynamic moment vector. Prior to the modern computer, these forces and moments were derived from swaths of wind tunnel~(Figure~\ref{fig:windtunnel}) data under various conditions. Today, during the research and development phase of modern production aircraft, these aerodynamics components can be determined using Computation Fluid Dynamic programs such as \textit{FlightStream}~\cite{FlightStream2022}. This subsections provides the modelling equations for the surfaces of the airplane that generate lift, drag and moments during simulation.
+In all phases of flight, the surfaces on any aircraft generate two aerodynamic forces {--} \textit{lift} and \textit{drag} along with an aerodynamic moment vector. Prior to the modern computer, these forces and moments were derived from swaths of wind tunnel~(Figure~\ref{fig:windtunnel}) data under various conditions. Today, during the research and development phase of modern production aircraft, these aerodynamics components can be determined using Computational Fluid Dynamic (CFD) programs such as \textit{FlightStream}~\cite{FlightStream2022}. This subsections provides the modelling equations for the surfaces of the airplane that generate lift, drag and moments during simulation.
 
 \begin{figure}[!ht]\label{fig:windtunnel}
     \centering
@@ -230,14 +234,20 @@ Lift is not the only force produced by the wing during flight. When any object m
     D = \frac{C_D \rho V^2 A}{2}
 \end{equation}
 
-The aerodynamic moments generated during flight of any aircraft are the single reason that control surface deflections cause the aircraft the roll, pitch or yaw in a certain direction. Just like the equations for lift and drag, the total aerodynamic moments is described in equation~\ref{eq:moment}.
+The aerodynamic moments generated during flight of any aircraft are the single reason that control surface deflections cause the aircraft the roll, pitch or yaw in a certain direction. Just like the equations for lift and drag, the total aerodynamic moments are described by equations~\ref{eq:Lmoment},~\ref{eq:Mmoment}, and~\ref{eq:Nmoment}.
 
-\begin{equation}\label{eq:moment}
-    M = \frac{C_M \rho V^2 A}{2}
+\begin{equation}\label{eq:Lmoment}
+    M_l = \frac{C_l \rho V^2 A}{2}
+\end{equation}
+\begin{equation}\label{eq:Mmoment}
+    M_m = \frac{C_m \rho V^2 A}{2}
+\end{equation}
+\begin{equation}\label{eq:Nmoment}
+    M_n = \frac{C_n \rho V^2 A}{2}
 \end{equation}
 
 % What is Strip Theory?
-In Equations~\ref{eq:lift},~\ref{eq:drag}, and~\ref{eq:moment}, coefficients need to be defined in order to calculate the aerodynamic forces and moments correctly. If known before hand, these coefficients can be calculated programmatically.~Equation~\ref{eq:CL} describes the equation for finding the lift coefficient.
+In Equations~\ref{eq:lift},~\ref{eq:drag},~\ref{eq:Lmoment},~\ref{eq:Mmoment}, and~\ref{eq:Nmoment}, coefficients need to be defined in order to calculate the aerodynamic forces and moments correctly. If known before hand, these coefficients can be calculated programmatically.~Equation~\ref{eq:CL} describes the equation for finding the lift coefficient.
 
 \begin{equation}\label{eq:CL}
     C_L = C_{L_0} + C_{L_\alpha}\alpha + C_{L_q}\frac{qc}{2V} + C_{L_{\delta_e}}\delta_e
@@ -281,11 +291,11 @@ Strip theory is a process in which a 3D model of the aircraft is discretized int
 
 Downwash is an aerodynamic property where the finite length of the lifting surfaces results in 3-dimensional flow fields causing reduction in effective angles of attack. To introduce downwash into the model and simulation, a reduced-ordered model utilizing integrated circulation was implemented~\cite{ahujaIntegratedComputationalAeroacoustics2022,bhandariGeneticAlgorithmOptimization2023}\@.
 
-\section{Aero-Propulsive Forces}
+\section{\textbf{Aero-Propulsive Forces}}
 
 Calculating lift, drag, and aerodynamic moments are useless unless the aircraft is moving. For any flight vehicle (except a glider), there is some form of engine or propeller that accelerates the incident freestream around the aircraft, allowing the lift, drag, and moment calculations to be of benefit. Similar to a ground vehicle, there is an infinite amount of complexity that can go into the modeling of a flight vehicles propulsion components. The work in this thesis focuses on the engine, shaft, and propeller {--} followed by the effects these components have on the aircraft. The following subsections describe the aero-propulsive flight mechanics that allow aircraft to accelerate, take off, and maintain altitude during the length of the flight.
 
-\subsection{Piston Engine Model}
+\subsection{\textbf{Piston Engine Model}}
 % Overview of Piston and Propeller Model
 Small general aviation aircraft generate propulsive forces through use of an engine that spins a shaft which is connected to a propeller. The engine modeled and simulated is a piston, air-cooled engine. The typical aircraft piston engine is modeled as a four-stroke Otto cycle~\cite{raymerAircraftDesignConceptual2018}. The Otto cycle is a well-known thermodynamic theory that relies on a large air mass flow rate to generate power~\cite{gudmundssonGeneralAviationAircraft2014}. The components of the engine that produce the power are described below.
 
@@ -321,7 +331,7 @@ The governor that exists in ground and flight vehicles exists such that drastic 
     \caption{Brake specific fuel consumption look up table for modeled engine.}
 \end{figure}
 
-\subsection{Propeller Modeling}
+\subsection{\textbf{Propeller Modeling}}
 % Propeller Dynamics
 The purpose of an aircraft propeller is to increase the velocity of the ambient air around them such that the lifting surfaces on the aircraft can generate lift and keep the aircraft in flight. There are 3 main components to focus on when designing and manufacturing propellers. These are
 \begin{itemize}
@@ -337,17 +347,17 @@ While the focus of this thesis is not on details in propeller design, it is impo
     \caption{Collection of historic wood and steel propellers~\cite{ianHowIdentifyHistoric2016}.}
 \end{figure}
 
-These propellers had a fixed pitch, meaning they could not rotate up and down during flight~-~severely costing the propeller thrust power. In 1929, Wallace Turnbull invented the variable pitch propeller, allowing pilots to control the pitch the propeller, dramatically increasing propeller efficiency during flight~\cite{ianShortHistoryAircraft2018}. Through time and the advent of computers, Computational Fluid Dynamics (CFD) analyses shaped a handful of equations that define the performance and efficiency of a propeller design. In this work, a three-blade Hartzell~\cite{HartzellPropellerInc1969} composite propeller is used as it is the Original Equipment Manufacturer (OEM) propeller on the Diamond DA-40 aircraft. This propeller is a variable-pitch constant speed propeller, meaning the pitch of the propeller is optimally adjusted for the current flight condition, while at the same time, maintaining a constant rotational speed to conserve fuel and hold a consistent propeller efficiency (Equation~\ref{eq:propellerefficiency}).
+These propellers had a fixed pitch, meaning they could not rotate up and down during flight~-~severely costing the propeller thrust power. In 1929, Wallace Turnbull invented the variable pitch propeller, allowing pilots to control the pitch the propeller, dramatically increasing propeller efficiency during flight~\cite{ianShortHistoryAircraft2018}. Through time and the advent of computers, CFD analyses shaped a handful of equations that define the performance and efficiency of a propeller design. In this work, a three-blade Hartzell~\cite{HartzellPropellerInc1969} composite propeller is used as it is the Original Equipment Manufacturer (OEM) propeller on the Diamond DA-40 aircraft. This propeller is a variable-pitch constant speed propeller, meaning the pitch of the propeller is optimally adjusted for the current flight condition, while at the same time, maintaining a constant rotational speed to conserve fuel and hold a consistent propeller efficiency (Equation~\ref{eq:propellerefficiency}).
 
-Before the simulation is started, the propeller is analyzed through \textit{FlightStream}~\cite{FlightStream}, a surface vorticity flow solver, to analyze the propeller for its lift coefficient (\(C_L\)) at varying flight conditions (Figure~\ref{fig:flightstreamprop}).
+Before the simulation is started, the propeller is analyzed through \textit{FlightStream}~\cite{FlightStream2022}, a surface vorticity flow solver, to analyze the propeller for its lift coefficient (\(C_L\)) at varying flight conditions (Figure~\ref{fig:flightstreamprop}).
 
 \begin{figure}[!ht]\label{fig:flightstreamprop}
     \centering
     \includegraphics[width=.35\linewidth]{Figures/flightstreamprop.png}
-    \caption{Analyzing three-blade propeller through FlightStream~\cite{FlightStream}.}
+    \caption{Analyzing three-blade propeller through FlightStream~\cite{FlightStream2022}.}
 \end{figure}
 
-Once the lift coefficient is determined, numerical look up tables are generated such that the calculation of the forces and moments generated by the propeller can be interpolated, allowing the simulation to be run in real time. To determine the amount of thrust and torque generated by the propeller, the \textit{Activity Factor} (Equation~\ref{eq:activityfactor}) of the propeller must first be determined. The \textit{Activity Factor} is a measures of the propellers ability to absorb power and the effectiveness of each blade's width.
+Once the lift coefficient is determined, numerical look up tables are generated such that the calculation of the forces and moments generated by the propeller can be interpolated, allowing the simulation to be run in real time. To determine the amount of thrust and torque generated by the propeller, the \textit{Activity Factor} (Equation~\ref{eq:activityfactor}) of the propeller must first be determined. The \textit{Activity Factor} is a measure of the propellers ability to absorb power and the effectiveness of each blade's width.
 
 % Activity Factor
 \begin{equation}\label{eq:activityfactor}
@@ -361,12 +371,12 @@ Where \(AF_{\textrm{per blade}}\) is the \textit{Activity Factor} per blade, \(c
     \centering
     \begin{tabular}{cccc}
         \toprule
-        Characteristics       & Value  & Units  \\
+        \textbf{Characteristics }      & \textbf{Value}  & \textbf{Units}  \\
         \midrule
         \(c_{\textrm{root}}\) & 0.1475 & meters \\
         \(D\)                 & 1.9    & meters \\
-        \( \lambda \)         & 0.8    & N/A    \\
-        \(C_L\)               & 0.5    & N/A    \\
+        \( \lambda \)         & 0.8    & {--}    \\
+        \(C_L\)               & 0.5    & {--}    \\
         \bottomrule
     \end{tabular}
 \end{table}
@@ -399,7 +409,7 @@ In Equations~\ref{eq:powercoefficient} and~\ref{eq:thrustcoefficient}, \(P\) is 
 \begin{figure}[!ht]\label{fig:staticpropthrust}
     \centering
     \includegraphics[width=0.85\linewidth]{Figures/StaticThrust.png}
-    \caption{Static propeller thrust for the modelled propeller (Adapted from~\cite{GeneralizedMethodPropeller}).}
+    \caption{Static propeller thrust for the modelled propeller (Adapted from~\cite{GeneralizedMethodPropeller1963}).}
 \end{figure}
 
 \begin{equation}\label{eq:calcCT1}
@@ -448,7 +458,7 @@ A handful of steps, provided below, list the necessary calculations needed to si
     \item[6.] The moment generated by the propeller is simply the cross-product between the thrust and moment arm between the tip of the propeller and the nacelle of propeller.
 \end{itemize}
 
-\section{Landing Gear Model}
+\section{\textbf{Landing Gear Model}}
 Although not calculated often, the modeling of the aircraft's landing gear are important and should not be overlooked. However, because of the flight paths investigated in this thesis focus solely on the aircraft during flight, a simplified dynamic model is used to describe the forces and moments acting on the landing gear during landing. It should be noted that the aerodynamic calculations of the landing gear occur in the aerodynamically modeling section, while this section focuses on the moments and forces generated from the runway opposing the weight of the aircraft.
 
 To describe the forces and moments generated during landing, a mass-spring damper system (Figure~\ref{fig:ldgfbd}) can be used in simulate the the struts, levers, and tire depression (Figure~\ref{fig:ldg}) that absorb much of the forces, moments and vibrations that act onto the aircraft during landing.
@@ -499,7 +509,7 @@ In Equation~\ref{eq:ldgmoments}, \(x^i\), \(y^i\), and \(z^i\) represent the mom
 
 As a final note, it should be made clear that the forces and moments that act upon the landing gear if and only if a tire has made contact with the ground.
 
-\section{Forces and Moments Calculations}
+\section{\textbf{Forces and Moments Calculations}}
 The final product of the aforementioned systems sums to two things~-~the forces and moments acting on the body of the aircraft. This work demonstrates the high-fidelity modelling of engines, propellers, landing gear, and aerodynamic forces and moments the simulated flight vehicles generates while in flight. The final step of these calculations is to add them together in the body-fixed \(X\), \(Y\), and \(Z\) directions. This is demonstrated by Equation~\ref{eq:sumForce} and Equation~\ref{eq:sumMoments}.
 
 \begin{equation}
@@ -516,7 +526,7 @@ It should be noted that \(\mathbf{F}_{LDG}\) and \(\mathbf{M}_{LDG}\) are only c
 
 Once the forces and moments are calculated, they are used within the equation of motions that propagate the position, velocity, angular rates, and orientation in time during the simulation of the flight.
 
-\section{Conclusions}
+\section{\textbf{Conclusions}}
 
 This section provided an overview of the reference frames used heavily when calculating the forces and moments the airframe of the aircraft experiences during flight. Following a discussion of reference frames, the ISA atmospheric model used in this work was defined with accompanying equations. The bulk of this chapter contains information about the use of strip theory for modelling the aerodynamics of the aircraft and a discussion of the engine and propeller modelling that produces the thrust for the Diamond-DA40 during flight. This chapter concludes with a description of the landing gear model and the summation of the forces and moments generated from the aforementioned sections that will be used in the equations of motions. Because the equations of motions are embedded within the proposed navigation filter for this work, they will be discussed in chapter 4.
 \clearpage
