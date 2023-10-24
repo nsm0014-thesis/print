@@ -1,0 +1,15 @@
+\addvspace {10pt}
+\contentsline {table}{\numberline {1.1}{\ignorespaces Inexhaustive list of sensors available to commercial and general aviation aircraft. (Adapted from\nobreakspace {}\blx@tocontentsinit {0}\cite {DiamondAircraftDA401969,customerservicesA380AircraftCharacteristics2020})}}{2}{}%
+\contentsline {table}{\numberline {1.2}{\ignorespaces Common sensor fusion frameworks used for GPS and INS collection platforms}}{2}{}%
+\addvspace {10pt}
+\contentsline {table}{\numberline {2.1}{\ignorespaces Properties describing the WGS84 ellipsoid}}{12}{}%
+\contentsline {table}{\numberline {2.2}{\ignorespaces Characteristics of the propeller modeled for this work.}}{26}{}%
+\contentsline {table}{\numberline {2.3}{\ignorespaces List of spring and damper coefficients for nose and rear landing gear.}}{31}{}%
+\addvspace {10pt}
+\addvspace {10pt}
+\addvspace {10pt}
+\contentsline {table}{\numberline {5.1}{\ignorespaces List of available, controllable inputs to the Diamond DA40 modeled in this thesis.}}{62}{}%
+\contentsline {table}{\numberline {5.2}{\ignorespaces Gains for the throttle and propeller lever open-loop PID controllers.}}{63}{}%
+\addvspace {10pt}
+\contentsline {table}{\numberline {6.1}{\ignorespaces Initial conditions for simulated trajectory from Figure\nobreakspace {}\ref {fig:trajectory}.}}{67}{}%
+\addvspace {10pt}
