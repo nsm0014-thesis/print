@@ -76,56 +76,6 @@ Scenario one is designed to test the proposed navigation in a variety of circums
 \end{figure}
 
 
-\subsection{\textbf{Monte-Carlo Analyses}}
-For brevity, only results from Case 4 and Case 5 are analyzed in this chapter. Case 1, 2, and 3 results can be found in the appendix if the reader wishes to see more. 
-\begin{figure}[!ht]
-    \centering
-    \includegraphics[width=0.75\linewidth]{Figures/Results/trajectoryfigure/Slide14.PNG}
-    \caption{Position and speed estimates using the proposed navigation filter when subject to instantaneous interference, bringing the \(C/N_0\) to \(15\) dB-Hz.}\label{fig:PosVel15}
-\end{figure}
-
-\begin{figure}[!ht]
-    \centering
-    \includegraphics[width=0.75\linewidth]{Figures/Results/trajectoryfigure/Slide15.PNG}
-    \caption{Position and speed estimates using the proposed navigation filter when subject to instantaneous interference, bringing the \(C/N_0\) to \(20\) dB-Hz.}\label{fig:PosVel20}
-\end{figure}
-
-\begin{figure}[!ht]
-    \centering
-    \includegraphics[width=0.75\linewidth]{Figures/Results/trajectoryfigure/Slide2.PNG}
-    \caption{Euler attitude estimates using the proposed navigation filter when subject to instantaneous interference, bringing the \(C/N_0\) to \(15\) dB-Hz.}\label{fig:Eul15}
-\end{figure}
-
-\begin{figure}[!ht]
-    \centering
-    \includegraphics[width=0.75\linewidth]{Figures/Results/trajectoryfigure/Slide3.PNG}
-    \caption{Euler attitude estimates using the proposed navigation filter when subject to instantaneous interference, bringing the \(C/N_0\) to \(20\) dB-Hz.}\label{fig:Eul20}
-\end{figure}
-
-\begin{figure}[!ht]
-    \centering
-    \includegraphics[width=0.75\linewidth]{Figures/Results/trajectoryfigure/Slide8.PNG}
-    \caption{Angular rate estimates using the proposed navigation filter when subject to instantaneous interference, bringing the \(C/N_0\) to \(15\) dB-Hz.}\label{fig:Ang15}
-\end{figure}
-
-\begin{figure}[!ht]
-    \centering
-    \includegraphics[width=0.75\linewidth]{Figures/Results/trajectoryfigure/Slide9.PNG}
-    \caption{Angular rate estimates using the proposed navigation filter when subject to instantaneous interference, bringing the \(C/N_0\) to \(20\) dB-Hz.}\label{fig:Ang20}
-\end{figure}
-
-\begin{figure}[!ht]
-    \centering
-    \includegraphics[width=0.75\linewidth]{Figures/Results/trajectoryfigure/Slide20.PNG}
-    \caption{Clock bias and Clock drift estimates using the proposed navigation filter when subject to instantaneous interference, bringing the \(C/N_0\) to \(15\) dB-Hz.}\label{fig:Clk15}
-\end{figure}
-
-\begin{figure}[!ht]
-    \centering
-    \includegraphics[width=0.75\linewidth]{Figures/Results/trajectoryfigure/Slide21.PNG}
-    \caption{Clock bias and Clock drift estimates using the proposed navigation filter when subject to instantaneous interference, bringing the \(C/N_0\) to \(20\) dB-Hz.}\label{fig:Clk20}
-\end{figure}
-
 \begin{figure}[!ht]
     \centering
     \includegraphics[width=0.75\linewidth]{Figures/Results/Scenario1/Case20/codephase.png}
@@ -150,6 +100,39 @@ For brevity, only results from Case 4 and Case 5 are analyzed in this chapter. C
     \caption{Carrier frequency measurement variance in meters per second from the nine available satellites during interference when \(C/N_0\) is \(20\) dB-Hz.}\label{fig:carrierVariance20}
 \end{figure}
 \clearpage
+\subsection{\textbf{Monte-Carlo Analyses}}
+For brevity, only results from Case 4 and Case 5 are analyzed in this chapter. Case 1, 2, and 3 results can be found in the appendix if the reader wishes to see more.
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=\linewidth]{Figures/doubleresults/Slide3.PNG}
+    \caption{Position and speed estimates using the proposed navigation filter when subject to instantaneous interference, bringing the \(C/N_0\) to \(15\) dB-Hz.}\label{fig:PosVel1520}
+\end{figure}
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=\linewidth]{Figures/doubleresults/Slide1.PNG}
+    \caption{Euler attitude estimates using the proposed navigation filter when subject to instantaneous interference, bringing the \(C/N_0\) to \(15\) dB-Hz.}\label{fig:Eul15}
+\end{figure}
+
+
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=\linewidth]{Figures/doubleresults/Slide2.PNG}
+    \caption{Angular rate estimates using the proposed navigation filter when subject to instantaneous interference, bringing the \(C/N_0\) to \(15\) dB-Hz.}\label{fig:Ang15}
+\end{figure}
+
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=\linewidth]{Figures/doubleresults/Slide4.PNG}
+    \caption{Clock bias and Clock drift estimates using the proposed navigation filter when subject to instantaneous interference, bringing the \(C/N_0\) to \(15\) dB-Hz.}\label{fig:Clk1520}
+\end{figure}
+
+
+
+\clearpage
 
 \section{\textbf{Scenario 2}}
 
@@ -169,7 +152,7 @@ Scenario two starts the same as scenario one, with benign signal reception throu
     \caption{Estimated \(C/N_0\) compared with a design \(C/N_0\) that increases interference as aircraft flies closer, and dissipates as aircraft leaves interference zone. }\label{fig:CN0scene2}
 \end{figure}
 
-As mentioned previously, scenario two provides a more realistic interference scenario that actual aircraft may come into contact to from intentional or unintentional attacks of GPS signals. A 100-run Monte-Carlo analysis is also done for scenario 2, although it should be noted that each simulation for scenario two was run for 300 seconds, compared to the 180 second simulations for scenario one. 
+As mentioned previously, scenario two provides a more realistic interference scenario that actual aircraft may come into contact to from intentional or unintentional attacks of GPS signals. A 100-run Monte-Carlo analysis is also done for scenario 2, although it should be noted that each simulation for scenario two was run for 300 seconds, compared to the 180 second simulations for scenario one.
 
 \subsection{\textbf{Monte-Carlo Analyses}}
 
