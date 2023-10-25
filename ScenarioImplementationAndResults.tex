@@ -46,26 +46,33 @@ From Table~\ref{tbl:trajectory}, several parameters are configurable to meet the
     \caption{Skyplot of the available satellites during the simulation of both scenarios given the date of broadcast ephemeris.}\label{fig:skyplot}
 \end{figure}
 
-Duration and Monte-Carlo Runs specify the length of each simulation in seconds and the number of simulations for each scenario and/or case. For the work presented in thesis, 100 simulation Monte-Carlo runs are used for analyses. This may not seems substantial, but based on~\cite{khaghaniAssessmentVDMbasedAutonomous2018,khaghaniAutonomousVehicleDynamic2016,mwenegohaModelbasedTightlyCoupled2020} and time to completion for each simulation, 100 simulations is enough to show the general trend for statistical purposes.
-
-The trajectory is specified as a -mat file. The creation of the trajectory file is detailed in Chapter 5. As mentioned before, the S-like trajectory is to provided excitation in the angular states for better estimates during simulation. 
-
-As explained in chapter 5, disturbances are modeled onto the trajectory of the aircraft as the FVDM is not perfect. External conditions such as wind and various atmospheric conditions alter the behavior of the Diamond DA-40 slightly. These disturbances are defined as Velocity, Angular Rate, and Position Disturbance in Table~\ref{tbl:trajectory}.
-
-Clock Type is the embedded receiver clock modeled during the simulation. More information on the different types of clocks can be found in Chapter 4. For the purposes of this thesis, both scenarios and all cases will use the OCXO\@.
-
-The initial states of the aircraft are defined by the accompanying variables. Since our trajectory specifies a mostly-north flight path, the north velocity component is specified to be 75 meters per second, while the other components are zero. Also, the pitch of the aircraft is specified as 4 degrees up, this is so the aircraft generates lift at the first couple time steps during the simulations and does not enter a stall. Lastly, the initial position of the aircraft is specified as the first waypoint location, for simplicity. 
-
-The last configurable parameter is the initial Channel \(C/N_0\) of the available satellites. Because each scenario and case analyzed in this thesis starts in benign conditions, the Channel \(C/N_0\) is defined as \(45\) dB-Hz.
+Duration and Monte-Carlo Runs specify the length of each simulation in seconds and the number of simulations for each scenario and/or case. For the work presented in thesis, 100 simulation Monte-Carlo runs are used for analyses. This may not seems substantial, but based on~\cite{khaghaniAssessmentVDMbasedAutonomous2018,khaghaniAutonomousVehicleDynamic2016,mwenegohaModelbasedTightlyCoupled2020} and time to completion for each simulation, 100 simulations is enough to show the general trend for statistical purposes. The trajectory is specified as a -mat file. The creation of the trajectory file is detailed in Chapter 5. As mentioned before, the S-like trajectory is to provided excitation in the angular states for better estimates during simulation. As explained in chapter 5, disturbances are modeled onto the trajectory of the aircraft as the FVDM is not perfect. External conditions such as wind and various atmospheric conditions alter the behavior of the Diamond DA-40 slightly. These disturbances are defined as Velocity, Angular Rate, and Position Disturbance in Table~\ref{tbl:trajectory}. Clock Type is the embedded receiver clock modeled during the simulation. More information on the different types of clocks can be found in Chapter 4. For the purposes of this thesis, both scenarios and all cases will use the OCXO\@. The initial states of the aircraft are defined by the accompanying variables. Since our trajectory specifies a mostly-north flight path, the north velocity component is specified to be 75 meters per second, while the other components are zero. Also, the pitch of the aircraft is specified as 4 degrees up, this is so the aircraft generates lift at the first couple time steps during the simulations and does not enter a stall. Lastly, the initial position of the aircraft is specified as the first waypoint location, for simplicity. The last configurable parameter is the initial Channel \(C/N_0\) of the available satellites. Because each scenario and case analyzed in this thesis starts in benign conditions, the Channel \(C/N_0\) is defined as \(45\) dB-Hz.
 
 \section{\textbf{Scenario 1}}
+Scenario one comprises of five separate cases, each with different \(C/N_0\) levels the proposed navigation filter will be tested at. Table~\ref{tbl:cases} lists the different \(C/N_0\) levels of each case. For the first 60 seconds in each case for scenario one, the aircraft receives benign signals from the available nine satellites based on the provided ephemeris for the given date and location. For the purpose of this thesis, benign signals have an expected \(C/N_0\) of \(45\) dB-Hz. After 60 seconds, interference on the signals suddenly starts, subjecting the simulated VT receiver to lower \(C/N_0\) values, as specified in Table~\ref{tbl:cases}. After 90 seconds of interference, the \(C/N_0\) levels return to their benign state. This benign return is to analyze if the proposed navigation filter is able to retain lock, despite the drifting of states during the degradation period.
 
-\subsection{\textbf{Interference Overview}}
+\begin{table}[!ht]
+    \caption{\(C/N_0\) level for each of the five cases specified for scenario one.}\label{tbl:cases}
+    \centering
+    \begin{tabular}{cccc}
+        \toprule
+        \textbf{Case} & \textbf{\(\mathbf{C/N_0}\) [dB-Hz]} \\
+        \midrule
+        1             & 35                                  \\
+        2             & 30                                  \\
+        3             & 25                                  \\
+        4             & 20                                  \\
+        5             & 15                                  \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+Scenario one is designed to test the proposed navigation in a variety of circumstance, ranging from slight degradation, to almost completely GPS-denied. Through a 100-run Monte-Carlo analysis of each case, the performance with the deeply integrated FVDM compared with a loosely-coupled IMU will showcase the benefits of the proposed navigation filter and where the FVDM falls short.
 
 \begin{figure}[!ht]
     \centering
     \includegraphics[width=0.75\linewidth]{Figures/Results/CN025.png}
-    \caption{Estimated \(C/N_0\) compared with a design \(C/N_0\) that suddenly drops at \(60\) seconds and then dissipates at \(150\) seconds. }\label{fig:CN025}
+    \caption{Estimated \(C/N_0\) compared with the \(C/N_0\) drop of Case 3. }\label{fig:CN025}
 \end{figure}
 
 
@@ -141,22 +148,27 @@ The last configurable parameter is the initial Channel \(C/N_0\) of the availabl
     \includegraphics[width=0.75\linewidth]{Figures/Results/Scenario1/Case20/carrierVariance.png}
     \caption{Carrier frequency measurement variance in meters per second from the nine available satellites during interference when \(C/N_0\) is \(20\) dB-Hz.}\label{fig:carrierVariance20}
 \end{figure}
+\clearpage
 
 \section{\textbf{Scenario 2}}
 
-\subsection{\textbf{Interference Overview}}
+Scenario two comprises of a singular case, with a more realistic pattern of interference (Figure~\ref{fig:notationalinterference}).
 
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=0.75\linewidth]{Figures/notationalinterference.png}
+    \includegraphics[width=0.4\linewidth]{Figures/notationalinterference.png}
     \caption{Notational image of aircraft flying into interference and accumulating error of its position over time.}\label{fig:notationalinterference}
 \end{figure}
+
+Scenario two starts the same as scenario one, with benign signal reception through the first 60 seconds of flight. However, after the first 60 seconds, the aircraft begins to fly into an area of interference, where the \(C/N_0\) begins to fall linearly for 90 seconds. From 150 to 180 seconds, the receiver aboard the aircraft is subject to GPS-denied conditions where it will receiver no measurements. This is to simulate the aircraft flying through the centroid of the interference area. After the 30 second GPS-denied period, the \(C/N_0\) will begin to rise at the same rate it descended earlier. Again, same as scenario one, the last 30 seconds of the simulation will be in complete benign conditions as the receiver tries to regain lock on all of the channels. The interference and timing of pattern is depicted in Figure~\ref{fig:CN0scene2} to avoid any confusion.
 
 \begin{figure}[!ht]
     \centering
     \includegraphics[width=0.75\linewidth]{Figures/Results/CN0scene2.png}
     \caption{Estimated \(C/N_0\) compared with a design \(C/N_0\) that increases interference as aircraft flies closer, and dissipates as aircraft leaves interference zone. }\label{fig:CN0scene2}
 \end{figure}
+
+As mentioned previously, scenario two provides a more realistic interference scenario that actual aircraft may come into contact to from intentional or unintentional attacks of GPS signals. A 100-run Monte-Carlo analysis is also done for scenario 2, although it should be noted that each simulation for scenario two was run for 300 seconds, compared to the 180 second simulations for scenario one. 
 
 \subsection{\textbf{Monte-Carlo Analyses}}
 
@@ -187,7 +199,7 @@ The last configurable parameter is the initial Channel \(C/N_0\) of the availabl
     \caption{Position and speed estimates using the proposed navigation filter when subject to interference that grows stronger as the flight vehicles travels closer to the emitter.}\label{fig:ClkScene2}
 \end{figure}
 
-
+\clearpage
 \section{\textbf{Conclusions}}
 
 This chapter presented a detailed explanation of the trajectory used for the Monte-Carlo results in both scenario one and scenario two. The trajectory is a variable-bank, constant-pitch flight path in order to attain estimates of the angular rates and Euler attitude of the aircraft during simulation. Apart of each scenario description was the overview of interference. Scenario one featured sudden drops in signal power to gauge the ability of the vector tracking loops to maintain lock at different levels of signal degradation. Scenario two featured a more realistic interference scenario where the strength of the interference grew as the aircraft flew closer to the emitter location. Based on the results, the FVDM attains better state estimates when the signal interference maintains the \(C/N_0\) about \(15\) dB-Hz. Once the interference was strong enough for the vector tracking loops to drop each channel, the estimates of IMU showed massive improvements over the FVDM {--} this is most-likely due to the constant measurement of angular rate from the gyroscope. The results presented in this chapter show that FVDM is a viable solution to small SWaP-C flight vehicles in benign environments. However, the results also show that the FVDM is not the sole-solution due to the unobservable angular states in GPS-denied conditions. Perhaps external sensors such as a IMU or multi-antenna GPS system could improve the system observability for better estimates. Improvements to the proposed navigation filter are discussed in greater details in the next chapter.
