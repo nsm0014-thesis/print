@@ -1,5 +1,5 @@
 \chapter{Flight Vehicle Dynamics Model}
-The aircraft modeled in this thesis is the Diamond DA-40 single propeller fixed wing aircraft (Figure~\ref{fig:DA40}). Small General Aviation (GA) aircraft are easier to model compared to commercial and military aircraft as performance information for the mechanical components of the plane are not hidden through government or proprietary documents. The simulation is a full six Degrees of Freedom (DOF) simulation and features 12 control inputs~-~ranging from throttle and control surface inputs to propeller pitch and mixture levers. The sections below detail the flight mechanics modules that propagate the aerodynamics, engine and propeller, landing gear, and gravitational forces and moments during the simulation. The equations of motions and stochastic elements of the model are covered in a later chapter. Heavily important to modeling a flight vehicle, this chapter begins with a discussion of reference frames and how they interact with the proceeding flight mechanics.
+The aircraft modeled in this thesis is the Diamond DA-40 single propeller fixed wing aircraft (Figure~\ref{fig:DA40}). The simulation is a full six Degrees of Freedom (DOF) simulation and features 12 control inputs~-~ranging from throttle and control surface inputs to propeller pitch and mixture levers. The sections below detail the flight mechanics modules that propagate the aerodynamics, engine and propeller, landing gear, and gravitational forces and moments during the simulation. Small General Aviation (GA) aircraft are easier to model compared to commercial and military aircraft as performance information for the mechanical components of the plane are not hidden through government or proprietary documents. Using publicly available data tables, numerical tables can be compiled before simulations of flight begin to lower the computational burden. The equations of motions and stochastic elements of the model are covered in a later chapter. Heavily important to modeling a flight vehicle, this chapter begins with a discussion of reference frames and how they interact with the proceeding flight mechanics.
 
 \begin{figure}[!ht]\label{fig:DA40}
     \centering
@@ -9,7 +9,7 @@ The aircraft modeled in this thesis is the Diamond DA-40 single propeller fixed 
 
 \section{\textbf{Reference Frames}}
 % What are reference frames
-Reference frames and their transformations are a critical component to any navigation algorithm. Precise determination of a flight vehicle requires the knowledge of its position, velocity, and orientation. Reference frames describe the orientation of the flight vehicle with respect to a global or local reference point. Because different components of the FVDM are physically located and oriented at unique locations of the Diamond DA-40, multiple reference frames are used to describe the forces and moments these components generate due to their placement. In order for the summation of forces and moments generated at a current moment, reference frame transformations are used to coordinate local forces and moments into a congruent reference frame such that these calculations are performed properly. This section describes the different reference frames used in this work for the FVDM\@.
+Reference frames and their transformations are a critical component to any navigation algorithm. Reference frames describe the orientation of the flight vehicle with respect to a global or local reference point. Because different components of the FVDM are physically located and oriented at unique locations of the Diamond DA-40, multiple reference frames are used to describe the forces and moments these components generate due to their position with respect to the Center of Gravity (CG) of the aircraft. Reference frame transformations are used to coordinate local forces and moments into a congruent reference frame such that the summed forces and moments are generated properly. This section describes the different reference frames used in this work for the development of the flight mechanics modules withing the FVDM\@.
 % The different reference frames on the aircraft model
 % Body
 \subsection{\textbf{Flight Vehicle Reference Frame}}\label{section:FVRF}
@@ -23,7 +23,7 @@ The flight vehicle reference frame or body frame describes the reference frame w
 \clearpage
 % Prop
 \subsection{\textbf{Propeller Reference Frame}}
-The propeller reference frame describes the axis about which the propeller rotates with origin to the propeller nacelle, as seen in Figure~\ref{fig:propframe}. Propeller \textit{pitch}, as it is referenced in this thesis is a rotation about the \textit{y} axis, while the blades of the propeller rotate about the \textit{x} axis. This axis remains remains fixed in orientation and position (the frame origin being the propeller nacelle).~\( \phi{}\) from Figure~\ref{fig:propframe} describes the twist of the blade. The blade twist is a design choice of the propeller manufacturer. The twist of the blade helps the propeller produce more thrust, but is not used in any reference frame calculations.
+The propeller reference frame describes the axis about which the propeller rotates with origin to the propeller nacelle, as seen in Figure~\ref{fig:propframe}. Propeller \textit{pitch}, as it is referenced in this thesis is a rotation about the \textit{y} axis, while the blades of the propeller rotate about the \textit{x} axis. This axis remains remains fixed in orientation and position (the frame origin being the propeller nacelle).~\( \phi{}\) from Figure~\ref{fig:propframe} describes the twist of the blade. The twist of the blade helps the propeller produce more thrust, but is not used in any reference frame calculations.
 
 \begin{figure}[!ht]
     \centering
@@ -33,7 +33,7 @@ The propeller reference frame describes the axis about which the propeller rotat
 
 % Wind
 \subsection{\textbf{Local Wind Reference Frame}}
-The local wind reference frame is used to calculate the lift and drag generated from their respective components with origin at the center of mass of the modeled Diamond DA-40. The orientation of the reference frame changes such that \(\Psi \) remains parallel with the trajectory of the aircraft and \(\alpha \) remains parallel to the ground below. In literature, \( \Psi \) and \(\alpha \) are referred to as the \textit{sideslip} and \textit{angle of attack} of the aircraft during flight. Sideslip can be thought of as the left or right direction of the aircraft with respect to the incident free stream and angle of attack is the up or down direction of aircraft with respect to the incident freestream.
+The local wind reference frame is used to calculate the lift and drag generated from their respective components with origin at the center of mass of the modeled Diamond DA-40. The orientation of the reference frame changes such that \(\beta \) remains parallel with the trajectory of the aircraft and \(\alpha \) remains parallel to the ground below. In literature, \( \beta \) and \(\alpha \) are referred to as the \textit{sideslip} and \textit{angle of attack} of the aircraft during flight. Sideslip can be thought of as the left or right direction of the aircraft with respect to the incident free stream and angle of attack is the up or down direction of aircraft with respect to the incident freestream.
 
 \begin{figure}[!ht]
     \centering
@@ -43,10 +43,10 @@ The local wind reference frame is used to calculate the lift and drag generated 
 
 % Local
 \subsection{\textbf{Local Navigation Reference Frame}}
-A local navigation frame is necessary to define the orientation of the flight vehicle. This work implements a North-East-Down reference frame in which the axes are aligned with the topographic directions: North, East, and vertical as seen in Figure~\ref{fig:globalframes} by \(X_n\),\(Y_n\), and \(Z_n\). The origin of the local reference frame is defined at the initial position in the flight vehicle dynamics model and the navigation algorithm. The Euler attitude angles are used to describe the orientation of the Diamond DA-40 relative to the local navigation frame. When the aircraft has no roll pitch, or yaw, this equates to the aircraft flying perfectly tangential to Earth's ellipsoid, with the nose of the aircraft pointing towards the North.
+A local navigation frame is necessary to define the orientation of the flight vehicle. This work implements a North-East-Down (NED) reference frame in which the axes are aligned with the topographic directions as seen in Figure~\ref{fig:globalframes} by \(X_n\),\(Y_n\), and \(Z_n\). The origin of the local navigation reference frame is defined at the initial position in the flight vehicle dynamics model and the navigation algorithm. The Euler attitude angles are used to describe the orientation of the Diamond DA-40 relative to the local navigation frame. When the aircraft has no roll pitch, or yaw, this equates to the aircraft flying perfectly tangential to Earth's ellipsoid, with the nose of the aircraft pointing towards the North.
 
 \subsection{\textbf{Global Reference Frames}}
-Global Reference Frames are critical for GPS receiver to calculate position and velocity. In summary, a position from a receiver is based on distances between the receiver and any visible satellites. As all GPS satellites operate in orbit around the Earth, the global reference frame provides a suitable solution that encompasses both satellite and receiver position and velocities. In this thesis, two global reference frames are used. The Earth-Centered, Earth-Fixed (ECEF) and the geodetic reference system. The ECEF reference frame is considered the standard global reference frame used as it works well for defining both positions and velocities for satellites and receivers, but falls short when it comes to visualization as the origin of the ECEF frame is the center of the Earth. The geodetic reference frame is an alternative frame that allows a visualization advantage by defining positions based on the surface of the Earth. Both LLA and ECEF reference frames utilize the World Geodetic System 1984 (WGS84) to describe Earth's geoid and gravitational field as function of parameters in Table~\ref{tbl:wgs84}. Visualization of both reference frames can be seen in Figure~\ref{fig:globalframes}.
+Global Reference Frames are critical for GPS receiver to calculate position and velocity. In summary, a position from a receiver is based on distances between the receiver and any visible satellites (details about positioning using GPS satellites provided in Chapter 3). As all GPS satellites operate in orbit around the Earth, the global reference frame provides a suitable solution that encompasses both satellite and receiver positions and velocities. In this thesis, two global reference frames are used. The Earth-Centered, Earth-Fixed (ECEF) and the geodetic reference system (LLA). The ECEF reference frame is considered the standard global reference frame used as it works well for defining both positions and velocities for satellites and receivers, but falls short when it comes to visualization as the origin of the ECEF frame is the center of the Earth. The geodetic reference frame is an alternative frame that allows a visualization advantage by defining positions based on the surface of the Earth. Both LLA and ECEF reference frames utilize the World Geodetic System 1984 (WGS84) to describe Earth's geoid and gravitational field as function of parameters in Table~\ref{tbl:wgs84}. Visualization of both reference frames can be seen in Figure~\ref{fig:globalframes}.
 
 \begin{table}[!ht]
     \caption{Properties describing the WGS84 ellipsoid}\label{tbl:wgs84}
@@ -371,12 +371,12 @@ Where \(AF_{\textrm{per blade}}\) is the \textit{Activity Factor} per blade, \(c
     \centering
     \begin{tabular}{cccc}
         \toprule
-        \textbf{Characteristics }      & \textbf{Value}  & \textbf{Units}  \\
+        \textbf{Characteristics } & \textbf{Value} & \textbf{Units} \\
         \midrule
-        \(c_{\textrm{root}}\) & 0.1475 & meters \\
-        \(D\)                 & 1.9    & meters \\
-        \( \lambda \)         & 0.8    & {--}    \\
-        \(C_L\)               & 0.5    & {--}    \\
+        \(c_{\textrm{root}}\)     & 0.1475         & meters         \\
+        \(D\)                     & 1.9            & meters         \\
+        \( \lambda \)             & 0.8            & {--}           \\
+        \(C_L\)                   & 0.5            & {--}           \\
         \bottomrule
     \end{tabular}
 \end{table}
@@ -531,9 +531,9 @@ This focus of this work is the development of a high-fidelity FVDM that closely 
 
 \begin{enumerate}
     \item Implementation of a non-standard day atmospheric model. It is rare that actual flights will occur during standard temperature, pressures, and air densities. These deviations should be model for better accuracy of atmospheric effects.
-    
+
     \item Collection of air data through sub-scale or full-scale flight tests. Currently, aerodynamic forces are computed solely from numerical simulations as a function of different variables. However, these simulations fail if the aircraft is out of the tested range. A more robust method of aerodynamic data collection could be through wind tunnel testing or sub-scale and full-scale flight tests for the tested flight plan.
-    
+
     \item Numerical method for computing propeller thrust. Currently, the thrust-power generated by the propeller is modeled as a singular components in the forward direction of the aircraft. However, depending on various wind conditions and sideslip of the aircraft, this may not always be the case. A better method for calculating propeller thrust would be to first calculate the angle of the incident freestream with respect to the propeller reference frame, and then calculate the thrust-power vector based on this computed vector.
 \end{enumerate}
 
