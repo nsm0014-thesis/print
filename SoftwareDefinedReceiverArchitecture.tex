@@ -1,10 +1,10 @@
 \chapter{GPS Software Defined Receiver Architecture}\label{chpater:scalartracking}
-Since 1993, GPS has provided users with capable hardware to determine their global position within seconds and in recent developments, at centimeter-level position error~\cite{bradfordparkinsonGlobalPositioningSystem1996}. The focus of this chapter revolves around the inner-workings of a scalar-tracking software defined receiver, capable of processing GPS L1 C/A. Split into four sections, the chapter begins with an explanation on how the receiver discretizes and digitizes the continuous, low-power signal collected by the antenna. Following that, details about how the receiver knows what satellites are transmitting to it are described. The third section draws on the different algorithms in scalar tracking that allow the received signal data to be replicated and decoded for satellite orbital parameters that play an important role in the last section. Wrapping up this chapter, an overview on the weighted nonlinear least squares algorithm is provided along with detailed descriptions of the three measurements that each satellite is indirectly broadcasting to the receiver.
+Since 1993, GPS has provided users with capable hardware to determine their global position within seconds and with carrier phase differential positioning, centimeter-level position error~\cite{humphreysLowcostPreciseVehicular2018}. The focus of this chapter revolves around the inner-workings of a scalar tracking Software Defined Receiver (SDR), capable of processing GPS L1 C/A (largely based on~\cite{millerSNAPXonaSpace2023}). Split into four sections, the chapter begins with an explanation on how the receiver discretizes and digitizes the continuous, low-power signal collected by the antenna. Following that, details about how the receiver knows what satellites are transmitting to it are described. The third section draws on the different algorithms in scalar tracking that allow the received signal data to be replicated and decoded for satellite orbital parameters that play an important role in the navigation algorithms. Wrapping up this chapter, an overview on the weighted nonlinear least squares algorithm is provided along with detailed descriptions of the three measurements that each satellite is indirectly broadcasting to the receiver.
 
 \section{\textbf{Front End}}
 The signals received by an antenna must be down converted and digitized before the processing of the signal can take place. The \textit{Front End} of the receiver performs this conversion through a series of amplifiers, filters, and a Analog-to-Digital Converter (ADC)~\cite{kaplanUnderstandingGPSPrinciples2006}. First, a signal is received by a Right-Hand Circularly Polarized (RHCP) antenna. The antenna can be passive, but for challenging scenarios, a powered, active antenna may be necessary. Because of the low received signal power that GPS constellations provide, the signal is amplified through a series of Low Noise Amplifiers (LNA) and Band Pass Filters (BPF). The LNA raise the power of the received GPS signal and the BPF act as a first-step in removing non-GPS signals from processing. The last stage is passing the continuous received signal through the ADC where the signal is converted to digitized samples at a frequency of the receiver-embedded oscillator. The oscillator is filtered using a phase lock loop (PLL), described later.
 
-The purpose in this mixing process is to transform the signal into a more manageable intermediate frequency while still maintaining the same modulation and Doppler applied to the signal. Figure~\ref{fig:frontend} describes the process on converting the analog, continuous signal into a discrete, digitized IF signal in block diagram form.
+The purpose in this mixing process is to transform the signal into a more manageable intermediate frequency while still maintaining the same modulation and Doppler applied to the signal~\cite{bradfordparkinsonGlobalPositioningSystem1996}. Figure~\ref{fig:frontend} describes the process on converting the analog, continuous signal into a discrete, digitized IF signal in block diagram form.
 
 \begin{figure}[!ht]\label{fig:frontend}
     \centering
@@ -13,7 +13,7 @@ The purpose in this mixing process is to transform the signal into a more manage
 \end{figure}
 
 \section{\textbf{Acquisition}}
-Once the received signals are converted to a discrete form, the receiver will determine which satellites are transmitting and in-view. Acquisition correlates local replicas of a signal with the received data. In order for there to be a large correlation magnitude, Pseudo-Random Number (PRN) codes must be within 1-chip and the frequency of the carrier wave must also be within 250 hertz of the true frequency. Correlation with the carrier frequency can be difficult due to the motion of the satellite, and even more difficult if the collection platform is also moving. The motion of the satellites with respect to the receiver bring a change to the carrier frequency known as the Doppler shift. For the algorithms in acquisition to successfully determine which satellites are in-view of the receiver, it is beneficial to correlate with each satellite for the specified constellation, at each code offset, and at a wide range of carrier frequency offsets~\cite{kaplanUnderstandingGPSPrinciples2006}.
+Once the received signals are converted to a discrete form, the receiver will determine which satellites are transmitting and in-view. Acquisition correlates local replicas of a signal with the received data~\cite{akosEffectSamplingFrequency2006}. In order for there to be a large correlation magnitude, Pseudo-Random Number (PRN) codes must be within 1-chip and the frequency of the carrier wave must also be within 250 hertz of the true frequency. Correlation with the carrier frequency can be difficult due to the motion of the satellite, and even more difficult if the collection platform is also moving. The motion of the satellites with respect to the receiver bring a change to the carrier frequency known as the Doppler shift. For the algorithms in acquisition to successfully determine which satellites are in-view of the receiver, it is beneficial to correlate with each satellite for the specified constellation, at each code offset, and at a wide range of carrier frequency offsets~\cite{kaplanUnderstandingGPSPrinciples2006}.
 
 A modern, ubiquitous approach to correlating the local replica signals with the received data is using a Parallel Code Phase Search (PCPS) algorithm in which the correlations occur in the frequency domain~\cite{scottRapidSignalAcquisition2001}. PCPS parallelizes the PRN code offset search space by converting the space from the time to frequency domain. This process is shown in Figure~\ref{fig:PCPS}.
 
@@ -95,24 +95,24 @@ The code phase error is determined using a DLL discriminator. It takes the early
     \phi_{DLL} = \frac{\sqrt{IE^2 + QE^2} - \sqrt{IL^2 + QL^2}}{2 \sqrt{IE^2 + QE^2} + \sqrt{IL^2 + QL^2}} \approx \epsilon + \eta_{DLL}
 \end{equation}
 
-The DLL discriminator produces code phase errors within \(\frac{1}{2}\) chips, but becomes unstable if the correlator errors are greater than \(\frac{3}{2}\) chips from the true code phase. This is allowable as errors of this magnitude are beyond the linear pull-in range of the DLL loop filter.
+The DLL discriminator produces code phase errors within 0.5 chips, but becomes unstable if the correlator errors are greater than 1.5 chips from the true code phase. This is allowable as errors of this magnitude are beyond the linear pull-in range of the DLL loop filter~\cite{kaplanUnderstandingGPSPrinciples2006}.
 
 For scalar tracking, loop filters apply the aforementioned errors to more accurately replicate the signal for the next integration period. For this work, a second-order PLL with a first-order FLL assist is used to tracking changes in carrier frequency and phase (Figure~\ref{fig:PLL}).
 
-\begin{figure}[!ht]\label{fig:PLL}
+\begin{figure}[!ht]
     \centering
     \includegraphics[width=\linewidth]{Figures/PLL.png}
-    \caption{Discrete block diagram of the PLL-FLL loop filters used in this work.}
+    \caption{Discrete block diagram of the PLL-FLL loop filters used in this work~\cite{kaplanUnderstandingGPSPrinciples2006}.}\label{fig:PLL}
 \end{figure}
 
 The natural-radian frequency, \(\omega_0\), is set by the user, and common values for processing GPS L1 C/A exists in~\cite{kaplanUnderstandingGPSPrinciples2006}.
 
-The DLL loop filter works in a similar fashion, but without the FLL loop filter assist and the addition of the output of the PLL-FLL loop filter to aid in replicating the true code phase (Figure~\ref{fig:DLL}).
+The DLL loop filter works in a similar fashion, but without the FLL loop filter assist and the addition of the output of the PLL-FLL loop filter (Figure~\ref{fig:PLL}) to aid in replicating the true code phase (Figure~\ref{fig:DLL}).
 
-\begin{figure}[!ht]\label{fig:DLL}
+\begin{figure}[!ht]
     \centering
     \includegraphics[width=\linewidth]{Figures/DLL.png}
-    \caption{Discrete block diagram of the DLL loop filter used in this work.}
+    \caption{Discrete block diagram of the DLL loop filter used in this work~\cite{kaplanUnderstandingGPSPrinciples2006}.}\label{fig:DLL}
 \end{figure}
 
 In Figure~\ref{fig:DLL}, \(sf\) is known as the scale factor,
@@ -122,10 +122,10 @@ In Figure~\ref{fig:DLL}, \(sf\) is known as the scale factor,
 
 where \(R_c\) is the spreading (i.e. PRN) code rate, and \(f_L\) is the signal carrier frequency. For GPS L1 C/A, these are \(1.023 \times 10^6\) Hertz and \(1575.420 \times 10^6\) Hertz, respectively.
 
-If the correlators, discriminators, and loop filters are correctly working in tandem, the replicated signal should accurately represent the received signal data and the receiver can decode the bits that translate to the broadcast navigation message from each satellite. A handful of subframes in the navigation message provide satellite ephemeris, or orbital parameters, that the receiver can use to propagate satellite PVT and determine its position through time.
+If the correlators, discriminators, and loop filters are correctly working in tandem, the replicated signal should accurately represent the received signal data and the receiver can decode the bits that translate to the broadcast navigation message from each satellite. A handful of subframes in the navigation message provide satellite ephemeris, or orbital parameters, that the receiver can use to propagate satellite PVT and determine its position through time~\cite{valladoSGP4OrbitDetermination2008}.
 
 \section{\textbf{Navigation Algorithms}}
-Once the signal is accurately replicated and correctly decoded, the receiver begins to estimate a PVT solution. A position solution is found due to trilateration, meaning if there exists at least three unique ranges from known locations, then a position solution exists. Parallel to finding the position solution, receiver velocity can be found in the same way, using range rates in place of range. This sections describes calculating the ranges and range rates, and how they are used in the navigation processor for an estimated PVT solution.
+Once the signal is accurately replicated and correctly decoded, the receiver begins to estimate a PVT solution. A position solution is found due to trilateration, meaning if there exists at least three unique ranges from known locations, then a position solution exists~\cite{subiranaGNSSDATAPROCESSING}. Parallel to finding the position solution, receiver velocity can be found in the same way, using range rates in place of range. This sections describes calculating the ranges and range rates, and how they are used in the navigation processor for an estimated PVT solution.
 
 \subsection{\textbf{GPS Measurements}}
 There exists three main measurements from GPS satellites. The first of the three is pseudorange. By definition, it is the total time of transit from transmission to reception of the signal by the receiver. This value is then multiplied by the speed of light, providing this transit time in units of meters (Equation~\ref{eq:psr_time}).
@@ -134,7 +134,7 @@ There exists three main measurements from GPS satellites. The first of the three
     \tilde{\rho}^j = (t_r - t_t^j)\,c
 \end{equation}
 
-In order to calculate a pseudorange, \(\rho \), from the \(j^{th}\) satellite The transmitted time of the signal, \(t_t\), is subtracted from the received time, \(t_r\), and then multiplied by the speed of light in vacuum, \(c\), as described before. For the rest of the work presented in this thesis, variables with \({\left(\;\tilde{}\;\right)}\) represent a measurement. The pseudorange from Equation~\ref{eq:psr_time} is a measurement because both the receiver clock and satellite clock have inherit biases and drifts that perturb their values from their truth. In addition to the errors in the clocks, the signal in space travels through the atmosphere, delaying the signal until it reaches the receiver. We can change Equation~\ref{eq:psr_time} such that these errors and delays are modeled. Describing the pseudorange in meters gives us,
+In order to calculate a pseudorange, \(\rho \), from the \(j^{th}\) satellite The transmitted time of the signal, \(t_t\), is subtracted from the received time, \(t_r\), and then multiplied by the speed of light in vacuum, \(c\), as described before. For the rest of the work presented in this thesis, variables with \({\left(\;\tilde{}\;\right)}\) represent a measurement. The pseudorange from Equation~\ref{eq:psr_time} is a measurement because both the receiver clock and satellite clock have inherit biases and drifts that perturb their values. In addition to the errors in the clocks, the signal in space travels through the atmosphere, delaying the signal until it reaches the receiver. We can change Equation~\ref{eq:psr_time} such that these errors and delays are modeled. Describing the pseudorange in meters gives us,
 
 \begin{equation}\label{eq:psr_meters}
     \tilde{\rho}^j = r_u^j + c\,t^j + c\,t_u + I^i_u + T^i_u+ M^i_u + \eta^i_{\rho},
@@ -144,9 +144,9 @@ where,
     r^j_u = \sqrt{{\left(x^j - x_u\right)}^2 + {\left(y^j - y_u\right)}^2 + {\left(z^j - z_u\right)}^2},
 \end{equation}
 
-\(t_u\) is the clock bias of the user, \(t^j\) is the clock bias of the \(j^{th}\) satellite, \(I\) is the ionospheric delay, \(T\) is the tropospheric delay, \(M\) is the delay of multipath, and \(\eta \) is additive Gaussian white noise all at time \(i\).
+\(t_u\) is the clock bias of the user, \(t^j\) is the clock bias of the \(j^{th}\) satellite, \(I\) is the ionospheric delay, \(T\) is the tropospheric delay, \(M\) is the delay of multipath, and \(\eta \) is additive Gaussian white noise all time \(i\).
 
-Positioning with GPS is possible because of the atomic clocks on board of each satellite. These clocks are highly stable and allow the Time Of Week (TOW) to be transmitted in the data message for which the receiver decodes. Although the on board clocks are incredibly stable, the PRN sequence cannot be precisely transmitted at every millisecond. Fortunately, these clock errors are modeled in the data message, so \(t^j\) can be removed from the pseudorange equation. Clocks on board receivers are not quite as stable, and the received time of the signal is not known upon a cold start. A solution to this problem is initialize the received time to the first satellite transmit time and add a nominal offset of \(66.7\) milliseconds. This offset stems from a back of the envelope calculation based on the distance between MEO satellite orbits and the center of the Earth (Equation~\ref{eq:nominalOffset}).
+Positioning with GPS is possible because of the atomic clocks on board each satellite. These clocks are highly stable and allow the Time Of Week (TOW) to be transmitted in the data message for which the receiver decodes. Although the on board clocks are incredibly stable, the PRN sequence cannot be precisely transmitted at every millisecond. Fortunately, these clock errors are modeled in the data message, so \(t^j\) can be removed from the pseudorange equation. Clocks on board receivers are not quite as stable, and the received time of the signal is not known upon a cold start. A solution to this problem is initialize the received time to the first satellite transmit time and add a nominal offset of \(66.7\) milliseconds. This offset stems from a back of the envelope calculation based on the distance between MEO satellite orbits and the center of the Earth (Equation~\ref{eq:nominalOffset}).
 
 \begin{equation}\label{eq:nominalOffset}
     {\left(t_u - t^{j} \right)}^{i = 0} = \frac{d_{MEO}}{c} \approx \frac{20000000}{299792458} \approx 0.0667
@@ -176,7 +176,7 @@ The last measurement from GPS satellites is estimate of noise on a signal. The r
     \frac{C}{N_0} = 10\,\log_{10} {\left(\frac{\tilde{A} - 4\hat{\sigma_{\eta}^2}}{2\,T\hat{\sigma_{\eta}^2}}\right)}
 \end{equation}
 
-Where,
+From Equation~\ref{eq:CN0},
 
 \begin{equation}\label{eq:ampitude}
     \tilde{A} = {\left(IE +IL\right)}^2 + {\left(QE + QL\right)}^2
@@ -231,7 +231,7 @@ and then find the Jacobian of \(\mathbf{H}\), a relationship forms between the p
     }{r^j_u}
 \end{equation}
 
-Because the bias and drift of the clocks directly correspond to there error states, they are noted with a \(1\).
+Because the bias and drift of the clocks directly correspond to there error states, they are equal to \(1\).
 
 \begin{equation}\label{eq:Hmat}
     \mathbf{H} =
@@ -244,7 +244,7 @@ Because the bias and drift of the clocks directly correspond to there error stat
     \end{bmatrix}
 \end{equation}
 
-The last piece in WNLS algorithm is defining the weights.\( \; \mathbf{W}\) is utilized by the algorithm to place more trust in satellites with a high \(C/N_0\) compared to satellites with lower \(C/N_0\). The weighting matrix is shown in Equation~\ref{eq:weights}.
+The last piece in WNLS algorithm is defining the weights.\( \; \mathbf{W}\) is utilized by the algorithm to place more confidence in satellites with a high \(C/N_0\) compared to satellites with lower \(C/N_0\). The weighting matrix is shown in Equation~\ref{eq:weights}.
 
 \begin{equation}\label{eq:weights}
     \mathbf{W} = \begin{bmatrix}
