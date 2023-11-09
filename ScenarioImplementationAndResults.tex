@@ -1,189 +1,263 @@
 \chapter{Scenario Implementation and Results}
 % Introduction
-This chapter presents results of two scenarios using the proposed navigation filter and its underlying components discussed in previous chapters. Both scenarios use a similar trajectory and will be discussed thoroughly to avoid confusion. First, the chapter starts with a discussion of the first scenario and the five separate cases run in Monte-Carlo for scenario one. Following a description of scenario one, results from specific cases will be presented, highlighting the strong and weak points of the proposed navigation filter. The results from the remaining cases not presented in this chapter can be found in the appendix of this work. Once the analysis of scenario one has concluded, a description of scenario two is presented, followed by Monte-Carlo statistical analyses. The performance of the proposed navigation filter will be determined based on 100-run Monte-Carlo simulations each scenario and and each case. As a visual comparison, a loosely-coupled IMU is added for the same scenarios.
+This chapter presents results of two trajectories using the proposed navigation filter and its underlying components discussed in previous chapters. Each trajectory is subject to varying degrees of signal interference across multiple Monte-Carlo simulations and will be discussed thoroughly to avoid confusion. First, the chapter starts with a discussion of the first trajectory and configuration file used for simulation. Following a description of trajectory one, Monte-Carlo analyses highlight the strong and weak points of the proposed navigation filter. Once the analyses of the first trajectory conclude, a description of trajectory two is presented, followed by Monte-Carlo statistical analyses. Each Monte-Carlo case is composed of 100-run simulations for each trajectory subject to seven cases of signal degradation. To show the improved performance of the proposed navigation filter, a constant-velocity, kinematic model VDFLL~\cite{grierPositionNavigationTiming} is shown as a comparison. This standard VDFLL processes the same trajectories at the same cases of signal degradation.
 
-\section{\textbf{Simulated Trajectory}}
-As stated previously, both scenarios one and two will be flying a similar trajectory. This trajectory meets the observability criteria discussed in Chapter 5, featuring continuous banking of the aircraft with a steady climb to provide excitation to the angular states for better estimates of the orientation during simulations. Figure~\ref{fig:trajectory} presents the \textit{S}-like trajectory and Table~\ref{tbl:trajectory} presents the initial conditions of the simulated Diamond DA-40.
+\section{\textbf{First Trajectory}}
+For the first trajectory, the aircraft is simulated for a straight flight path while maintaining a constant altitude of 500 meters above sea level (Figure~\ref{fig:trajectory1}). It is assumed that the receiver knows it position beforehand when the simulation begins. For the first trajectory, the receiver aboard the aircraft is subject to seven different cases of interference that degrade the signals from the nine tracked channels (Table~\ref{tbl:interferenceCases}). The receiver is subject to these degraded power levels for the entirety of the five-minute simulation.
+
+\begin{table}[!ht]
+    \caption{Signal power for each case applied to each trajectory.}\label{tbl:interferenceCases}
+    \centering
+    \begin{tabular}{cc}
+        \toprule
+        Case & \(C/N_0\) [dB-Hz] \\
+        \midrule
+        1    & 45                \\
+        2    & 35                \\
+        3    & 25                \\
+        4    & 22                \\
+        5    & 20                \\
+        6    & 18                \\
+        7    & 16                \\
+        \bottomrule
+    \end{tabular}
+\end{table}
 
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=\linewidth]{Figures/trajectoryfigure.png}
-    \caption{Simulated trajectory for both presented scenarios with accompanying altitude flightpath. }\label{fig:trajectory}
+    \includegraphics[width=\linewidth]{Figures/Results/trajectory1.png}
+    \caption{(Left) Top-view of simulated flight path for trajectory one. (Right) Altitude of flight path for trajectory one.}\label{fig:trajectory1}
 \end{figure}
 
+From Table~\ref{tbl:trajectory}, several parameters are configurable to meet the desired simulation of the user.
+
 \begin{table}[!ht]
-    \caption{Initial conditions for simulated trajectory from Figure~\ref{fig:trajectory}.}\label{tbl:trajectory}
+    \caption{Initial conditions for simulated trajectory from Figure~\ref{fig:trajectory1}.}\label{tbl:trajectory}
     \centering
     \begin{tabular}{lcc}
         \toprule
         \textbf{Condition}       & \textbf{Value}                                      & \textbf{Units}                     \\
         \midrule
         Date                     & June 15, 2022                                       & \textit{DateTime} Object           \\
-        Duration                 & 180                                                 & \(s\)                              \\
+        Duration                 & 300                                                 & \(s\)                              \\
         Monte-Carlo Runs         & 100                                                 & {--}                               \\
         Frequency                & 200                                                 & Hz                                 \\
-        Trajectory               & \textit{SCurveFlightPath.mat}                       & See Chapter 5                      \\
+        Trajectory               & \textit{StraightFlightPath.mat}                     & See Chapter 5                      \\
         Velocity Disturbance     & \(\left[300, \; 300, \; 0\right]\)                  & \(m/s\)                            \\
         Angular Rate Disturbance & \(\left[10^{-12}, \; 10^{-12}, \; 10^{-12}\right]\) & \(rad/s\)                          \\
-        Position Disturbance     & \(\left[0, \; 0, \; 10\right]\)                     & \(m\)                              \\
         Clock Type               & OCXO                                                & {--}                               \\
         Initial Velocity         & \(\left[75, \; 0, \; 0\right]\)                     & \(m/s\)                            \\
         Initial Angular Rate     & \(\left[0, \; 0, \; 0\right]\)                      & \(rad/s\)                          \\
         Initial Position         & \(\left[0.65617, \; -2.1376, \; 500\right]\)        & \(\left[rad, \; rad, \; m\right]\) \\
         Initial Attitude         & \(\left[0, \; 0, \; 0\right]\)                      & \(rad\)                            \\
         Initial Clock Terms      & \(\left[0, \; 0\right]\)                            & \(\left[m, \; m/s\right]\)         \\
-        Channel \(C/N_0\)        & \(45\)                                              & db-Hz                              \\
+        Channel \(C/N_0\)        & \(45,\,35,\,25,\,22,\,20,\,18,\,16\)                & dB-Hz                              \\
 
         \bottomrule
     \end{tabular}
 \end{table}
 
-From Table~\ref{tbl:trajectory}, several parameters are configurable to meet the desired simulation of the user. Date is used to pull the specified Rinex file from~\cite{CDDIS}. This Rinex file is then parsed for its ephemeris and used to propagate the satellites during the simulation. SGP4 propagation~\cite{} is used to propagate the satellites PVT during simulation. Because simulations are not expected to be more than four hours long, this propagation method stays within its error criteria and is okay to use for the purpose of this thesis. Figure~\ref{fig:skyplot} shows the available satellites at the first time step for June 15, 2022 used in this work.
+Date is used to pull the specified Rinex file from~\cite{nollCrustalDynamicsData2010}. This Rinex file is then parsed for its ephemeris and used to propagate the satellites during the simulation. Figure~\ref{fig:skyplot} shows the available satellites at the first time step for June 15, 2022 used in this work.
 
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=0.4\linewidth]{Figures/Results/skyplot.png}
-    \caption{Skyplot of the available satellites during the simulation of both scenarios given the date of broadcast ephemeris.}\label{fig:skyplot}
+    \includegraphics[width=0.8\linewidth]{Figures/Results/skyplot.png}
+    \caption{Orange dots signify satellite locations at the start of the simulations given the date of broadcast ephemeris. Block dots signify satellites that are in-view but are discarded due to the 10 degree mask angle used. The green triangle represents the initial receiver position.}\label{fig:skyplot}
 \end{figure}
 
-Duration and Monte-Carlo Runs specify the length of each simulation in seconds and the number of simulations for each scenario and/or case. For the work presented in thesis, 100 simulation Monte-Carlo runs are used for analyses. This may not seems substantial, but based on~\cite{khaghaniAssessmentVDMbasedAutonomous2018,khaghaniAutonomousVehicleDynamic2016,mwenegohaModelbasedTightlyCoupled2020} and time to completion for each simulation, 100 simulations is enough to show the general trend for statistical purposes. The trajectory is specified as a -mat file. The creation of the trajectory file is detailed in Chapter 5. As mentioned before, the S-like trajectory is to provided excitation in the angular states for better estimates during simulation. As explained in chapter 5, disturbances are modeled onto the trajectory of the aircraft as the FVDM is not perfect. External conditions such as wind and various atmospheric conditions alter the behavior of the Diamond DA-40 slightly. These disturbances are defined as Velocity, Angular Rate, and Position Disturbance in Table~\ref{tbl:trajectory}. Clock Type is the embedded receiver clock modeled during the simulation. More information on the different types of clocks can be found in Chapter 4. For the purposes of this thesis, both scenarios and all cases will use the OCXO\@. The initial states of the aircraft are defined by the accompanying variables. Since our trajectory specifies a mostly-north flight path, the north velocity component is specified to be 75 meters per second, while the other components are zero. Also, the pitch of the aircraft is specified as 4 degrees up, this is so the aircraft generates lift at the first couple time steps during the simulations and does not enter a stall. Lastly, the initial position of the aircraft is specified as the first waypoint location, for simplicity. The last configurable parameter is the initial Channel \(C/N_0\) of the available satellites. Because each scenario and case analyzed in this thesis starts in benign conditions, the Channel \(C/N_0\) is defined as \(45\) dB-Hz.
+Duration and Monte-Carlo Runs specify the length of each simulation in seconds and the number of simulations for each scenario and/or case. For the work presented in thesis, 100 simulation Monte-Carlo runs are used for analyses. This may not seems substantial, but based on~\cite{khaghaniAssessmentVDMbasedAutonomous2018,khaghaniAutonomousVehicleDynamic2016,mwenegohaModelbasedTightlyCoupled2020} and time to completion for each simulation, 100 simulations is enough to show the general trend for statistical purposes. The trajectory is specified as a -mat file. The creation of the trajectory file is detailed in Chapter 5. Trajectory one is meant to act as a baseline case where it is expected that the deeply-coupled FVDM and constant-velocity kinematic model both perform well.  As explained in chapter 5, disturbances are modeled onto the trajectory of the aircraft as the FVDM is not perfect. External conditions such as wind and various atmospheric conditions alter the behavior of the Diamond DA-40 slightly. These disturbances are defined as Velocity and Angular Rate in Table~\ref{tbl:trajectory}. Clock Type is the embedded receiver clock modeled during the simulation. More information on the different types of clocks can be found in Chapter 4. For the purposes of this thesis, both scenarios and all cases will use the OCXO\@. The initial states of the aircraft are defined by the accompanying variables. Since our trajectory specifies a mostly-north flight path, the north velocity component is specified to be 75 meters per second, while the other components are zero. Also, the pitch of the aircraft is specified as 4 degrees up, this is so the aircraft generates lift at the first couple time steps during the simulations and does not enter a stall upon initialization. Lastly, the initial position of the aircraft is specified as the first waypoint location, for simplicity. The last configurable parameter is the initial Channel \(C/N_0\) of the available satellites.
 
-\section{\textbf{Scenario 1}}
-Scenario one comprises of five separate cases, each with different \(C/N_0\) levels the proposed navigation filter will be tested at. Table~\ref{tbl:cases} lists the different \(C/N_0\) levels of each case. For the first 60 seconds in each case for scenario one, the aircraft receives benign signals from the available nine satellites based on the provided ephemeris for the given date and location. For the purpose of this thesis, benign signals have an expected \(C/N_0\) of \(45\) dB-Hz. After 60 seconds, interference on the signals suddenly starts, subjecting the simulated VT receiver to lower \(C/N_0\) values, as specified in Table~\ref{tbl:cases}. After 90 seconds of interference, the \(C/N_0\) levels return to their benign state. This benign return is to analyze if the proposed navigation filter is able to retain lock, despite the drifting of states during the degradation period.
-
-\begin{table}[!ht]
-    \caption{\(C/N_0\) level for each of the five cases specified for scenario one.}\label{tbl:cases}
-    \centering
-    \begin{tabular}{cccc}
-        \toprule
-        \textbf{Case} & \textbf{\(\mathbf{C/N_0}\) [dB-Hz]} \\
-        \midrule
-        1             & 35                                  \\
-        2             & 30                                  \\
-        3             & 25                                  \\
-        4             & 20                                  \\
-        5             & 15                                  \\
-        \bottomrule
-    \end{tabular}
-\end{table}
-
-Scenario one is designed to test the proposed navigation in a variety of circumstance, ranging from slight degradation, to almost completely GPS-denied. Through a 100-run Monte-Carlo analysis of each case, the performance with the deeply integrated FVDM compared with a loosely-coupled IMU will showcase the benefits of the proposed navigation filter and where the FVDM falls short.
-
-\begin{figure}[!ht]
-    \centering
-    \includegraphics[width=0.75\linewidth]{Figures/Results/CN025.png}
-    \caption{Estimated \(C/N_0\) compared with the \(C/N_0\) drop of Case 3. }\label{fig:CN025}
-\end{figure}
-
-
-\begin{figure}[!ht]
-    \centering
-    \includegraphics[width=0.75\linewidth]{Figures/Results/Scenario1/Case20/codephase.png}
-    \caption{Measurements of code phase in meters from the nine available satellites during interference when \(C/N_0\) is \(20\) dB-Hz.}\label{fig:codephase20}
-\end{figure}
-
-\begin{figure}[!ht]
-    \centering
-    \includegraphics[width=0.75\linewidth]{Figures/Results/Scenario1/Case20/codeVariance.png}
-    \caption{Code phase measurement variance in meters from the nine available satellites during interference when \(C/N_0\) is \(20\) dB-Hz.}\label{fig:codephaseVariance20}
-\end{figure}
-
-\begin{figure}[!ht]
-    \centering
-    \includegraphics[width=0.75\linewidth]{Figures/Results/Scenario1/Case20/carrierFreq.png}
-    \caption{Measurements of carrier frequency in meters per second from the nine available satellites during interference when \(C/N_0\) is \(20\) dB-Hz.}\label{fig:carrier20}
-\end{figure}
-
-\begin{figure}[!ht]
-    \centering
-    \includegraphics[width=0.75\linewidth]{Figures/Results/Scenario1/Case20/carrierVariance.png}
-    \caption{Carrier frequency measurement variance in meters per second from the nine available satellites during interference when \(C/N_0\) is \(20\) dB-Hz.}\label{fig:carrierVariance20}
-\end{figure}
-\clearpage
-\subsection{\textbf{Monte-Carlo Analyses}}
-For brevity, only results from Case 4 and Case 5 are analyzed in this chapter. Case 1, 2, and 3 results can be found in the appendix if the reader wishes to see more.
-
-\begin{figure}[!ht]
-    \centering
-    \includegraphics[width=\linewidth]{Figures/doubleresults/Slide3.PNG}
-    \caption{Position and speed estimates using the proposed navigation filter when subject to instantaneous interference, bringing the \(C/N_0\) to \(15\) dB-Hz.}\label{fig:PosVel1520}
-\end{figure}
-
-\begin{figure}[!ht]
-    \centering
-    \includegraphics[width=\linewidth]{Figures/doubleresults/Slide1.PNG}
-    \caption{Euler attitude estimates using the proposed navigation filter when subject to instantaneous interference, bringing the \(C/N_0\) to \(15\) dB-Hz.}\label{fig:Eul15}
-\end{figure}
-
-
-
-\begin{figure}[!ht]
-    \centering
-    \includegraphics[width=\linewidth]{Figures/doubleresults/Slide2.PNG}
-    \caption{Angular rate estimates using the proposed navigation filter when subject to instantaneous interference, bringing the \(C/N_0\) to \(15\) dB-Hz.}\label{fig:Ang15}
-\end{figure}
-
-
-\begin{figure}[!ht]
-    \centering
-    \includegraphics[width=\linewidth]{Figures/doubleresults/Slide4.PNG}
-    \caption{Clock bias and Clock drift estimates using the proposed navigation filter when subject to instantaneous interference, bringing the \(C/N_0\) to \(15\) dB-Hz.}\label{fig:Clk1520}
-\end{figure}
-
-
-
-\clearpage
-
-\section{\textbf{Scenario 2}}
-
-Scenario two comprises of a singular case, with a more realistic pattern of interference (Figure~\ref{fig:notationalinterference}).
-
-\begin{figure}[!ht]
-    \centering
-    \includegraphics[width=0.4\linewidth]{Figures/notationalinterference.png}
-    \caption{Notational image of aircraft flying into interference and accumulating error of its position over time.}\label{fig:notationalinterference}
-\end{figure}
-
-Scenario two starts the same as scenario one, with benign signal reception through the first 60 seconds of flight. However, after the first 60 seconds, the aircraft begins to fly into an area of interference, where the \(C/N_0\) begins to fall linearly for 90 seconds. From 150 to 180 seconds, the receiver aboard the aircraft is subject to GPS-denied conditions where it will receiver no measurements. This is to simulate the aircraft flying through the centroid of the interference area. After the 30 second GPS-denied period, the \(C/N_0\) will begin to rise at the same rate it descended earlier. Again, same as scenario one, the last 30 seconds of the simulation will be in complete benign conditions as the receiver tries to regain lock on all of the channels. The interference and timing of pattern is depicted in Figure~\ref{fig:CN0scene2} to avoid any confusion.
-
-\begin{figure}[!ht]
-    \centering
-    \includegraphics[width=0.75\linewidth]{Figures/Results/CN0scene2.png}
-    \caption{Estimated \(C/N_0\) compared with a design \(C/N_0\) that increases interference as aircraft flies closer, and dissipates as aircraft leaves interference zone. }\label{fig:CN0scene2}
-\end{figure}
-
-As mentioned previously, scenario two provides a more realistic interference scenario that actual aircraft may come into contact to from intentional or unintentional attacks of GPS signals. A 100-run Monte-Carlo analysis is also done for scenario 2, although it should be noted that each simulation for scenario two was run for 300 seconds, compared to the 180 second simulations for scenario one.
 
 \subsection{\textbf{Monte-Carlo Analyses}}
+From Monte-Carlo results, several parameters can analyzed for the performance improvements of the proposed navigation filter over the standard VDFLL kinematic model. This section begins with an analysis of the signal-level results between the two filters and follows with an analysis of the state estimate performance for a signal power of both \(45\) and \(22\) dB-Hz. The appendix features an extended account of all cases run for this trajectory for readers interested.
+% Signal Performance Figures
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=0.5\linewidth]{Figures/FigurePlaceholder.png}
+    \caption{Code frequency and carrier frequency error as a function of \(C/N_0\) level for trajectory one.~\textcolor{red}{[Expected to Change]}}\label{fig:truecodefreqerrror1}
+\end{figure}
+
+\begin{enumerate}
+    \item First Sentence
+    \item Second Sentence
+    \item Third Sentence
+\end{enumerate}
 
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=0.75\linewidth]{Figures/Results/trajectoryfigure/Slide19.PNG}
-    \caption{Position and speed estimates using the proposed navigation filter when subject to interference that grows stronger as the flight vehicles travels closer to the emitter.}\label{fig:PosVelScene2}
+    \includegraphics[width=0.5\linewidth]{Figures/FigurePlaceholder.png}
+    \caption{Probability of channel lock as a function of \(C/N_0\) level for trajectory one.~\textcolor{red}{[Expected to Change]}}\label{fig:trackingprobability1}
 \end{figure}
 
+\begin{enumerate}
+    \item First Sentence
+    \item Second Sentence
+    \item Third Sentence
+\end{enumerate}
+
+% State Estimation Figures
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=0.5\linewidth]{Figures/FigurePlaceholder.png}
+    \caption{Magnitude position error over the duration of the simulation when subject to a signal power of \(22\) dB-Hz.~\textcolor{red}{[Expected to Change]}}\label{fig:positionerror451}
+\end{figure}
 
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=0.75\linewidth]{Figures/Results/trajectoryfigure/Slide7.PNG}
-    \caption{Position and speed estimates using the proposed navigation filter when subject to interference that grows stronger as the flight vehicles travels closer to the emitter.}\label{fig:EulScene2}
+    \includegraphics[width=0.5\linewidth]{Figures/FigurePlaceholder.png}
+    \caption{Magnitude position error over the duration of the simulation when subject to a signal power of \(22\) dB-Hz.~\textcolor{red}{[Expected to Change]}}\label{fig:positionerror221}
 \end{figure}
 
+\begin{enumerate}
+    \item First Sentence
+    \item Second Sentence
+    \item Third Sentence
+\end{enumerate}
 
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=0.75\linewidth]{Figures/Results/trajectoryfigure/Slide13.PNG}
-    \caption{Position and speed estimates using the proposed navigation filter when subject to interference that grows stronger as the flight vehicles travels closer to the emitter.}\label{fig:AngScene2}
+    \includegraphics[width=0.5\linewidth]{Figures/FigurePlaceholder.png}
+    \caption{Magnitude velocity error over the duration of the simulation when subject to a signal power of \(22\) dB-Hz.~\textcolor{red}{[Expected to Change]}}\label{fig:velocityerror451}
 \end{figure}
-
 
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=0.75\linewidth]{Figures/Results/trajectoryfigure/Slide25.PNG}
-    \caption{Position and speed estimates using the proposed navigation filter when subject to interference that grows stronger as the flight vehicles travels closer to the emitter.}\label{fig:ClkScene2}
+    \includegraphics[width=0.5\linewidth]{Figures/FigurePlaceholder.png}
+    \caption{Magnitude velocity error over the duration of the simulation when subject to a signal power of \(22\) dB-Hz.~\textcolor{red}{[Expected to Change]}}\label{fig:velocityerror221}
 \end{figure}
+
+\begin{enumerate}
+    \item First Sentence
+    \item Second Sentence
+    \item Third Sentence
+\end{enumerate}
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=0.5\linewidth]{Figures/FigurePlaceholder.png}
+    \caption{Clock bias and clock drift error over the duration of the simulation when subject to a signal power of \(22\) dB-Hz.~\textcolor{red}{[Expected to Change]}}\label{fig:clockerror451}
+\end{figure}
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=0.5\linewidth]{Figures/FigurePlaceholder.png}
+    \caption{Clock bias and clock drift error over the duration of the simulation when subject to a signal power of \(22\) dB-Hz.~\textcolor{red}{[Expected to Change]}}\label{fig:clockerror221}
+\end{figure}
+
+\begin{enumerate}
+    \item First Sentence
+    \item Second Sentence
+    \item Third Sentence
+\end{enumerate}
+\clearpage
+
+\section{\textbf{Second Trajectory}}
+For the second trajectory, the aircraft is simulated for a more dynamic flight pattern while commanded to climb to an altitude of 1150 meters above sea level (Figure~\ref{fig:trajectory2}). The dynamics induced by trajectory two show the effectiveness of the deeply-coupled FVDM to predict the behavior of the aircraft due to the addition angular rates and Euler attitude being estimated. It is assumed that the receiver knows it position beforehand when the simulation begins. Similarly to the first trajectory, the receiver aboard the aircraft is subject to seven different cases of interference that degrade the signals from the nine tracked channels (Table~\ref{tbl:interferenceCases}). The receiver is subject to these degraded power levels for the entirety of the five-minute simulation.
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=\linewidth]{Figures/Results/trajectory2.png}
+    \caption{(Left) Top-view of simulated flight path for the second trajectory. (Right) Altitude of second flight path where aircraft is commanded to climb to 1150 meters and then maintain the altitude for the remainder of the simulation.}\label{fig:trajectory2}
+\end{figure}
+
+It should be noted that the same cases of interference from the first trajectory still apply to trajectory two (Table~\ref{tbl:interferenceCases}). Furthermore, the only change in configuration between the first and second trajectory is the specified flight path; for this dynamic trajectory, \textit{SCurveFlightPath.mat} will be used in place of the \textit{StraightFlightPath.mat} used previously. That being said, the satellites found in-view utilizing the broadcast ephemeris file for the specified date are the same satellites used during the following simulations (Figure~\ref{fig:skyplot}).
 
 \clearpage
+\subsection{\textbf{Monte-Carlo Analyses}}
+From Monte-Carlo results, several parameters can analyzed for the performance improvements of the proposed navigation filter over the standard VDFLL kinematic model. This section begins with an analysis of the signal-level results between the two filters and follows with an analysis of the state estimate performance for a signal power of both \(45\) and \(22\) dB-Hz. The appendix features an extended account of all cases run for this trajectory for readers interested.
+% Signal Performance Figures
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=0.5\linewidth]{Figures/FigurePlaceholder.png}
+    \caption{Code frequency and carrier frequency error as a function of \(C/N_0\) level for trajectory one.~\textcolor{red}{[Expected to Change]}}\label{fig:truecodefreqerrror2}
+\end{figure}
+
+\begin{enumerate}
+    \item First Sentence
+    \item Second Sentence
+    \item Third Sentence
+\end{enumerate}
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=0.5\linewidth]{Figures/FigurePlaceholder.png}
+    \caption{Probability of channel lock as a function of \(C/N_0\) level for trajectory one.~\textcolor{red}{[Expected to Change]}}\label{fig:trackingprobability2}
+\end{figure}
+
+\begin{enumerate}
+    \item First Sentence
+    \item Second Sentence
+    \item Third Sentence
+\end{enumerate}
+
+% State Estimation Figures
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=0.5\linewidth]{Figures/FigurePlaceholder.png}
+    \caption{Magnitude position error over the duration of the simulation when subject to a signal power of \(22\) dB-Hz.~\textcolor{red}{[Expected to Change]}}\label{fig:positionerror452}
+\end{figure}
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=0.5\linewidth]{Figures/FigurePlaceholder.png}
+    \caption{Magnitude position error over the duration of the simulation when subject to a signal power of \(22\) dB-Hz.~\textcolor{red}{[Expected to Change]}}\label{fig:positionerror222}
+\end{figure}
+
+\begin{enumerate}
+    \item First Sentence
+    \item Second Sentence
+    \item Third Sentence
+\end{enumerate}
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=0.5\linewidth]{Figures/FigurePlaceholder.png}
+    \caption{Magnitude velocity error over the duration of the simulation when subject to a signal power of \(22\) dB-Hz.~\textcolor{red}{[Expected to Change]}}\label{fig:velocityerror222}
+\end{figure}
+
+\begin{enumerate}
+    \item First Sentence
+    \item Second Sentence
+    \item Third Sentence
+\end{enumerate}
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=0.5\linewidth]{Figures/FigurePlaceholder.png}
+    \caption{Clock bias and clock drift error over the duration of the simulation when subject to a signal power of \(22\) dB-Hz.~\textcolor{red}{[Expected to Change]}}\label{fig:clockerror222}
+\end{figure}
+
+\begin{enumerate}
+    \item First Sentence
+    \item Second Sentence
+    \item Third Sentence
+\end{enumerate}
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=0.5\linewidth]{Figures/FigurePlaceholder.png}
+    \caption{Angular rate error over the duration of the simulation when subject to a signal power of \(22\) dB-Hz.~\textcolor{red}{[Expected to Change]}}\label{fig:Angerror222}
+\end{figure}
+
+\begin{enumerate}
+    \item First Sentence
+    \item Second Sentence
+    \item Third Sentence
+\end{enumerate}
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=0.5\linewidth]{Figures/FigurePlaceholder.png}
+    \caption{Euler attitude error over the duration of the simulation when subject to a signal power of \(22\) dB-Hz.~\textcolor{red}{[Expected to Change]}}\label{fig:Eulerror222}
+\end{figure}
+
+\begin{enumerate}
+    \item First Sentence
+    \item Second Sentence
+    \item Third Sentence
+\end{enumerate}
+\clearpage
+
 \section{\textbf{Conclusions}}
 
-This chapter presented a detailed explanation of the trajectory used for the Monte-Carlo results in both scenario one and scenario two. The trajectory is a variable-bank, constant-pitch flight path in order to attain estimates of the angular rates and Euler attitude of the aircraft during simulation. Apart of each scenario description was the overview of interference. Scenario one featured sudden drops in signal power to gauge the ability of the vector tracking loops to maintain lock at different levels of signal degradation. Scenario two featured a more realistic interference scenario where the strength of the interference grew as the aircraft flew closer to the emitter location. Based on the results, the FVDM attains better state estimates when the signal interference maintains the \(C/N_0\) about \(15\) dB-Hz. Once the interference was strong enough for the vector tracking loops to drop each channel, the estimates of IMU showed massive improvements over the FVDM {--} this is most-likely due to the constant measurement of angular rate from the gyroscope. The results presented in this chapter show that FVDM is a viable solution to small SWaP-C flight vehicles in benign environments. However, the results also show that the FVDM is not the sole-solution due to the unobservable angular states in GPS-denied conditions. Perhaps external sensors such as a IMU or multi-antenna GPS system could improve the system observability for better estimates. Improvements to the proposed navigation filter are discussed in greater details in the next chapter.
+This chapter presented a detailed explanation of the two trajectories used for the performance analysis of the proposed navigation filter compared to standard, constant-velocity kinematic model VDFLL\@. Trajectory one is baseline case where the aircraft is commanded to fly straight and maintain a constant altitude for the entirety of the simulation. Trajectory two is a more dynamic trajectory with alternating, banking turns throughout the simulation on top of the aircraft being commanded to climb and maintain an altitude of 1150 meters. Each trajectory was subject to a range of interference starting from benign signal power to low signal power. Results from trajectory one show that when flying a standard, unexcited trajectory, the standard VDFLL and the proposed navigation filter are comparable. Results from trajectory two showcase the improved performance from the deeply-coupled FVDM because of the inability in the standard EKF to predict accelerations and angular rates. However, the results from trajectory two also show that the FVDM is not the sole-solution due to the unobservable angular states when excitement is lost in the simulated trajectory. External sensors such as a IMU or multi-antenna GPS system could improve the system observability for better estimates. Improvements to the proposed navigation filter are discussed in greater details in the next chapter.
