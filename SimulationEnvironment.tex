@@ -1,4 +1,4 @@
-\chapter{Simulation Environment}
+\chapter{\textbf{Simulation Environment}}
 The discussion of the flight mechanics in Chapter 2 and the equations of motion presented in Chapter 4 would be meaningless if the flight vehicle is not being controlled to a final destination. Up until this point, this thesis has covered the navigation architecture in the overarching Guidance, Navigation, and Control (GNC) flight vehicle model. This chapter will expand on both the guidance and control architecture utilized for this work. Although these are not the primary focus of this thesis, they are important to discuss if others wish to replicate the study.
 
 \section{\textbf{Guidance System}}
@@ -19,7 +19,7 @@ The waypoint follower calculates the reference heading and pitch by using trigon
 
 \section{\textbf{Control Scheme}}
 
-As stated previously, the guidance system and control law are not the primary focus of this work. Because of this, classical Proportional-Integral-Derivative (PID) controllers are used to actuate the controls surfaces to the desired values from the guidance system. During the simulations presented during the results of this thesis, only four of the available eleven inputs are being controlled to maintain the desired trajectory of the aircraft. Table~\ref{tbl:controls} lays out the available inputs available for the Diamond-DA40 modeled in this work.
+As stated previously, the guidance system and control law are not the primary focus of this work. Because of this, classical Proportional-Integral-Derivative (PID) controllers are used to actuate the controls surfaces to the desired values from the guidance system. During simulations presented for this thesis, only four of the available eleven inputs are being controlled to maintain the desired trajectory of the aircraft. Table~\ref{tbl:controls} lays out the available inputs available for the Diamond-DA40 modeled in this work.
 
 \begin{table}[!ht]
     \caption{List of available, controllable inputs to the Diamond DA40 modeled in this thesis.}\label{tbl:controls}
@@ -84,4 +84,4 @@ For the study presented in this thesis, two disturbances are modeled {--} a wind
 
 \section{\textbf{Conclusions}}
 
-The guidance systems and control laws provide the aircraft with meaningful control surface deflection that guide the aircraft to the desired destination. This chapter provided an overview about how the guidance systems generates commanded control inputs from a user-defined trajectory created using Google Earth. Following the guidance system, the control law used in this thesis was covered with discussions about the PID control gains used for each of the four piloted control inputs during simulation. Finally, a discussion of the disturbances on the aircraft dynamics that influence different control inputs between simulations was described. The focus of this work is not on the guidance or controls of the flight vehicle presented in this thesis, for better detail of each the sections discussed during this chapter, the reader is asked to follow-up with the references cited above for more information.
+The guidance systems and control laws provide the aircraft with meaningful control surface deflection that guide the aircraft to the desired destination. This chapter provided an overview about how the guidance system generates commanded control inputs from a user-defined trajectory created using Google Earth. Following the guidance system, the control law used in this thesis was covered with discussions about the PID control gains used for each of the four piloted control inputs during simulation. Finally, a discussion of the disturbances on the aircraft dynamics that influence different control inputs between simulations was described. The focus of this work is not on the guidance or controls of the flight vehicle presented in this thesis, for better detail of each the sections discussed during this chapter, the reader is asked to follow-up with the references cited above for more information.

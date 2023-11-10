@@ -1,4 +1,4 @@
-\chapter{Scenario Implementation and Results}
+\chapter{\textbf{Scenario Implementation and Results}}
 % Introduction
 This chapter presents results of two trajectories using the proposed navigation filter and its underlying components discussed in previous chapters. Each trajectory is subject to varying degrees of signal interference across multiple Monte-Carlo simulations and will be discussed thoroughly to avoid confusion. First, the chapter starts with a discussion of the first trajectory and configuration file used for simulation. Following a description of trajectory one, Monte-Carlo analyses highlight the strong and weak points of the proposed navigation filter. Once the analyses of the first trajectory conclude, a description of trajectory two is presented, followed by Monte-Carlo statistical analyses. Each Monte-Carlo case is composed of 100-run simulations for each trajectory subject to seven cases of signal degradation. To show the improved performance of the proposed navigation filter, a constant-velocity, kinematic model VDFLL~\cite{grierPositionNavigationTiming} is shown as a comparison. This standard VDFLL processes the same trajectories at the same cases of signal degradation.
 
@@ -70,85 +70,118 @@ Duration and Monte-Carlo Runs specify the length of each simulation in seconds a
 
 \subsection{\textbf{Monte-Carlo Analyses}}
 From Monte-Carlo results, several parameters can analyzed for the performance improvements of the proposed navigation filter over the standard VDFLL kinematic model. This section begins with an analysis of the signal-level results between the two filters and follows with an analysis of the state estimate performance for a signal power of both \(45\) and \(22\) dB-Hz. The appendix features an extended account of all cases run for this trajectory for readers interested.
+
+\begin{table}[!ht]
+    \caption{RMSE, STD, and maximum error from 100-run Monte Carlo simulation when the receiver is subject to a degraded signal power level of \(35\) dB-Hz.}\label{tbl:straight35FVDM}
+    \centering
+    \begin{tabular}{ccccc}
+        \toprule
+                  & Position [m] & Speed [m/s] & Clock Bias [m] & Clock Drift [m/s] \\
+        \midrule
+        RMSE      & 0.23443      & 0.066059    & 0.013062       & 0.002834          \\
+        STD       & 0.11305      & 0.030674    & 0.17509        & 0.0032795         \\
+        Max Error & 0.72197      & 0.22588     & 0.05835        & 0.009             \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\begin{table}[!ht]
+    \caption{RMSE, STD, and maximum error from 100-run Monte Carlo simulation when the receiver is subject to a degraded signal power level of \(20\) dB-Hz.}\label{tbl:straight20FVDM}
+    \centering
+    \begin{tabular}{ccccc}
+        \toprule
+                  & Position [m] & Speed [m/s] & Clock Bias [m] & Clock Drift [m/s] \\
+        \midrule
+        RMSE      & 0.83733      & 0.27649     & 0.14072        & 0.0087105         \\
+        STD       & 0.32434      & 0.13394     & 0.13147        & 0.0072989         \\
+        Max Error & 1.8783       & 0.90375     & 0.48541        & 0.024451          \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\begin{table}[!ht]
+    \caption{RMSE, STD, and maximum error from 100-run Monte Carlo simulation when the receiver is subject to a degraded signal power level of \(35\) dB-Hz.}\label{tbl:straight35CV}
+    \centering
+    \begin{tabular}{ccccc}
+        \toprule
+                  & Position [m] & Speed [m/s] & Clock Bias [m] & Clock Drift [m/s] \\
+        \midrule
+        RMSE      & 0.093008     & 0.087402    & 0.013897       & 0.0032735         \\
+        STD       & 0.048771     & 0.038728    & 0.015186       & 0.0040279         \\
+        Max Error & 0.25751      & 0.26045     & 0.033083       & 0.009487          \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\begin{table}[!ht]
+    \caption{RMSE, STD, and maximum error from 100-run Monte Carlo simulation when the receiver is subject to a degraded signal power level of \(20\) dB-Hz.}\label{tbl:straight20CV}
+    \centering
+    \begin{tabular}{ccccc}
+        \toprule
+                  & Position [m] & Speed [m/s] & Clock Bias [m] & Clock Drift [m/s] \\
+        \midrule
+        RMSE      & 24.567       & 0.88208     & 0.17748        & 0.0088036         \\
+        STD       & 10.287       & 0.34973     & 0.14068        & 0.005286          \\
+        Max Error & 36.193       & 2.0585      & 0.50134        & 0.022316          \\
+        \bottomrule
+    \end{tabular}
+\end{table}
 % Signal Performance Figures
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=0.5\linewidth]{Figures/FigurePlaceholder.png}
+    \includegraphics[width=\linewidth]{Figures/FigurePlaceholder.png}
     \caption{Code frequency and carrier frequency error as a function of \(C/N_0\) level for trajectory one.~\textcolor{red}{[Expected to Change]}}\label{fig:truecodefreqerrror1}
 \end{figure}
 
-\begin{enumerate}
-    \item First Sentence
-    \item Second Sentence
-    \item Third Sentence
-\end{enumerate}
-
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=0.5\linewidth]{Figures/FigurePlaceholder.png}
+    \includegraphics[width=\linewidth]{Figures/FigurePlaceholder.png}
     \caption{Probability of channel lock as a function of \(C/N_0\) level for trajectory one.~\textcolor{red}{[Expected to Change]}}\label{fig:trackingprobability1}
 \end{figure}
 
-\begin{enumerate}
-    \item First Sentence
-    \item Second Sentence
-    \item Third Sentence
-\end{enumerate}
 
 % State Estimation Figures
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=0.5\linewidth]{Figures/FigurePlaceholder.png}
-    \caption{Magnitude position error over the duration of the simulation when subject to a signal power of \(22\) dB-Hz.~\textcolor{red}{[Expected to Change]}}\label{fig:positionerror451}
+    \includegraphics[width=\linewidth]{Figures/resultsv2/Slide1.PNG}
+    \caption{(Left) Geoplot of estimated positions when subject to a signal power of \(35\) dB-Hz. (Right) Geoplot of estimated positions when subject to a signal power of \(20\) dB-Hz.}\label{fig:positionerror451}
 \end{figure}
 
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=0.5\linewidth]{Figures/FigurePlaceholder.png}
-    \caption{Magnitude position error over the duration of the simulation when subject to a signal power of \(22\) dB-Hz.~\textcolor{red}{[Expected to Change]}}\label{fig:positionerror221}
-\end{figure}
-
-\begin{enumerate}
-    \item First Sentence
-    \item Second Sentence
-    \item Third Sentence
-\end{enumerate}
-
-\begin{figure}[!ht]
-    \centering
-    \includegraphics[width=0.5\linewidth]{Figures/FigurePlaceholder.png}
-    \caption{Magnitude velocity error over the duration of the simulation when subject to a signal power of \(22\) dB-Hz.~\textcolor{red}{[Expected to Change]}}\label{fig:velocityerror451}
+    \includegraphics[width=\linewidth]{Figures/resultsv2/Slide12.PNG}
+    \caption{Comparison of altitude estimates from the deeply-coupled FVDM and the standard VDFLL\@. The signal power is \(35\) dB-Hz (Left) and \(20\) dB-Hz (Right).}\label{fig:fixthis5}
 \end{figure}
 
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=0.5\linewidth]{Figures/FigurePlaceholder.png}
-    \caption{Magnitude velocity error over the duration of the simulation when subject to a signal power of \(22\) dB-Hz.~\textcolor{red}{[Expected to Change]}}\label{fig:velocityerror221}
-\end{figure}
-
-\begin{enumerate}
-    \item First Sentence
-    \item Second Sentence
-    \item Third Sentence
-\end{enumerate}
-
-\begin{figure}[!ht]
-    \centering
-    \includegraphics[width=0.5\linewidth]{Figures/FigurePlaceholder.png}
-    \caption{Clock bias and clock drift error over the duration of the simulation when subject to a signal power of \(22\) dB-Hz.~\textcolor{red}{[Expected to Change]}}\label{fig:clockerror451}
+    \includegraphics[width=\linewidth]{Figures/resultsv2/Slide2.PNG}
+    \caption{(Left) Speed estimate during trajectory one for a signal power of \(35\) dB-Hz. (Right) Speed estimate during trajectory one for a signal power of \(20\) dB-Hz.}\label{fig:positionerror221}
 \end{figure}
 
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=0.5\linewidth]{Figures/FigurePlaceholder.png}
-    \caption{Clock bias and clock drift error over the duration of the simulation when subject to a signal power of \(22\) dB-Hz.~\textcolor{red}{[Expected to Change]}}\label{fig:clockerror221}
+    \includegraphics[width=\linewidth]{Figures/resultsv2/Slide3.PNG}
+    \caption{(Left) Receiver clock bias estimates subject to a signal power of \(35\) dB-Hz. (Right) Receiver clock bias estimates subject to a signal power of \(20\) dB-Hz.}\label{fig:velocityerror451}
 \end{figure}
 
-\begin{enumerate}
-    \item First Sentence
-    \item Second Sentence
-    \item Third Sentence
-\end{enumerate}
+
+
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=\linewidth]{Figures/resultsv2/Slide8.PNG}
+    \caption{(Left) Receiver clock drift estimates subject to a signal power of \(35\) dB-Hz. (Right) Receiver clock drift estimates subject to a signal power of \(20\) dB-Hz.}\label{fig:fixthis1}
+\end{figure}
+
+
+
+
+
+
+
+
+
 \clearpage
 
 \section{\textbf{Second Trajectory}}
@@ -165,97 +198,120 @@ It should be noted that the same cases of interference from the first trajectory
 \clearpage
 \subsection{\textbf{Monte-Carlo Analyses}}
 From Monte-Carlo results, several parameters can analyzed for the performance improvements of the proposed navigation filter over the standard VDFLL kinematic model. This section begins with an analysis of the signal-level results between the two filters and follows with an analysis of the state estimate performance for a signal power of both \(45\) and \(22\) dB-Hz. The appendix features an extended account of all cases run for this trajectory for readers interested.
+
+\begin{table}[!ht]
+    \caption{RMSE, STD, and maximum error from 100-run Monte Carlo simulation when the receiver is subject to a degraded signal power level of \(35\) dB-Hz.}\label{tbl:dyn35FVDM}
+    \centering
+    \begin{tabular}{ccccc}
+        \toprule
+                  & Position [m] & Speed [m/s] & Clock Bias [m] & Clock Drift [m/s] \\
+        \midrule
+        RMSE      & 0.023097     & 0.068845    & 0.028182       & 0.0026012         \\
+        STD       & 0.12219      & 0.03264     & 0.021298       & 0.0029319         \\
+        Max Error & 0.74388      & 0.28942     & 0.073095       & 0.008722          \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\begin{table}[!ht]
+    \caption{RMSE, STD, and maximum error from 100-run Monte Carlo simulation when the receiver is subject to a degraded signal power level of \(20\) dB-Hz.}\label{tbl:dyn20FVDM}
+    \centering
+    \begin{tabular}{ccccc}
+        \toprule
+                  & Position [m] & Speed [m/s] & Clock Bias [m] & Clock Drift [m/s] \\
+        \midrule
+        RMSE      & 0.64521      & 0.2673      & 0.1911         & 0.010044          \\
+        STD       & 0.34121      & 0.12531     & 0.18278        & 0.0073514         \\
+        Max Error & 1.5828       & 0.76501     & 0.5855         & 0.23049           \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\begin{table}[!ht]
+    \caption{RMSE, STD, and maximum error from 100-run Monte Carlo simulation when the receiver is subject to a degraded signal power level of \(35\) dB-Hz.}\label{tbl:dyn35CV}
+    \centering
+    \begin{tabular}{ccccc}
+        \toprule
+                  & Position [m] & Speed [m/s] & Clock Bias [m] & Clock Drift [m/s] \\
+        \midrule
+        RMSE      & 0.097444     & 0.080918    & 0.030903       & 0.0033113         \\
+        STD       & 0.031969     & 0.035597    & 0.02659        & 0.0039156         \\
+        Max Error & 0.1905       & 0.23272     & 0.076362       & 0.00917           \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\begin{table}[!ht]
+    \caption{RMSE, STD, and maximum error from 100-run Monte Carlo simulation when the receiver is subject to a degraded signal power level of \(20\) dB-Hz.}\label{tbl:dyn20CV}
+    \centering
+    \begin{tabular}{ccccc}
+        \toprule
+                  & Position [m] & Speed [m/s] & Clock Bias [m] & Clock Drift [m/s] \\
+        \midrule
+        RMSE      & 196.98       & 6.0576      & 0.20098        & 0.010995          \\
+        STD       & 126.68       & 0.92248     & 0.19358        & 0.0077631         \\
+        Max Error & 431.72       & 8.468       & 0.62891        & 0.024964          \\
+        \bottomrule
+    \end{tabular}
+\end{table}
 % Signal Performance Figures
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=0.5\linewidth]{Figures/FigurePlaceholder.png}
+    \includegraphics[width=\linewidth]{Figures/FigurePlaceholder.png}
     \caption{Code frequency and carrier frequency error as a function of \(C/N_0\) level for trajectory one.~\textcolor{red}{[Expected to Change]}}\label{fig:truecodefreqerrror2}
 \end{figure}
 
-\begin{enumerate}
-    \item First Sentence
-    \item Second Sentence
-    \item Third Sentence
-\end{enumerate}
 
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=0.5\linewidth]{Figures/FigurePlaceholder.png}
+    \includegraphics[width=\linewidth]{Figures/FigurePlaceholder.png}
     \caption{Probability of channel lock as a function of \(C/N_0\) level for trajectory one.~\textcolor{red}{[Expected to Change]}}\label{fig:trackingprobability2}
 \end{figure}
 
-\begin{enumerate}
-    \item First Sentence
-    \item Second Sentence
-    \item Third Sentence
-\end{enumerate}
 
 % State Estimation Figures
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=0.5\linewidth]{Figures/FigurePlaceholder.png}
-    \caption{Magnitude position error over the duration of the simulation when subject to a signal power of \(22\) dB-Hz.~\textcolor{red}{[Expected to Change]}}\label{fig:positionerror452}
+    \includegraphics[width=\linewidth]{Figures/resultsv2/Slide5.PNG}
+    \caption{(Left) Receiver clock drift estimates subject to a signal power of \(35\) dB-Hz. (Right) Receiver clock drift estimates subject to a signal power of \(20\) dB-Hz.}\label{fig:clockerror451}
 \end{figure}
 
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=0.5\linewidth]{Figures/FigurePlaceholder.png}
-    \caption{Magnitude position error over the duration of the simulation when subject to a signal power of \(22\) dB-Hz.~\textcolor{red}{[Expected to Change]}}\label{fig:positionerror222}
+    \includegraphics[width=\linewidth]{Figures/resultsv2/Slide11.PNG}
+    \caption{Comparison of altitude estimates from the deeply-coupled FVDM and the standard VDFLL\@. The signal power is \(35\) dB-Hz (Left) and \(20\) dB-Hz (Right).}\label{fig:fixthis4}
 \end{figure}
-
-\begin{enumerate}
-    \item First Sentence
-    \item Second Sentence
-    \item Third Sentence
-\end{enumerate}
 
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=0.5\linewidth]{Figures/FigurePlaceholder.png}
-    \caption{Magnitude velocity error over the duration of the simulation when subject to a signal power of \(22\) dB-Hz.~\textcolor{red}{[Expected to Change]}}\label{fig:velocityerror222}
+    \includegraphics[width=\linewidth]{Figures/resultsv2/Slide6.PNG}
+    \caption{(Left) Speed estimate during trajectory one for a signal power of \(35\) dB-Hz. (Right) Speed estimate during trajectory one for a signal power of \(20\) dB-Hz.}\label{fig:clockerror221}
 \end{figure}
-
-\begin{enumerate}
-    \item First Sentence
-    \item Second Sentence
-    \item Third Sentence
-\end{enumerate}
 
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=0.5\linewidth]{Figures/FigurePlaceholder.png}
-    \caption{Clock bias and clock drift error over the duration of the simulation when subject to a signal power of \(22\) dB-Hz.~\textcolor{red}{[Expected to Change]}}\label{fig:clockerror222}
+    \includegraphics[width=\linewidth]{Figures/resultsv2/Slide7.PNG}
+    \caption{(Left) Receiver clock bias estimates subject to a signal power of \(35\) dB-Hz. (Right) Receiver clock bias estimates subject to a signal power of \(20\) dB-Hz.}\label{fig:fixthis}
 \end{figure}
-
-\begin{enumerate}
-    \item First Sentence
-    \item Second Sentence
-    \item Third Sentence
-\end{enumerate}
 
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=0.5\linewidth]{Figures/FigurePlaceholder.png}
-    \caption{Angular rate error over the duration of the simulation when subject to a signal power of \(22\) dB-Hz.~\textcolor{red}{[Expected to Change]}}\label{fig:Angerror222}
+    \includegraphics[width=\linewidth]{Figures/resultsv2/Slide4.PNG}
+    \caption{(Left) Receiver clock drift estimates subject to a signal power of \(35\) dB-Hz. (Right) Receiver clock drift estimates subject to a signal power of \(20\) dB-Hz.}\label{fig:velocityerror221}
 \end{figure}
-
-\begin{enumerate}
-    \item First Sentence
-    \item Second Sentence
-    \item Third Sentence
-\end{enumerate}
 
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=0.5\linewidth]{Figures/FigurePlaceholder.png}
-    \caption{Euler attitude error over the duration of the simulation when subject to a signal power of \(22\) dB-Hz.~\textcolor{red}{[Expected to Change]}}\label{fig:Eulerror222}
+    \includegraphics[width=\linewidth]{Figures/resultsv2/Slide9.PNG}
+    \caption{(Left) Angular rate estimates from the proposed navigation filter subject to a signal power of \(35\) dB-Hz. (Right) Angular rate estimates from the proposed navigation filter subject to a signal power of \(20\) dB-Hz.}\label{fig:fixthis2}
 \end{figure}
 
-\begin{enumerate}
-    \item First Sentence
-    \item Second Sentence
-    \item Third Sentence
-\end{enumerate}
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=\linewidth]{Figures/resultsv2/Slide10.PNG}
+    \caption{(Left) Euler attitude estimates from the proposed navigation filter subject to a signal power of \(35\) dB-Hz. (Right) Euler attitude estimates from the proposed navigation filter subject to a signal power of \(20\) dB-Hz.}\label{fig:fixthis3}
+\end{figure}
+
 \clearpage
 
 \section{\textbf{Conclusions}}

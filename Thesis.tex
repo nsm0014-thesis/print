@@ -56,7 +56,7 @@
 % Title 
 \title{Deep Integration of a Flight Vehicle Dynamic Model in a Vector Tracking Software Defined Receiver}
 \author{Noah S. Miller} 
-\date{December 15}
+\date{December 2023}
 \copyrightyear{2023}
 
 \keywords{Simulation, GNSS/INS Integration, Aircraft Modeling}
@@ -76,17 +76,19 @@
   \TitlePage{}
   \begin{abstract}
     % What is being presented in this work?
-    The greater occurrence of intentional and unintentional signal interference on Global Navigation Satellite Systems (GNSS) requires additional alternative navigation solutions to provide robust, reliable localization of flight vehicles when measurements from GNSS are unavailable. This thesis proposes a Flight Vehicle Dynamic Model (FVDM) that is deeply integrated with Global Positioning System (GPS) correlator measurements for aircraft state estimates in GPS-challenged environments.
+    The greater occurrence of signal interference on Global Navigation Satellite Systems (GNSS) requires additional alternative navigation solutions to provide robust, reliable localization of flight vehicles when measurements from GNSS are unavailable. This thesis proposes a Flight Vehicle Dynamic Model (FVDM) that is deeply integrated with Global Positioning System (GPS) correlator measurements for aircraft state estimates in GPS-challenged environments.
 
-    It is well-documented that large, modern aircraft feature an array of sensors that work in tandem to provide robust positioning performance. However, the sizing limitations of low Size, Weight, Power, and Cost (SWaP-C) do not allow for such redundant sensor suites, meaning an alternative navigation solution is required. Furthermore, low cost flight vehicles typically feature lower quality sensors that are subject to vibrations and subsequently faulty, unreliable measurements that provide no benefit to the flight vehicle when GPS measurements are also considered unreliable.
+    It is well-documented that large, modern aircraft feature an array of sensors that work in tandem to provide robust positioning performance. However, the sizing limitations of low Size, Weight, Power, and Cost (SWaP-C) do not allow for such redundant sensor suites, meaning an alternative navigation solution is required. Furthermore, low cost flight vehicles typically feature lower quality sensors that are subject to vibrations and subsequently faulty, unreliable measurements that provide no benefit to the flight vehicle when GNSS measurements are also considered unreliable.
 
     % What are the intricacies of the Flight Vehicle Dynamic Model?
-    The FVDM is a high-fidelity flight vehicle model based on the Diamond DA-40 single-propeller fixed wing aircraft. The aircraft model features a piston engine model that generates thrust power through a shaft that spins a numerically modeled 3-blade propeller. The speed of the propeller is controlled through a electric governor, and the pitch is controlled to maintain efficient propeller action onto the incident airflow. The aerodynamics of the aircraft are modeled using a discretized aerodynamic coefficient technique, also known as strip theory. Although not used in this work, a landing gear model incorporates the three landing gear on the Diamond DA-40 and evaluates the forces and moments applied during landing as a second-order spring-mass-damper system. An International Standard Atmosphere (ISA) is used to calculate the density, temperature, and ambient pressure based on aircraft altitude. To close the loop of the FVDM, a set of controllers in collaboration with a waypoint manager are used to actuate the control surfaces on the aircraft. Multiple planned paths are demonstrated during this work and are presented in their respective sections.
+    The FVDM is a high-fidelity flight vehicle model based on the Diamond DA-40 single-propeller fixed wing aircraft. The aircraft model features a piston engine model that generates thrust power through a shaft that spins a numerically modeled 3-blade propeller. The speed of the propeller is controlled through a electric governor, and the pitch is controlled to maintain efficient propeller action onto the incident airflow. The aerodynamics of the aircraft are modeled using a discretized aerodynamic coefficient technique, also known as strip theory. Although not used in this work, a landing gear model incorporates the three landing gear on the Diamond DA-40 and evaluates the forces and moments applied during landing as a second-order spring-mass-damper system. An International Standard Atmosphere (ISA) model is used to calculate the density, temperature, and ambient pressure based on aircraft altitude. To close the loop of the FVDM, a set of controllers in collaboration with a waypoint manager are used to actuate the control surfaces on the aircraft. Multiple planned paths are demonstrated during this work and are presented in their respective sections.
 
     % Why use GPS measurements?
-    The proposed navigation filter presented in this work provides a closed loop solution between the vector tracking loop algorithms and the FVDM process model via a Vector Delay and Frequency Lock Loop (VDFLL). For several decades, GPS has served as the backbone for attaining a global position solution on a variety of collection platforms. This ubiquity is well-documented, making GPS a practical and realistic signal to simulate for the focus of this thesis. Mainly used as medium to localize United States government entities, including the military services, encourages foreign threats to develop the technology needed to disrupt the GPS signal via jamming or spoofing. These imminent threats catalyze the greater need for more research in this area on all collection platforms, including flight vehicles.
+    The proposed navigation filter presented in this work provides a closed loop solution between the vector tracking loop algorithms and the FVDM process model via a Vector Delay and Frequency Lock Loop (VDFLL). Vector tracking loops are able to maintain channel lock on satellites when either signal interference is present, or the dynamics of the collection platform are too high for scalar loops to track the signal consistently.
+
+    For several decades, GPS has served as the backbone for attaining a global position solution on a variety of collection platforms. This ubiquity is well-documented, making GPS a practical and realistic signal to simulate for the focus of this thesis. Mainly used as medium for United States government entities, including the military services, encourages foreign threats to develop the technology needed to disrupt the GPS signal via jamming or spoofing. These imminent threats catalyze the greater need for more research in this area on all collection platforms, including flight vehicles.
     % What results are shown in this thesis?
-    This thesis investigates the performance of position estimation of simulated flight vehicle in scenarios of GPS-degradation and GPS-denied environments. Chapter 1 divulges prior art related to the investigation, while chapters 2, 3, 4, and 5 describe the FVDM, scalar and vector tracking receiver architectures, along with adaptations made by the proposed navigation filter, respectively. Chapter 6 presents the results, including a Monte-Carlo analysis of the performance improvements compared to standard zero-mean acceleration and jerk kinematic process models for a VDFLL\@. Chapter 7 concludes the work followed by a section of future work for interested parties.
+    This thesis investigates the performance of pose and attitude estimation of simulated flight vehicle in scenarios of GPS-degradation and GPS-denied environments. Chapter 1 divulges prior art related to the investigation, while chapters 2, 3, 4, and 5 describe the FVDM, scalar and vector tracking receiver architectures, along with adaptations made by the proposed navigation filter, respectively. Chapter 6 presents the results, including a Monte-Carlo analysis of the performance improvements compared to a standard zero-mean acceleration kinematic process model for a VDFLL\@. Chapter 7 concludes the work followed by a section of future work for interested parties.
   \end{abstract}
 
   \begin{acknowledgments}
@@ -121,40 +123,40 @@
     \end{center}
   \end{singlespace}
 
-  \nomenclature{FVDM}{Flight Vehicle Dynamic Model}
-  \nomenclature{GPS}{Global Positioning System}
-  \nomenclature{ISA}{International Standard Atmosphere}
-  \nomenclature{MTOW}{Max Takeoff Operating Weight}
-  \nomenclature{GVDM}{Ground Vehicle Dynamic Model}
-  \nomenclature{UKF}{Unscented Kalman Filter}
-  \nomenclature{EKF}{Extended Kalman Filter}
-  \nomenclature{UWB}{Ultra-Wide Band}
-  \nomenclature{GA}{General Aviation}
-  \nomenclature{DOF}{Degrees of Freedom}
-  \nomenclature{ECEF}{Earth-Centered, Earth-Fixed}
-  \nomenclature{WGS84}{World Geodetic System 1984}
-  \nomenclature{LLA}{Longitude, Latitude, and Altitude}
-  \nomenclature{DCM}{Direction Cosine Matrix}
-  \nomenclature{MSL}{Mean Sea Level}
-  \nomenclature{CFD}{Computational Fluid Dynamics}
-  \nomenclature{OEM}{Original Equipment Manufacturer}
-  \nomenclature{ADC}{Analog-to-Digital Converter}
-  \nomenclature{RHCP}{Right-Hand Circularly Polarized}
-  \nomenclature{LNA}{Low Noise Amplifiers}
-  \nomenclature{BPF}{Band Pass Filters}
-  \nomenclature{PLL}{Phase Lock Loops}
-  \nomenclature{PRN}{Pseudo-Random Number}
-  \nomenclature{PCPS}{Parallel Code Phase Search}
-  \nomenclature{FFT}{Fast-Fourier Transform}
-  \nomenclature{FLL}{Frequency Lock Loop}
-  \nomenclature{TOW}{Time of Week}
-  \nomenclature{WNLS}{Weighted Non-Linear Least Squares}
-  \nomenclature{VFDLL}{Vector Frequency and Delay Lock Loop}
-  \nomenclature{VDLL}{Vector Delay Lock Loop}
-  \nomenclature{GNC}{Guidance, Navigation, and Control}
+  % \nomenclature{FVDM}{Flight Vehicle Dynamic Model}
+  % \nomenclature{GPS}{Global Positioning System}
+  % \nomenclature{ISA}{International Standard Atmosphere}
+  % \nomenclature{MTOW}{Max Takeoff Operating Weight}
+  % \nomenclature{GVDM}{Ground Vehicle Dynamic Model}
+  % \nomenclature{UKF}{Unscented Kalman Filter}
+  % \nomenclature{EKF}{Extended Kalman Filter}
+  % \nomenclature{UWB}{Ultra-Wide Band}
+  % \nomenclature{GA}{General Aviation}
+  % \nomenclature{DOF}{Degrees of Freedom}
+  % \nomenclature{ECEF}{Earth-Centered, Earth-Fixed}
+  % \nomenclature{WGS84}{World Geodetic System 1984}
+  % \nomenclature{LLA}{Longitude, Latitude, and Altitude}
+  % \nomenclature{DCM}{Direction Cosine Matrix}
+  % \nomenclature{MSL}{Mean Sea Level}
+  % \nomenclature{CFD}{Computational Fluid Dynamics}
+  % \nomenclature{OEM}{Original Equipment Manufacturer}
+  % \nomenclature{ADC}{Analog-to-Digital Converter}
+  % \nomenclature{RHCP}{Right-Hand Circularly Polarized}
+  % \nomenclature{LNA}{Low Noise Amplifiers}
+  % \nomenclature{BPF}{Band Pass Filters}
+  % \nomenclature{PLL}{Phase Lock Loops}
+  % \nomenclature{PRN}{Pseudo-Random Number}
+  % \nomenclature{PCPS}{Parallel Code Phase Search}
+  % \nomenclature{FFT}{Fast-Fourier Transform}
+  % \nomenclature{FLL}{Frequency Lock Loop}
+  % \nomenclature{TOW}{Time of Week}
+  % \nomenclature{WNLS}{Weighted Non-Linear Least Squares}
+  % \nomenclature{VFDLL}{Vector Frequency and Delay Lock Loop}
+  % \nomenclature{VDLL}{Vector Delay Lock Loop}
+  % \nomenclature{GNC}{Guidance, Navigation, and Control}
 
 
-  \printnomenclature{}
+  % \printnomenclature{}
 \end{romanpages}
 
 \normalem{}
