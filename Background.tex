@@ -1,16 +1,16 @@
 \chapter{\textbf{Introduction and Background}}
 Redundant, accurate flight vehicle localization has been well-documented over several decades~\cite{zhaoCooperativeLocalizationBased2017,rufaSensorFusionUnmanned2014,tennyRobustNavigationUrban2022,kandemirProbabilisticMeasurementMethod2018}. However, as the threat to GPS signals continues to rise, the need for robust pose estimation increases. While robust systems already exist to combat incoming interference, these systems are either proprietary or government controlled, making them infeasible for widespread use. Cheaper, robust systems are critical for the safe future of civilian and military flight vehicles. Commercial aircraft feature a wide sensor suite that works in tandem to provide redundancy and safety critical features to maintain safe flight. These aircraft have the space to install robust sensor suites and the power to run them consistently in all phases of flight (Figure~\ref{fig:weights}), more importantly, the companies that design and build these aircraft also have the budget to afford such expensive sensor suites.
 
-\begin{figure}[!ht]\label{fig:weights}
+\begin{figure}[!ht]
     \centering
     \includegraphics[width=.6\linewidth]{Figures/weights.png}
-    \caption{Aircraft with a larger Max Takeoff Operating Weight (MTOW) typically have more space for more complex sensor suites compared to their General Aviation counterparts~\cite{AircraftCharacteristicsDatabase}.}
+    \caption{Aircraft with a larger Max Takeoff Operating Weight (MTOW) typically have more space for more complex sensor suites compared to their General Aviation counterparts~\cite{AircraftCharacteristicsDatabase}.}\label{fig:weights}
 \end{figure}
 
 Smaller aircraft are not allowed these luxuries, being manufactured with fewer sensors, overall making them less safe. Table~\ref{tbl:sensorsuitecomparison} compares the different sensors onboard a commercial airliner and a civilian general aviation aircraft.
 
-\begin{table}[!ht]\label{tbl:sensorsuitecomparison}
-    \caption{Inexhaustive list of sensors available to commercial and general aviation aircraft. (Adapted from~\cite{DiamondAircraftDA401969,customerservicesA380AircraftCharacteristics2020})}
+\begin{table}[!ht]
+    \caption{Inexhaustive list of sensors available to commercial and general aviation aircraft. (Adapted from~\cite{DiamondAircraftDA401969,customerservicesA380AircraftCharacteristics2020})}\label{tbl:sensorsuitecomparison}
     \centering
     \begin{tabular}{lcc}
         \toprule
@@ -36,8 +36,8 @@ Smaller aircraft are not allowed these luxuries, being manufactured with fewer s
 \end{table}
 
 Regardless of components, the sensor suite aboard any flight vehicle is able to provide measurements more often than that of a GPS receiver, so a sensor fusion algorithm is optimal. Because sensor measurements have inherit errors due to a variety of factors, they can wander or drift over time. GPS measurements, although slower, provide measurements that do not drift at the cost of being noisier. Table~\ref{tbl:sensorfusionframeworks} describes the most common sensor fusion frameworks for GPS and INS platforms. More details on each these frameworks can be found in Chapter 4.
-\begin{table}[!ht]\label{tbl:sensorfusionframeworks}
-    \caption{Common sensor fusion frameworks used for GPS and INS collection platforms}
+\begin{table}[!ht]
+    \caption{Common sensor fusion frameworks used for GPS and INS collection platforms}\label{tbl:sensorfusionframeworks}
     \centering
     \begin{tabular}{cll}
         \toprule

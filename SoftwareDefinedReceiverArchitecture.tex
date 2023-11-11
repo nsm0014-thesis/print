@@ -6,10 +6,10 @@ The signals received by an antenna must be down converted and digitized before t
 
 The purpose in this mixing process is to transform the signal into a more manageable intermediate frequency while still maintaining the same modulation and Doppler applied to the signal~\cite{bradfordparkinsonGlobalPositioningSystem1996}. Figure~\ref{fig:frontend} describes the process on converting the analog, continuous signal into a discrete, digitized IF signal in block diagram form.
 
-\begin{figure}[!ht]\label{fig:frontend}
+\begin{figure}[!ht]
     \centering
     \includegraphics[width=\linewidth]{Figures/frontend.drawio.png}
-    \caption{Block diagram of a software defined receiver front end.}
+    \caption{Block diagram of a software defined receiver front end.}\label{fig:frontend}
 \end{figure}
 
 \section{\textbf{Acquisition}}
@@ -17,10 +17,10 @@ Once the received signals are converted to a discrete form, the receiver will de
 
 A modern, ubiquitous approach to correlating the local replica signals with the received data is using a Parallel Code Phase Search (PCPS) algorithm in which the correlations occur in the frequency domain~\cite{scottRapidSignalAcquisition2001}. PCPS parallelizes the PRN code offset search space by converting the space from the time to frequency domain. This process is shown in Figure~\ref{fig:PCPS}.
 
-\begin{figure}[!ht]\label{fig:PCPS}
+\begin{figure}[!ht]
     \centering
     \includegraphics[width=\linewidth]{Figures/PCPS.drawio.png}
-    \caption{Block diagram of the PCPS acquisition algorithm applied to GPS L1 C/A signal modulation.}
+    \caption{Block diagram of the PCPS acquisition algorithm applied to GPS L1 C/A signal modulation.}\label{fig:PCPS}
 \end{figure}
 
 To start, the local replicas of the carrier wave are multiplied with the received data across both in-phase and quadrature channels in the complex domain. These resulting multiplications are summed together and passed through a Fast-Fourier Transform (FFT) to convert the vectors into the frequency domain. The second step involves converting the upsampled PRN codes of the satellites to the frequency domain and then applying the complex conjugate to frequency-based, PRN vectors. Multiplying the PRN replicas with the transformed carrier replicas provides the user with a cross-correlation in the frequency domain. To appreciate the correlation magnitudes, the output is passed through an inverse FFT, converting the correlation values from a frequency domain, complex matrix to a time domain, matrix. The last step requires determining the magnitude of each row in the matrix and then processing the next satellite until all satellites in the constellation are processed. If a correlation exceeds a certain magnitude, its location in the matrix of correlations indicates the estimated PRN code delay and Doppler shift carrier frequency for that particular satellite. The resolution of the PCPS algorithm greatly depends on the grid of Doppler search bins; for a static receiver processing GPS L1 C/A transmissions, a typical resolution is \(-15,000\) to \(15,000\) Hertz in bins of \(500\) Hertz~\cite{scottRapidSignalAcquisition2001}.
@@ -28,10 +28,10 @@ To start, the local replicas of the carrier wave are multiplied with the receive
 \section{\textbf{Tracking}}
 Acquisition provides initial estimates of code delay and carrier frequency for each satellite that is in-view of the receiver. However, because of the motion of the satellites and the receiver (if not static), the delays of the code and changes in the carrier frequencies must continue to be estimated. Scalar tracking performs this process by opening a channel for each in-view satellite. For the duration of the recording, a number of algorithms within tracking continue to correlate the local receiver replica with the received signal data. For scalar tracking, Figure~\ref{fig:scalartracking} describes the flow of how these algorithms produce accurate code replicas for the receiver to calculate satellite Position, Velocity, and Time (PVT) solutions.
 
-\begin{figure}[!ht]\label{fig:scalartracking}
+\begin{figure}[!ht]
     \centering
     \includegraphics[width=0.5\linewidth]{Figures/scalartracking.png}
-    \caption{Flow diagram of scalar tracking algorithms.}
+    \caption{Flow diagram of scalar tracking algorithms.}\label{fig:scalartracking}
 \end{figure}
 
 \subsection{\textbf{Correlators}}

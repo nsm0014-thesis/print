@@ -97,9 +97,11 @@ The dynamics of the aircraft are defined by
 where \(\mathbf{B}_{dyn}\) is the noise distribution matrix related to the dynamics (Equation~\ref{eq:Bdyn}).
 
 \begin{equation}\label{eq:Bdyn}
-    \mathbf{B}_{dyn} =\begin{bmatrix}
-        \mathbf{I}_{6,6} & \mathbf{0}_{6,2} \\
-        \mathbf{0}_{8,6} & \mathbf{0}_{8,2} \\
+    \mathbf{B}_{dyn} =
+    \begin{bmatrix}
+        \frac{\Delta t^2}{2}\mathbf{I}_{6,6} \\
+        \Delta t\mathbf{I}_{6,6}             \\
+        \mathbf{0}_{2,2}
     \end{bmatrix}_{14,8}
 \end{equation}
 
@@ -111,22 +113,17 @@ where \(\mathbf{B}_{dyn}\) is the noise distribution matrix related to the dynam
     \end{bmatrix}^T
 \end{equation}
 
-\(\mathbf{B}_{clk}\) and \(w_{clk}\) are the noise distribution matrices (Equation~\ref{eq:Bclk}) and clock variance vector (Equation~\ref{eq:wClk}), respectively.
+The discretized process noise covariance matrix is a function of the time step and phase and frequency clock variances for the specified oscillator (Equation~\ref{eq:Qclk}).
 
-\begin{equation}\label{eq:Bclk}
-    \mathbf{B}_{clk} =\begin{bmatrix}
-        \mathbf{0}_{6,6} & \mathbf{0}_{12,2} \\
-        \mathbf{0}_{8,6} & -\mathbf{I}_{2,2} \\
-    \end{bmatrix}_{14,8}
+\begin{equation}\label{eq:Qclk}
+    \mathbf{Q}_{clk} =
+    \begin{bmatrix}
+        \sigma^2_b \Delta t + \sigma^2_{br}\Delta t^2 + \sigma^2_r \frac{\Delta t^3}{3} & \sigma^2_{br}\Delta t + \sigma^2_r \frac{\Delta t^2}{2}                      \\
+        \sigma^2_{br} \Delta t + \sigma^2_r \frac{\Delta t^2}{2}                        & \frac{\sigma^2_r}{\Delta t} + \sigma^2_{br} + \frac{4}{3}\sigma^2_r \Delta t \\
+    \end{bmatrix}
 \end{equation}
 
-\begin{equation}\label{eq:wClk}
-    w_{clk} = \begin{bmatrix}
-        \sigma^2_b & \sigma^2_d \\
-    \end{bmatrix}^T
-\end{equation}
-
-\(\sigma^2_b\) and \(\sigma^2_d\) are modeled variances based on the clock embedded into the receiver. For the receiver simulated in this work, an Oven Controlled Crystal Oscillator (OCXO) is used. More information on calculating the clock variance based on oscillator type can be found in~\cite{robertgroverbrownIntroductionRandomSignals2013}.
+\(\sigma^2_b\) is the variance of the noise process that drives the clock phase error in \(m^2/s\), \(\sigma^2_{r}\) is the noise variance that drives the clock frequency error in \(m^2/s^3\) and \(\sigma^2_{br}\) is the variance on the noise process that drives both the phase and frequency error in units of \(m^2/s^2\). For the receiver simulated in this work, an Oven Controlled Crystal Oscillator (OCXO) is used. More information on calculating the clock variance based on oscillator type can be found in~\cite{robertgroverbrownIntroductionRandomSignals2013}. The time step (\(\Delta t\)) is \(200\) Hertz.
 
 \(F\) is a set of non-linear equations that define the motion of the aircraft as a function of the current state in time (\(\mathbf{X}\)), the forces in the body frame (\(f_{ib}^b\)) and the moments about the body frame (\(M_{ib}^b\)). Calculation of the forces and moments were discussed in Chapter 2.
 
@@ -293,15 +290,7 @@ The state propagation is continuous, but \(\mathbf{\Phi}\) is discrete. This mea
 The discrete process noise covariance (\(\mathbf{Q}_d\)) encapsulates the disturbances onto the aircraft dynamics such that the EKF can better correct the states during the measurement update. To transform the process noise from continuous to discrete, Equation~\ref{eq:Qd} is used.
 
 \begin{equation}\label{eq:Qd}
-    \mathbf{Q_d} = \mathbf{\Phi}\mathbf{B}_w \left(ww^T\right) \mathbf{B}_w^T \mathbf{\Phi}^T \Delta t
-\end{equation}
-
-Above, \(\mathbf{B}_w\) is the noise distribution matrix that is augmented with \(\mathbf{B}_{dyn}\) and \(\mathbf{B}_{clk}\).~\(w\) is the disturbance vector and is formed by concatenating the dynamic state disturbances and the clock term disturbances together (Equation~\ref{eq:w}). For the work presented in this thesis, the time step (\(\Delta t\)) is \(200\) Hertz.
-
-\begin{equation}\label{eq:w}
-    w = \begin{bmatrix}
-        w_{dyn} & w_{clk}
-    \end{bmatrix}
+    \mathbf{Q_d} = \textrm{blkdiag}\left(\left[\mathbf{\Phi}\mathbf{B}_{dyn} \left(w_{dyn}w_{dyn}^T\right) \mathbf{B}_{dyn}^T \mathbf{\Phi}^T \Delta t\right], \mathbf{Q_{clk}}\right)
 \end{equation}
 
 Once the state and covariance prediction are calculated, the \textit{a priori} part of the EKF is complete. The EKF will continue to predict the state and covariance until measurements from the vector tracking receiver are available. The next subsection covers the measurement update of the EKF, correcting the predicted covariance and predicted states.
