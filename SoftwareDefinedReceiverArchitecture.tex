@@ -23,7 +23,14 @@ A modern, ubiquitous approach to correlating the local replica signals with the 
     \caption{Block diagram of the PCPS acquisition algorithm applied to GPS L1 C/A signal modulation.}\label{fig:PCPS}
 \end{figure}
 
-To start, the local replicas of the carrier wave are multiplied with the received data across both in-phase and quadrature channels in the complex domain. These resulting multiplications are summed together and passed through a Fast-Fourier Transform (FFT) to convert the vectors into the frequency domain. The second step involves converting the upsampled PRN codes of the satellites to the frequency domain and then applying the complex conjugate to frequency-based, PRN vectors. Multiplying the PRN replicas with the transformed carrier replicas provides the user with a cross-correlation in the frequency domain. To appreciate the correlation magnitudes, the output is passed through an inverse FFT, converting the correlation values from a frequency domain, complex matrix to a time domain, matrix. The last step requires determining the magnitude of each row in the matrix and then processing the next satellite until all satellites in the constellation are processed. If a correlation exceeds a certain magnitude, its location in the matrix of correlations indicates the estimated PRN code delay and Doppler shift carrier frequency for that particular satellite. The resolution of the PCPS algorithm greatly depends on the grid of Doppler search bins; for a static receiver processing GPS L1 C/A transmissions, a typical resolution is \(-15,000\) to \(15,000\) Hertz in bins of \(500\) Hertz~\cite{scottRapidSignalAcquisition2001}.
+To start, the local replicas of the carrier wave are multiplied with the received data across both in-phase and quadrature channels in the complex domain. These resulting multiplications are summed together and passed through a Fast-Fourier Transform (FFT) to convert the vectors into the frequency domain. The second step involves converting the upsampled PRN codes of the satellites to the frequency domain and then applying the complex conjugate to frequency-based, PRN vectors. Multiplying the PRN replicas with the transformed carrier replicas provides the user with a cross-correlation in the frequency domain. To appreciate the correlation magnitudes, the output is passed through an inverse FFT, converting the correlation values from a frequency domain, complex matrix to a time domain, matrix. The last step requires determining the magnitude of each row in the matrix and then processing the next satellite until all satellites in the constellation are processed. If a correlation exceeds a certain magnitude, its location in the matrix of correlations indicates the estimated PRN code delay and Doppler shift carrier frequency for that particular satellite (Figure~\ref{fig:acq}). 
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=\linewidth]{Figures/trackingGPS.png}
+\caption{Successful acquisition of GPS SV:7 using the PCPS algorithm.}\label{fig:acq}
+\end{figure}
+
+The resolution of the PCPS algorithm greatly depends on the grid of Doppler search bins; for a static receiver processing GPS L1 C/A transmissions, a typical resolution is \(-15,000\) to \(15,000\) Hertz in bins of \(500\) Hertz~\cite{scottRapidSignalAcquisition2001}.
 
 \section{\textbf{Tracking}}
 Acquisition provides initial estimates of code delay and carrier frequency for each satellite that is in-view of the receiver. However, because of the motion of the satellites and the receiver (if not static), the delays of the code and changes in the carrier frequencies must continue to be estimated. Scalar tracking performs this process by opening a channel for each in-view satellite. For the duration of the recording, a number of algorithms within tracking continue to correlate the local receiver replica with the received signal data. For scalar tracking, Figure~\ref{fig:scalartracking} describes the flow of how these algorithms produce accurate code replicas for the receiver to calculate satellite Position, Velocity, and Time (PVT) solutions.
@@ -122,7 +129,13 @@ In Figure~\ref{fig:DLL}, \(sf\) is known as the scale factor,
 
 where \(R_c\) is the spreading (i.e. PRN) code rate, and \(f_L\) is the signal carrier frequency. For GPS L1 C/A, these are \(1.023 \times 10^6\) Hertz and \(1575.420 \times 10^6\) Hertz, respectively.
 
-If the correlators, discriminators, and loop filters are correctly working in tandem, the replicated signal should accurately represent the received signal data and the receiver can decode the bits that translate to the broadcast navigation message from each satellite. A handful of subframes in the navigation message provide satellite ephemeris, or orbital parameters, that the receiver can use to propagate satellite PVT and determine its position through time~\cite{valladoSGP4OrbitDetermination2008}.
+If the correlators, discriminators, and loop filters are correctly working in tandem, the replicated signal should accurately represent the received signal data and the receiver can decode the bits that translate to the broadcast navigation message from each satellite (Figure~\ref{fig:trk}). A handful of subframes in the navigation message provide satellite ephemeris, or orbital parameters, that the receiver can use to propagate satellite PVT and determine its position through time~\cite{valladoSGP4OrbitDetermination2008}.
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=\linewidth]{Figures/trackingfr.png}
+\caption{Tracked navigation message for GPS SV:7 using the ascribed methods.}\label{fig:trk}
+\end{figure}
 
 \section{\textbf{Navigation Algorithms}}
 Once the signal is accurately replicated and correctly decoded, the receiver begins to estimate a PVT solution. A position solution is found due to trilateration, meaning if there exists at least three unique ranges from known locations, then a position solution exists~\cite{subiranaGNSSDATAPROCESSING}. Parallel to finding the position solution, receiver velocity can be found in the same way, using range rates in place of range. This sections describes calculating the ranges and range rates, and how they are used in the navigation processor for an estimated PVT solution.
@@ -275,7 +288,13 @@ Once the above matrices are created, the WNLS algorithm (Equation~\ref{eq:wnls})
     \delta\hat{\mathbf{x}} = {{\left(\mathbf{H}^{T}\mathbf{W}\mathbf{H}\right)}^{-1}\,\mathbf{W}\mathbf{Y}}
 \end{equation}
 
-Once an initial receiver position has been found, vector tracking channels can open and a closed form PVT solution can start to be processed. Vector tracking loops and algorithms are discussed in the next chapter.
+Once an initial receiver position has been found, vector tracking channels can open and a closed form PVT solution can start to be processed (Figure~\ref{fig:WNLS}). Vector tracking loops and algorithms are discussed in the next chapter.
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=\linewidth]{Figures/WNLS.png}
+\caption{Static position of receiver using a WNLS navigation algorithm.}\label{fig:WNLS}
+\end{figure}
 
 \section{\textbf{Conclusions}}
 The architecture of a scalar-tracking software defined received was explained. For more information on any of the subsections discussed in this chapter, detailed descriptions of each can be found in the literature. Because the focus of this thesis is vector tracking, the meaning of this chapter was to provide the reader with a fundamental understanding of tracking loops that will be expanded on further in the next chapter.

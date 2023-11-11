@@ -1,24 +1,24 @@
 \chapter{\textbf{Conclusions and Future Work}}
 This work described the development of a deeply-integrated flight vehicle dynamic model within a GPS L1 C/A vector tracking software defined receiver. A performance analysis of the proposed navigation filter in GPS-challenged environments compared to the standard VDFLL was presented. The work presented in this thesis extends the state of the art by modeling a flight vehicle dynamic model deeply-coupled with GPS correlator measurements. The fidelity of the model stems from multiple flight mechanic modules presented in Chapter 2. The aerodynamic module models aerodynamic forces and moments on the basis of strip theory, using pre-processed CFD tables to propagate the aerodynamic coefficients based on the current flight condition of the aircraft. The engine and propeller module comprise of pre-processed numerical tables based on historical engine and propeller data sheets and performance charts. The FVDM improves the extended Kalman filter time update by fully acknowledging the behavior of the presented flight vehicle {--} this can be cumbersome with hardware sensors such as an IMU or barometer. The presented FVDM can be run at any update frequency, typically a limiting factor for hardware sensors. An increased update frequency for any vehicle dynamic model increases the likelihood that changes in the states are linear between time steps, this is especially important for high-dynamic systems such as hyper-velocity vehicles. Unlike hardware sensors, the FVDM is not subject to vibration, which is a common amongst rotor craft and fixed-wing flight vehicles. The downside to the FVDM is the requirement to have extensive knowledge of the flight vehicle in order to model it with high fidelity. This can be difficult if modeling government or proprietary vehicles.
 
-For the straight, constant altitude trajectory, the proposed navigation filter was shown to have comparable results to that of the standard constant-velocity VDFLL implementation. However, when given a more dynamic trajectory, the deeply-integrated FVDM shows improvement by at least double in all scenarios of signal degradation. This is partly due to the FVDM being able to estimate the angular rate and Euler attitude of aircraft, where as the standard VDFLL implementation does not have this capability.
+For the straight, constant altitude trajectory, the proposed navigation filter was shown to have slight improvements over the standard VDFLL implementation in scenarios where the signal power dropped below \(25\) dB-Hz. With signal power above \(25\) dB-Hz, the standard EKF proved marginally better, likely due to an over confidence in the FVDM\@. When given a more dynamic trajectory, the deeply-integrated FVDM shows improvement by at least double in all scenarios of signal degradation. This is partly due to the FVDM being able to estimate the angular rate and Euler attitude of aircraft, where as the standard VDFLL implementation does not have this capability.
 
-% \section{\textbf{Concerns of Observability}}
+\section{\textbf{Concerns of Observability}}
 
-% From the presented navigation filter, measurements of position and velocity appear in the form of pseudorange and pseudorange-rates. These measurements are created based on DLL and FLL discriminator outputs that are converted to meters and meters per second, respectively. When a measurement update occurs within the EKF, these measurements indirectly correct the current state estimate through a the observation matrix, \(\mathbf{H}\) (Equation~\ref{eq:H}). As stated previously, one reason for faulty estimates of the aircraft in GPS-denied environments is the lack of observability in the angular states. Once the estimated angular rates of the aircraft drift, and through integration, their respective Euler angles, the FVDM will continue to propagate the aircraft with these drifting estimates. For example, if the pitch angle estimate of the FVDM starts to drift from 10 degrees to 20 degrees to 30 degrees, the aircraft will naturally begin to pitch up and gain altitude. If the VT algorithm loses lock with signal channels, or the channel measurements are poor, there is no other measurements to correct the FVDM and it will continue to propagate worse estimates of the state. This can be further examined by exploring the observability matrix, \(\mathbf{O}\) through time.
+From the presented navigation filter, measurements of position and velocity appear in the form of pseudorange and pseudorange-rates. These measurements are created based on DLL and FLL discriminator outputs that are converted to meters and meters per second, respectively. When a measurement update occurs within the EKF, these measurements indirectly correct the current state estimate through the observation matrix, \(\mathbf{H}\) (Equation~\ref{eq:H}). As stated previously, one reason for faulty estimates of the aircraft in heavily GPS-degraded environments is the lack of observability in the angular states. Once the estimated angular rates of the aircraft drift, and through integration, their respective Euler angles, the FVDM will continue to propagate the aircraft with these drifting estimates. For example, if the pitch angle estimate of the FVDM starts to drift from 10 degrees to 20 degrees to 30 degrees, the aircraft will naturally begin to pitch up and gain altitude. If the VT algorithm loses lock with signal channels, or the channel measurements are poor, there is no other measurements to correct the FVDM and it will continue to propagate worse estimates of the state. This can be further examined by exploring the observability matrix, \(\mathbf{O}\) through time.
 
-% \begin{equation}\label{eq:O}
-%     \mathbf{O} = \begin{bmatrix}
-%         \mathbf{H}_k                    \\
-%         \mathbf{H}_k\mathbf{\Phi}_k       \\
-%         \mathbf{H}_k\mathbf{\Phi}_k^2     \\
-%         \mathbf{H}_k\mathbf{\Phi}_k^3     \\
-%         \vdots                        \\
-%         \mathbf{H}_k\mathbf{\Phi}_k^{n-1} \\
-%     \end{bmatrix}
-% \end{equation}
+\begin{equation}\label{eq:O}
+    \mathbf{O} = \begin{bmatrix}
+        \mathbf{H}_k                    \\
+        \mathbf{H}_k\mathbf{\Phi}_k       \\
+        \mathbf{H}_k\mathbf{\Phi}_k^2     \\
+        \mathbf{H}_k\mathbf{\Phi}_k^3     \\
+        \vdots                        \\
+        \mathbf{H}_k\mathbf{\Phi}_k^{n-1} \\
+    \end{bmatrix}
+\end{equation}
 
-% A system is fully-observable if the all of the states of the system can be known by the outputs of the systems, that is, if the rank of Equation~\ref{eq:O} is equal to the number of states in \(\mathbf{X}\) (Equation~\ref{eq:stateVector}), then the observability matrix is full rank and the system is fully-observable. A quick calculation of \(\mathbf{O}\) shows that the deeply-coupled FVDM is not fully-observable. 
+A system is fully-observable if the all of the states of the system can be known by the outputs of the systems, that is, if the rank of Equation~\ref{eq:O} is equal to the number of states in \(\mathbf{X}\) (Equation~\ref{eq:stateVector}), then the observability matrix is full rank and the system is fully-observable. A quick calculation of \(\mathbf{O}\) shows that the deeply-coupled FVDM is not fully-observable. Improvement upon the observability of the proposed navigation filter is expanded upon in the future work section of this chapter. 
 
 
 \section{\textbf{Future Work}}
