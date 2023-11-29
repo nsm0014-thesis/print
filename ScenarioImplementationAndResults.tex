@@ -155,7 +155,7 @@ Even with the straight, baseline trajectory, the standard constant velocity filt
 
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=0.5\linewidth]{Figures/straight/16/GEOPLOT.png}
+    \includegraphics[width=0.5\linewidth]{Figures/straight/15/GEOPLOT.png}
     \caption{Average Latitude and Longitude of the FVDM and standard VDFLL implementation compared to the truth trajectory when subject to a degraded signal power of \(16\) dB-Hz.}\label{fig:GEOPLOT2}
 \end{figure}
 
@@ -348,13 +348,13 @@ One of the primary benefits of the proposed navigation filter is the ability to 
 \begin{figure}[!ht]
     \begin{subfigure}{.45\textwidth}
         \centering
-        \includegraphics[width=1\linewidth]{Figures/dynamic/18/ANGULARRATES.png}
+        \includegraphics[width=1\linewidth]{Figures/dynamic/15/ANGULARRATES.png}
     \end{subfigure}
     \begin{subfigure}{.45\textwidth}
         \centering
         \includegraphics[width=1\linewidth]{Figures/dynamic/20/ANGULARRATES.png}
     \end{subfigure}
-    \caption{Average angular rate estimates of the FVDM and standard VDFLL implementation compared to the truth trajectory. The left figure is when both simulations had a signal power of \(20\) dB-Hz. The right figure is with a signal power of \(25\) dB-Hz.}\label{fig:ANGRATES}
+    \caption{Average angular rate estimates of the FVDM and standard VDFLL implementation compared to the truth trajectory. The left figure is when both simulations had a signal power of \(15\) dB-Hz. The right figure is with a signal power of \(20\) dB-Hz.}\label{fig:ANGRATES}
 \end{figure}
 
 Although the aircraft is commanded to reach an altitude of \(1150\) meters above sea level, this does not equate to radical change in pitch rate. As seen from Figure~\ref{fig:EULER}, the aircraft reaches a steady state pitch and maintains that pitch until the altitude command is met. Since the pitch is not ever changing like the roll and yaw angles due to the alternating banking commands, this leaves the pitch rate to be near-zero for the duration of the simulation.
@@ -362,13 +362,13 @@ Although the aircraft is commanded to reach an altitude of \(1150\) meters above
 \begin{figure}[!ht]
     \begin{subfigure}{.45\textwidth}
         \centering
-        \includegraphics[width=1\linewidth]{Figures/dynamic/18/EULERANGLES.png}
+        \includegraphics[width=1\linewidth]{Figures/dynamic/15/EULERANGLES.png}
     \end{subfigure}
     \begin{subfigure}{.45\textwidth}
         \centering
         \includegraphics[width=1\linewidth]{Figures/dynamic/20/EULERANGLES.png}
     \end{subfigure}
-    \caption{Average Euler attitude estimates of the FVDM and standard VDFLL implementation compared to the truth trajectory. The left figure is when both simulations had a signal power of \(20\) dB-Hz. The right figure is with a signal power of \(25\) dB-Hz.}\label{fig:EULER}
+    \caption{Average Euler attitude estimates of the FVDM and standard VDFLL implementation compared to the truth trajectory. The left figure is when both simulations had a signal power of \(15\) dB-Hz. The right figure is with a signal power of \(20\) dB-Hz.}\label{fig:EULER}
 \end{figure}
 
 Because the Euler attitude estimates are the integral of the angular rate estimate, barring the rotation of \(C_{\omega}\) (Equation~\ref{eq:eulerRates}), it is clear that worse estimates of angular rates lead to drifting error in the Euler attitude estimates of the aircraft. If not corrected, this can lead to drifting position and velocity estimation at lower \(C/N_0\) levels. To maintain better estimates of the angular rates and Euler attitude, an IMU or additional hardware sensor could be tied-in with the FVDM to provide direct measurements of those states. Another option, although sub-optimal, would be the addition of a second GPS antenna, in which GPS course measurements could be calculated and provided to the filter. It should further be noted that GPS course and the yaw of the aircraft are not the same as discussed in Chapter 2.
