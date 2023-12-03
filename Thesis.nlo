@@ -1,31 +1,31 @@
-\nomenclatureentry{aFVDM@[{FVDM}]\begingroup Flight Vehicle Dynamic Model\nomeqref {0}|nompageref}{xii}
-\nomenclatureentry{aGPS@[{GPS}]\begingroup Global Positioning System\nomeqref {0}|nompageref}{xii}
-\nomenclatureentry{aISA@[{ISA}]\begingroup International Standard Atmosphere\nomeqref {0}|nompageref}{xii}
-\nomenclatureentry{aMTOW@[{MTOW}]\begingroup Max Takeoff Operating Weight\nomeqref {0}|nompageref}{xii}
-\nomenclatureentry{aGVDM@[{GVDM}]\begingroup Ground Vehicle Dynamic Model\nomeqref {0}|nompageref}{xii}
-\nomenclatureentry{aUKF@[{UKF}]\begingroup Unscented Kalman Filter\nomeqref {0}|nompageref}{xii}
-\nomenclatureentry{aEKF@[{EKF}]\begingroup Extended Kalman Filter\nomeqref {0}|nompageref}{xii}
-\nomenclatureentry{aUWB@[{UWB}]\begingroup Ultra-Wide Band\nomeqref {0}|nompageref}{xii}
-\nomenclatureentry{aGA@[{GA}]\begingroup General Aviation\nomeqref {0}|nompageref}{xii}
-\nomenclatureentry{aDOF@[{DOF}]\begingroup Degrees of Freedom\nomeqref {0}|nompageref}{xii}
-\nomenclatureentry{aECEF@[{ECEF}]\begingroup Earth-Centered, Earth-Fixed\nomeqref {0}|nompageref}{xii}
-\nomenclatureentry{aWGS84@[{WGS84}]\begingroup World Geodetic System 1984\nomeqref {0}|nompageref}{xii}
-\nomenclatureentry{aLLA@[{LLA}]\begingroup Longitude, Latitude, and Altitude\nomeqref {0}|nompageref}{xii}
-\nomenclatureentry{aDCM@[{DCM}]\begingroup Direction Cosine Matrix\nomeqref {0}|nompageref}{xii}
-\nomenclatureentry{aMSL@[{MSL}]\begingroup Mean Sea Level\nomeqref {0}|nompageref}{xii}
-\nomenclatureentry{aCFD@[{CFD}]\begingroup Computational Fluid Dynamics\nomeqref {0}|nompageref}{xii}
-\nomenclatureentry{aOEM@[{OEM}]\begingroup Original Equipment Manufacturer\nomeqref {0}|nompageref}{xii}
-\nomenclatureentry{aADC@[{ADC}]\begingroup Analog-to-Digital Converter\nomeqref {0}|nompageref}{xii}
-\nomenclatureentry{aRHCP@[{RHCP}]\begingroup Right-Hand Circularly Polarized\nomeqref {0}|nompageref}{xii}
-\nomenclatureentry{aLNA@[{LNA}]\begingroup Low Noise Amplifiers\nomeqref {0}|nompageref}{xii}
-\nomenclatureentry{aBPF@[{BPF}]\begingroup Band Pass Filters\nomeqref {0}|nompageref}{xii}
-\nomenclatureentry{aPLL@[{PLL}]\begingroup Phase Lock Loops\nomeqref {0}|nompageref}{xii}
-\nomenclatureentry{aPRN@[{PRN}]\begingroup Pseudo-Random Number\nomeqref {0}|nompageref}{xii}
-\nomenclatureentry{aPCPS@[{PCPS}]\begingroup Parallel Code Phase Search\nomeqref {0}|nompageref}{xii}
-\nomenclatureentry{aFFT@[{FFT}]\begingroup Fast-Fourier Transform\nomeqref {0}|nompageref}{xii}
-\nomenclatureentry{aFLL@[{FLL}]\begingroup Frequency Lock Loop\nomeqref {0}|nompageref}{xii}
-\nomenclatureentry{aTOW@[{TOW}]\begingroup Time of Week\nomeqref {0}|nompageref}{xii}
-\nomenclatureentry{aWNLS@[{WNLS}]\begingroup Weighted Non-Linear Least Squares\nomeqref {0}|nompageref}{xii}
-\nomenclatureentry{aVFDLL@[{VFDLL}]\begingroup Vector Frequency and Delay Lock Loop\nomeqref {0}|nompageref}{xii}
-\nomenclatureentry{aVDLL@[{VDLL}]\begingroup Vector Delay Lock Loop\nomeqref {0}|nompageref}{xii}
-\nomenclatureentry{aGNC@[{GNC}]\begingroup Guidance, Navigation, and Control\nomeqref {0}|nompageref}{xii}
+\nomenclatureentry{aFVDM@[{FVDM}]\begingroup Flight Vehicle Dynamic Model\nomeqref {0}|nompageref}{vii}
+\nomenclatureentry{aGPS@[{GPS}]\begingroup Global Positioning System\nomeqref {0}|nompageref}{vii}
+\nomenclatureentry{aISA@[{ISA}]\begingroup International Standard Atmosphere\nomeqref {0}|nompageref}{vii}
+\nomenclatureentry{aMTOW@[{MTOW}]\begingroup Max Takeoff Operating Weight\nomeqref {0}|nompageref}{vii}
+\nomenclatureentry{aGVDM@[{GVDM}]\begingroup Ground Vehicle Dynamic Model\nomeqref {0}|nompageref}{vii}
+\nomenclatureentry{aUKF@[{UKF}]\begingroup Unscented Kalman Filter\nomeqref {0}|nompageref}{vii}
+\nomenclatureentry{aEKF@[{EKF}]\begingroup Extended Kalman Filter\nomeqref {0}|nompageref}{vii}
+\nomenclatureentry{aUWB@[{UWB}]\begingroup Ultra-Wide Band\nomeqref {0}|nompageref}{vii}
+\nomenclatureentry{aGA@[{GA}]\begingroup General Aviation\nomeqref {0}|nompageref}{vii}
+\nomenclatureentry{aDOF@[{DOF}]\begingroup Degrees of Freedom\nomeqref {0}|nompageref}{vii}
+\nomenclatureentry{aECEF@[{ECEF}]\begingroup Earth-Centered, Earth-Fixed\nomeqref {0}|nompageref}{vii}
+\nomenclatureentry{aWGS84@[{WGS84}]\begingroup World Geodetic System 1984\nomeqref {0}|nompageref}{vii}
+\nomenclatureentry{aLLA@[{LLA}]\begingroup Longitude, Latitude, and Altitude\nomeqref {0}|nompageref}{vii}
+\nomenclatureentry{aDCM@[{DCM}]\begingroup Direction Cosine Matrix\nomeqref {0}|nompageref}{vii}
+\nomenclatureentry{aMSL@[{MSL}]\begingroup Mean Sea Level\nomeqref {0}|nompageref}{vii}
+\nomenclatureentry{aCFD@[{CFD}]\begingroup Computational Fluid Dynamics\nomeqref {0}|nompageref}{vii}
+\nomenclatureentry{aOEM@[{OEM}]\begingroup Original Equipment Manufacturer\nomeqref {0}|nompageref}{vii}
+\nomenclatureentry{aADC@[{ADC}]\begingroup Analog-to-Digital Converter\nomeqref {0}|nompageref}{vii}
+\nomenclatureentry{aRHCP@[{RHCP}]\begingroup Right-Hand Circularly Polarized\nomeqref {0}|nompageref}{vii}
+\nomenclatureentry{aLNA@[{LNA}]\begingroup Low Noise Amplifiers\nomeqref {0}|nompageref}{vii}
+\nomenclatureentry{aBPF@[{BPF}]\begingroup Band Pass Filters\nomeqref {0}|nompageref}{vii}
+\nomenclatureentry{aPLL@[{PLL}]\begingroup Phase Lock Loops\nomeqref {0}|nompageref}{vii}
+\nomenclatureentry{aPRN@[{PRN}]\begingroup Pseudo-Random Number\nomeqref {0}|nompageref}{vii}
+\nomenclatureentry{aPCPS@[{PCPS}]\begingroup Parallel Code Phase Search\nomeqref {0}|nompageref}{vii}
+\nomenclatureentry{aFFT@[{FFT}]\begingroup Fast-Fourier Transform\nomeqref {0}|nompageref}{vii}
+\nomenclatureentry{aFLL@[{FLL}]\begingroup Frequency Lock Loop\nomeqref {0}|nompageref}{vii}
+\nomenclatureentry{aTOW@[{TOW}]\begingroup Time of Week\nomeqref {0}|nompageref}{vii}
+\nomenclatureentry{aWNLS@[{WNLS}]\begingroup Weighted Non-Linear Least Squares\nomeqref {0}|nompageref}{vii}
+\nomenclatureentry{aVFDLL@[{VFDLL}]\begingroup Vector Frequency and Delay Lock Loop\nomeqref {0}|nompageref}{vii}
+\nomenclatureentry{aVDLL@[{VDLL}]\begingroup Vector Delay Lock Loop\nomeqref {0}|nompageref}{vii}
+\nomenclatureentry{aGNC@[{GNC}]\begingroup Guidance, Navigation, and Control\nomeqref {0}|nompageref}{vii}

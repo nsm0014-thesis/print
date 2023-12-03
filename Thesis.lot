@@ -1,0 +1,22 @@
+\addvspace {10pt}
+\contentsline {table}{\numberline {1.1}{\ignorespaces Inexhaustive list of sensors available to commercial and general aviation aircraft. (Adapted from\nobreakspace {}\blx@tocontentsinit {0}\cite {DiamondAircraftDA401969,customerservicesA380AircraftCharacteristics2020})\relax }}{2}{}%
+\contentsline {table}{\numberline {1.2}{\ignorespaces Common sensor fusion frameworks used for GPS and INS collection platforms\relax }}{2}{}%
+\addvspace {10pt}
+\contentsline {table}{\numberline {2.1}{\ignorespaces Properties describing the WGS84 ellipsoid\relax }}{13}{}%
+\contentsline {table}{\numberline {2.2}{\ignorespaces Characteristics of the propeller modeled for this work.\relax }}{27}{}%
+\contentsline {table}{\numberline {2.3}{\ignorespaces List of spring and damper coefficients for nose and rear landing gear.\relax }}{31}{}%
+\addvspace {10pt}
+\addvspace {10pt}
+\addvspace {10pt}
+\contentsline {table}{\numberline {5.1}{\ignorespaces List of available, controllable inputs to the Diamond DA40 modeled in this thesis.\relax }}{63}{}%
+\contentsline {table}{\numberline {5.2}{\ignorespaces Gains for the throttle and propeller lever closed-loop PID controllers.\relax }}{64}{}%
+\addvspace {10pt}
+\contentsline {table}{\numberline {6.1}{\ignorespaces Signal power for each case applied to each trajectory.\relax }}{69}{}%
+\contentsline {table}{\numberline {6.2}{\ignorespaces Initial conditions for simulated trajectory from Figure\nobreakspace {}\ref {fig:trajectory1}.\relax }}{70}{}%
+\contentsline {table}{\numberline {6.3}{\ignorespaces RMSE, STD, and maximum error from 100-run Monte Carlo simulation when the deeply-coupled FVDM is subject to a degraded signal power level of \(35\) dB-Hz.\relax }}{72}{}%
+\contentsline {table}{\numberline {6.4}{\ignorespaces RMSE, STD, and maximum error from 100-run Monte Carlo simulation when the standard VT receiver is subject to a degraded signal power level of \(35\) dB-Hz.\relax }}{72}{}%
+\contentsline {table}{\numberline {6.5}{\ignorespaces RMSE, STD, and maximum error from 100-run Monte Carlo simulation when the receiver is subject to a degraded signal power level of \(20\) dB-Hz.\relax }}{77}{}%
+\contentsline {table}{\numberline {6.6}{\ignorespaces RMSE, STD, and maximum error from 100-run Monte Carlo simulation when the receiver is subject to a degraded signal power level of \(20\) dB-Hz.\relax }}{77}{}%
+\contentsline {table}{\numberline {6.7}{\ignorespaces RMSE, STD, and maximum error from 100-run Monte Carlo simulation when the receiver is subject to a degraded signal power level of \(20\) dB-Hz.\relax }}{85}{}%
+\contentsline {table}{\numberline {6.8}{\ignorespaces RMSE, STD, and maximum error from 100-run Monte Carlo simulation when the receiver is subject to a degraded signal power level of \(20\) dB-Hz.\relax }}{85}{}%
+\addvspace {10pt}
