@@ -123,7 +123,7 @@ The discretized process noise covariance matrix is a function of the time step a
     \end{bmatrix}
 \end{equation}
 
-\(\sigma^2_b\) is the variance of the noise process that drives the clock phase error in \(m^2/s\), \(\sigma^2_{r}\) is the noise variance that drives the clock frequency error in \(m^2/s^3\) and \(\sigma^2_{br}\) is the variance on the noise process that drives both the phase and frequency error in units of \(m^2/s^2\). For the receiver simulated in this work, an Oven Controlled Crystal Oscillator (OCXO) is used. More information on calculating the clock variance based on oscillator type can be found in~\cite{robertgroverbrownIntroductionRandomSignals2013}. The time step (\(\Delta t\)) is \(200\) Hertz.
+\(\sigma^2_b\) is the variance of the noise process that drives the clock phase error in \(m^2/s\), \(\sigma^2_{r}\) is the noise variance that drives the clock frequency error in \(m^2/s^3\) and \(\sigma^2_{br}\) is the variance on the noise process that drives both the phase and frequency error in units of \(m^2/s^2\). For the receiver simulated in this work, an Oven Controlled Crystal Oscillator (OCXO) is used. More information on calculating the clock variance based on oscillator type can be found in~\cite{robertgroverbrownIntroductionRandomSignals2013}. The time step (\(\Delta t\)) is \(200\) Hz.
 
 \(F\) is a set of non-linear equations that define the motion of the aircraft as a function of the current state in time (\(\mathbf{X}\)), the forces in the body frame (\(f_{ib}^b\)) and the moments about the body frame (\(M_{ib}^b\)). Calculation of the forces and moments were discussed in Chapter 2.
 

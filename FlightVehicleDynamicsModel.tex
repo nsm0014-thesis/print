@@ -43,7 +43,7 @@ The local wind reference frame is used to calculate the lift and drag generated 
 
 % Local
 \subsection{\textbf{Local Navigation Reference Frame}}
-A local navigation frame is necessary to define the orientation of the flight vehicle. This work implements a North-East-Down (NED) reference frame in which the axes are aligned with the topographic directions as seen in Figure~\ref{fig:globalframes} by \(X_n\),\(Y_n\), and \(Z_n\). The origin of the local navigation reference frame is defined at the initial position in the FVDM and navigation filter. The Euler attitude angles are used to describe the orientation of the Diamond DA-40 relative to the local navigation frame. When the aircraft has no roll, pitch, or yaw, this equates to the aircraft flying perfectly tangential to Earth's ellipsoid, with the nose of the aircraft pointing towards the North.
+A local navigation frame is necessary to define the orientation of the flight vehicle. This work implements a North-East-Down (NED) reference frame in which the axes are aligned with the topographic directions as seen in Figure~\ref{fig:globalframes} by \(X_n\), \(Y_n\), and \(Z_n\). The origin of the local navigation reference frame is defined at the initial position in the FVDM and navigation filter. The Euler attitude angles are used to describe the orientation of the Diamond DA-40 relative to the local navigation frame. When the aircraft has no roll, pitch, or yaw, this equates to the aircraft flying perfectly tangential to Earth's ellipsoid, with the nose of the aircraft pointing towards the North.
 
 \subsection{\textbf{Global Reference Frames}}
 Global Reference Frames are critical for GPS receivers to calculate position and velocity. In summary, a position from a receiver is based on distances between the receiver and any visible satellites (details about positioning using GPS satellites is provided in Chapter 3). As all GPS satellites operate in orbit around the Earth, the global reference frame provides a suitable solution that encompasses both satellite and receiver positions and velocities. In this thesis, two global reference frames are used. The Earth-Centered, Earth-Fixed (ECEF) and the geodetic reference system (LLA). The ECEF reference frame is considered the standard global reference frame as it works well for defining both positions and velocities for satellites and receivers, but falls short when it comes to visualization as the origin of the ECEF frame is the center of the Earth. The geodetic reference frame is an alternative frame that allows a visualization advantage by defining positions based on the surface of the Earth. Both LLA and ECEF reference frames utilize the World Geodetic System 1984 (WGS84) to describe Earth's geoid and gravitational field as function of parameters in Table~\ref{tbl:wgs84}. Visualization of both reference frames can be seen in Figure~\ref{fig:globalframes}.
@@ -129,7 +129,7 @@ The conversion from the LLA reference frame to the local navigation reference fr
     \end{bmatrix},
 \end{equation}
 
-and then multiplying the ECEF position vector to produce a position in the NED frame as discussed previously. In Equation~\ref{eq:ECEF2LNDCM}, \(C^{\textrm{n}}_{\textrm{e}}\) describes the DCM used for the transformation. The notation follows such that the subscript (e) is the position in the original reference frame and the superscript (n) is the reference frame the position is being rotated into. This thesis will always follow this notation to avoid any confusion.
+and then multiplying the ECEF position vector to produce a position in the NED frame as discussed previously. In Equation~\ref{eq:ECEF2LNDCM}, \(C^{\textrm{n}}_{\textrm{e}}\) describes the DCM used for the transformation. The notation follows such that the subscript (\(e\)) is the position in the original reference frame and the superscript (\(n\)) is the reference frame the position is being rotated into. This thesis will always follow this notation to avoid any confusion.
 
 \subsection{\textbf{Local to Body}}
 Similar to the conversion of LLA to the local navigation frame, the conversion from the local navigation to the flight vehicle reference frame can be done by forming the DCM (Equation~\ref{eq:321DCM}).
@@ -181,7 +181,7 @@ to solve for the ambient pressure \(P\), and density, \( \rho \). A complete for
 where \(P_0\) and \(\rho_0\) are atmospheric layer values for pressure and density, respectively; \(R\textsubscript{air}\) is the specific gas constant for air and \(\Delta h\) is difference between the current altitude of the flight vehicle and altitude of the current atmospheric layer. Figure~\ref{fig:atmos} describes these atmospheric parameters from MSL to 85,000 meters above sea level.
 \begin{figure}
     \centering
-    \includegraphics[width=0.8\linewidth]{Figures/atmosphericparameters.png}
+    \includegraphics[width=\linewidth]{Figures/atmosphericparameters.png}
     \caption{Absolute temperature, ambient pressure, air density, and speed of sound using the ISA model.}\label{fig:atmos}
 \end{figure}
 
