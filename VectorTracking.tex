@@ -1,9 +1,9 @@
 \chapter{\textbf{Proposed Navigation Filter Architecture}}
-Scalar tracking loops discussed in Chapter~3 are critically important to receivers as they adapt the replica signal to match the received signal data for proper decoding. However, traditional scalar loop filters assume a static noise bandwidth, regardless of receiver or satellite dynamics. If either platforms have unmodeled dynamics, these static bandwidths can permit too much noise into the navigation solution, or neglect some of the dynamics by filtering too much of the signal. One solution to this problem is implementing an adaptive Kalman filter to optimally select bandwidths~\cite{huangIntegratedAdaptiveKalman2019}. In this implementation, the Kalman filter estimates the proper bandwidth based on discriminator residuals and modeled variances, but is agnostic to the dynamics of the receiver or the satellite dynamics. The addition of an adaptive Kalman filter is an improvement, but leaves a lot to be desired as each channel is still being tracked individually, resulting in low-powered channels having a high likelihood of being lost.
+Tracking loops discussed in Chapter~3 are critically important to receivers as they adapt the replica signal to match the received signal data for proper decoding. However, traditional scalar loop filters assume a static noise bandwidth, regardless of receiver or satellite dynamics. If either platforms have unmodeled dynamics, these static bandwidths can permit too much noise into the navigation solution, or neglect some of the dynamics by filtering too much of the signal. One solution to this problem is implementing an adaptive Kalman filter to optimally select bandwidths~\cite{huangIntegratedAdaptiveKalman2019}. In the adaptive Kalman filter, the Kalman filter estimates the proper bandwidth based on discriminator residuals and modeled variances, but is agnostic to the dynamics of the receiver or the satellite dynamics. The addition of an adaptive Kalman filter is an improvement, but leaves a lot to be desired as each channel is still being tracked individually, resulting in low-powered channels having a high likelihood of being lost.
 
 Another, more optimal, solution is to estimate the local replica signal from receiver and satellite dynamics at every integration period. This requires an updated estimate of the navigation solution at every integration period. This approach combines the adaptive bandwidth from~\cite{huangIntegratedAdaptiveKalman2019} along with knowledge of the receiver and satellite dynamics stemming from the navigation solution. This closed-loop approach is known as {vector tracking} and will be discussed in greater detail later on in this chapter. Specifically, the Vector Delay and Frequency Lock Loop (VDFLL) is the vector tracking implementation used in this thesis.
 
-To build on the attractive approach that vector tracking brings to processing received signal data, the novelty of this work proposes an addendum to the existing navigation filter architecture by adding a FVDM to predict the trajectory of flight vehicle to better assist with the processing of the signal. When coupling external propagation schemes to GPS measurements, there are three common regimes.
+To build on vector tracking, this work proposes an addendum to the existing navigation filter architecture by adding a FVDM to predict the trajectory of flight vehicle. When coupling external propagation schemes to GPS measurements, there are three common regimes.
 
 The simplest form is loosely-coupled, where receiver position and velocity measurements are coupled with the predicted states from the external sensor to provide an improved receiver state estimate (Figure~\ref{fig:LC}). The advantages of loose coupling is that the GPS receiver does not need to be modeled extensively; however, the noise provided by the receiver is not white, making the Kalman filter sub-optimal~\cite{lashleyPerformanceAnalysisVector2009}. Furthermore, a {loosely-coupled} architecture only works with at least 4 satellites are transmitting to the receiver {--} which is not always the case for GPS-challenged environments~\cite{grovesPrinciplesGNSSInertial2012}.
 
@@ -21,7 +21,7 @@ A more complicated coupling is {tightly-coupled}, where the navigation filter re
     \caption{Tightly-coupled architecture between GPS and INS systems~\cite{hammAnalysisSimulatedPerformance2005}.}\label{fig:TC}
 \end{figure}
 
-{Deeply-coupled}, or ultra-tight coupling, is the last of the common methods to couple external state predictions to GPS measurements. The downsides to deeply integrating an external sensor or vehicle dynamic model to GPS measurements is increased complexity and the reliance on the receiver to know its position beforehand {--} as is common with vector tracking. Generally, a deeply integrated system revolves around adapting the EKF that exists for a vector tracking architecture and appending the external dynamic model. This way, the GPS receiver and the added dynamic model are tied together at the most basic level. The benefits of a complete deeply-coupled system allow continued tracking of a degraded signal \(2-6\) dB higher than their true carrier-to-noise ratios~\cite{wattsGPSGLONASSL12019}. Furthermore, the addition of external dynamics allows better predictions of receiver pose due to the navigation filter acknowledging the dynamics of the collection platform. This is especially beneficial for high-dynamic vehicles such as hyper-velocity aircraft~\cite{pozzobonSupersonicGNSSAuthentication2014} or vehicles in GPS-challenged environments~\cite{martinGPSCarrierPhase2017}. For these benefits, a deep integration of the FVDM with GPS correlator-level measurements is the focus of this work.
+{Deeply-coupled}, or ultra-tight coupling, is the last of the common methods to couple external state predictions to GPS measurements. The downsides to deeply integrating an external sensor or vehicle dynamic model to GPS measurements is increased complexity and the reliance on the receiver to know its initial position {--} as is common with vector tracking. Generally, a deeply integrated system revolves around adapting the EKF that exists for a vector tracking architecture and appending the external dynamic model. This way, the GPS receiver and the added dynamic model are tied together at the most basic level. The benefits of a complete deeply-coupled system allow continued tracking of a degraded signal \(2-6\) dB higher than their scalar loop counter-parts~\cite{wattsGPSGLONASSL12019}. Furthermore, the addition of external dynamics allows better predictions of receiver pose due to the navigation filter acknowledging the dynamics of the collection platform. This is especially beneficial for high-dynamic vehicles such as hyper-velocity aircraft~\cite{pozzobonSupersonicGNSSAuthentication2014} or vehicles in GPS-challenged environments~\cite{martinGPSCarrierPhase2017}. For these benefits, a deep integration of the FVDM with GPS correlator-level measurements is the focus of this work.
 
 \section{\textbf{Vector Delay and Frequency Lock Loop}}
 Vector tracking first utilized a Vector Delay Lock Loop (VDLL) and was proposed by~\cite{e.m.coppsOptimalProcessingGPS1980}. In a VDLL\@, the EKF provides continuous estimates of the code frequency, updating the DLL, improving overall tracking performance. Later on,~\cite{bradfordparkinsonGlobalPositioningSystem1996}, explores tracking both code frequency and carrier frequency in an EKF, coined the VDFLL\@. This method showed great improvements over scalar tracking algorithms and moderate improvements over the VDLL\@. The VDFLL proves best when tracking weaker GNSS signals under high dynamic stress~\cite{lashleyPerformanceAnalysisVector2009}. Furthermore, recent analyses from~\cite{ziedanMultipathChannelEstimation2012} prove the VDFLL has improved resilience to multipath delay as well. A block diagram of the VDFLL is shown in Figure~\ref{fig:VDFLL}.
@@ -32,7 +32,7 @@ Vector tracking first utilized a Vector Delay Lock Loop (VDLL) and was proposed 
     \caption{Block diagram of the VDFLL used in this work (Adapted from~\cite{grierPositionNavigationTiming}).}\label{fig:VDFLL}
 \end{figure}
 
-From Figure~\ref{fig:VDFLL}, the \textit{RF Front End} block refers to the discussion in Section~3.1. The signal correlation blocks represent Equation~\ref{eq:correlators} and also the the FLL and DLL discriminators specified in Equations~\ref{eq:FLLdisc} and~\ref{eq:DLLdisc}, respectively. The basic flow of the VDFLL requires the receiver to know its position and the positions of the satellites \textit{a priori}. Preferably, initial positions and satellite positions that are fed into the VDFLL are from processing the received signal for a length of time required to decode the navigation message using an open-loop architecture like the scalar tracking loops and WNLS discussed in Chapter 3. The measurement inputs of the EKF in Figure~\ref{fig:VDFLL} are residual pseudorange and pseudorange-rates in the form of discriminator outputs. The EKF uses the measurements from the current signal correlations to directly estimate the pose of the receiver. Using the ephemeris of the satellites and the corrected position estimates, new code phase and carrier frequency estimates are generated for the next integration period. To improve the estimated position from the EKF, the FVDM is used as the process model to propagate the non-linear motion of the aircraft in time. The next section covers the time update and measurement update within the EKF\@.
+From Figure~\ref{fig:VDFLL}, the \textit{RF Front End} block refers to the discussion in Section~3.1. The signal correlation blocks represent Equation~\ref{eq:correlators} and also the the FLL and DLL discriminators specified in Equations~\ref{eq:FLLdisc} and~\ref{eq:DLLdisc}, respectively. The basic flow of the VDFLL requires the receiver to know its position and the positions of the satellites \textit{a priori}. Preferably, initial positions and satellite positions that are fed into the VDFLL are from processing the received signal for a length of time required to decode the navigation message using an open-loop architecture like the scalar tracking loops and WNLS discussed in Chapter 3. The measurement inputs of the EKF in Figure~\ref{fig:VDFLL} are residual pseudorange and pseudorange-rate errors in the form of discriminator outputs. The EKF uses the measurements from the current signal correlations to directly estimate the pose of the receiver. Using the ephemeris of the satellites and the corrected position estimates, new code phase and carrier frequency estimates are generated for the next integration period. To improve the estimated position from the EKF, the FVDM is used as the process model to propagate the non-linear motion of the aircraft in time. The next section covers the time update and measurement update within the EKF\@.
 
 \section{\textbf{Deeply Coupled GPS and FVDM Navigation Filter}}
 As stated previously, the VDFLL replaces the scalar DLLs and FLLs with a single EKF\@. This sections describes the design of the EKF for the proposed navigation filter. The EKF for this work represents a position-state filter where the state vector is defined by Equation~\ref{eq:stateVector}.
@@ -53,7 +53,7 @@ The essential elements for the state vector are sectioned into five terms.~\(\ma
     \end{bmatrix}
 \end{equation}
 
-The angular rates (\(\mathbf{X}_{\omega}\)) are represented from inertial to body with respect to the body frame (Equation~\ref{eq:omegaVector}).
+\(V_N\), \(V_E\), and \(V_D\) are the velocity components of the aircraft in the North, East, and Down directions, respectively. The angular rates (\(\mathbf{X}_{\omega}\)) are represented from inertial to body with respect to the body frame (Equation~\ref{eq:omegaVector}).
 
 \begin{equation}\label{eq:omegaVector}
     \mathbf{X}_{\omega} =
@@ -62,7 +62,7 @@ The angular rates (\(\mathbf{X}_{\omega}\)) are represented from inertial to bod
     \end{bmatrix}
 \end{equation}
 
-The position estimates of the aircraft are from Earth to body with respect to the Local Navigation frame (Equation~\ref{eq:posVector}), similar to the velocity states.
+\(p_{ib}^b\), \(q_{ib}^b\), and \(r_{ib}^b\) are the angular rates components of the aircraft about the body-fixed \(x\),\(y\), and \(z\) axes. The position estimates of the aircraft are from Earth to body with respect to the Local Navigation frame (Equation~\ref{eq:posVector}), similar to the velocity states.
 
 \begin{equation}\label{eq:posVector}
     \mathbf{X}_P =
@@ -70,8 +70,7 @@ The position estimates of the aircraft are from Earth to body with respect to th
         \lambda_{eb}^n & L_{eb}^n & h_{eb}^n \\
     \end{bmatrix}
 \end{equation}
-
-Equation~\ref{eq:eulVector} represents the Euler angles of the aircraft, represented from body to the local navigation frame.
+\(\lambda_{eb}^n\), \(L_{eb}^n\), and \(h_{eb}^n\) are the latitude, longitude, and altitude of the aircraft with respect to the geodetic reference frame described in Chapter 2. Equation~\ref{eq:eulVector} represents the Euler angles of the aircraft, represented from body to the local navigation frame.
 
 \begin{equation}\label{eq:eulVector}
     \mathbf{X}_{\psi} =
@@ -80,7 +79,7 @@ Equation~\ref{eq:eulVector} represents the Euler angles of the aircraft, represe
     \end{bmatrix}
 \end{equation}
 
-Completing the state vector are the clock terms that represent estimates of the clock bias and clock drift of the receiver during flight (Equation~\ref{eq:clkVector}). The clock bias and clock drift are scaled by the speed of light (\(c\)) to give them units of meters and meters/second, respectively.
+\(\phi_{bn}\), \(\theta_{bn}\), and \(\psi_{bn}\) are the roll, pitch, and yaw of the aircraft from the body to the navigation frame. Completing the state vector are the clock terms that represent estimates of the clock bias and clock drift of the receiver during flight (Equation~\ref{eq:clkVector}). The clock bias and clock drift are scaled by the speed of light (\(c\)) to give them units of meters and meters/second, respectively.
 
 \begin{equation}\label{eq:clkVector}
     \mathbf{X}_t = \begin{bmatrix}
@@ -109,11 +108,10 @@ where \(\mathbf{B}_{dyn}\) is the noise distribution matrix related to the dynam
 
 \begin{equation}\label{eq:wDyn}
     w_{dyn} = \begin{bmatrix}
-        \sigma^2_{V_N} & \sigma^2_{V_E} & \sigma^2_{V_E} & \sigma^2_{p} & \sigma^2_{q} & \sigma^2_{r}
+        \sigma^2_{V_N} & \sigma^2_{V_E} & \sigma^2_{V_D} & \sigma^2_{p} & \sigma^2_{q} & \sigma^2_{r}
     \end{bmatrix}^T
 \end{equation}
-
-The discretized process noise covariance matrix is a function of the time step and phase and frequency clock variances for the specified oscillator (Equation~\ref{eq:Qclk}).
+\(\sigma_{()}\) are additive white Gaussian noise that characterizes the stochastic motion of the aircraft for their respective, sub-scripted variables. The discretized process noise covariance matrix is a function of the time step and phase and frequency clock variances for the specified oscillator (Equation~\ref{eq:Qclk}).
 
 \begin{equation}\label{eq:Qclk}
     \mathbf{Q}_{clk} =
@@ -290,7 +288,7 @@ The state propagation is continuous, but \(\mathbf{\Phi}\) is discrete. This mea
 The discrete process noise covariance (\(\mathbf{Q}_d\)) encapsulates the disturbances onto the aircraft dynamics such that the EKF can better correct the states during the measurement update. To transform the process noise from continuous to discrete, Equation~\ref{eq:Qd} is used.
 
 \begin{equation}\label{eq:Qd}
-    \mathbf{Q_d} = \textrm{blkdiag}\left(\left[\mathbf{\Phi}\mathbf{B}_{dyn} \left(w_{dyn}w_{dyn}^T\right) \mathbf{B}_{dyn}^T \mathbf{\Phi}^T \Delta t\right], \mathbf{Q_{clk}}\right)
+    \mathbf{Q_d} = \texttt{blkdiag}\left(\left[\mathbf{\Phi}\mathbf{B}_{dyn} \left(w_{dyn}w_{dyn}^T\right) \mathbf{B}_{dyn}^T \mathbf{\Phi}^T \Delta t\right], \mathbf{Q_{clk}}\right)
 \end{equation}
 
 Once the state and covariance prediction are calculated, the \textit{a priori} part of the EKF is complete. The EKF will continue to predict the state and covariance until measurements from the vector tracking receiver are available. The next subsection covers the measurement update of the EKF, correcting the predicted covariance and predicted states.
@@ -306,7 +304,7 @@ The Kalman gain, \(\mathbf{K}\), is a function of the observation matrix, \(\mat
 
 \begin{equation}\label{eq:H}
     \mathbf{H}_k = \begin{bmatrix}
-        \mathbf{u}^{n,j}_{1,3} & \mathbf{0}_{1,3} & \mathbf{0}_{1,3}            & 0                & 0  & -1 \\
+        \mathbf{u}^{n,j}_{1,3} & \mathbf{0}_{1,3} & \mathbf{0}_{1,3}            & \mathbf{0}_{1,3} & 0  & -1 \\
         \mathbf{0}_{1,3}       & \mathbf{0}_{1,3} & \mathbf{h}^j_{\rho p_{1,3}} & \mathbf{0}_{1,3} & -1 & 0  \\
     \end{bmatrix}_{2j,14}
 \end{equation}

@@ -1,4 +1,5 @@
 \chapter{\textbf{Flight Vehicle Dynamics Model}}
+The proposed navigation filter can be divided into two main modules, the flight vehicle dynamics model and the vector tracking algorithm. This chapter covers the flight vehicle dynamic model and how its predicts the forces and moments acting onto the airframe.
 The aircraft modeled in this thesis is the Diamond DA-40 single propeller fixed wing aircraft (Figure~\ref{fig:DA40}). The simulation is a full six Degrees of Freedom (DOF) and features 12 control inputs {--} ranging from throttle and control surface inputs to propeller pitch and mixture levers. The sections below detail the flight mechanics modules that propagate the aerodynamics, engine and propeller, landing gear, and gravitational forces and moments during the simulation. Small General Aviation (GA) aircraft are easier to model compared to commercial and military aircraft as performance information for the mechanical components of the plane are not hidden through government or proprietary documents. Using publicly available data, numerical tables can be compiled before simulations to lower the computational burden. The equations of motions and stochastic elements of the model are covered in a later chapter. Heavily important to modeling a flight vehicle, this chapter begins with a discussion of reference frames and how they interact with the proceeding flight mechanics.
 
 \begin{figure}[!ht]
@@ -23,7 +24,7 @@ The flight vehicle reference frame or body frame describes the reference frame w
 \clearpage
 % Prop
 \subsection{\textbf{Propeller Reference Frame}}
-The propeller reference frame describes the axis about which the propeller rotates with origin to the propeller nacelle, as seen in Figure~\ref{fig:propframe}. Propeller \textit{pitch}, as it is referenced in this thesis is a rotation about the \textit{y} axis, while the blades of the propeller rotate about the \textit{x} axis. This axis remains remains fixed in orientation and position.~\( \phi{}\) from Figure~\ref{fig:propframe} describes the twist of the blade. The twist of the blade helps the propeller produce more thrust, but is not used in any reference frame calculations.
+The propeller reference frame describes the axis about which the propeller rotates with origin to the propeller nacelle, as seen in Figure~\ref{fig:propframe}. Propeller \textit{pitch}, as it is referenced in this thesis is a rotation about the \textit{y} axis, while the blades of the propeller rotate about the \textit{x} axis. This axis remains fixed in orientation and position similarly to the flight vehicle reference frame.~\( \phi{}\) from Figure~\ref{fig:propframe} describes the twist of the blade and is the rotation of the blades about the \textit{x} axis. The twist of the blade helps the propeller produce more thrust, but is not used in any reference frame calculations.
 
 \begin{figure}[!ht]
     \centering
@@ -46,7 +47,7 @@ The local wind reference frame is used to calculate the lift and drag generated 
 A local navigation frame is necessary to define the orientation of the flight vehicle. This work implements a North-East-Down (NED) reference frame in which the axes are aligned with the topographic directions as seen in Figure~\ref{fig:globalframes} by \(X_n\), \(Y_n\), and \(Z_n\). The origin of the local navigation reference frame is defined at the initial position in the FVDM and navigation filter. The Euler attitude angles are used to describe the orientation of the Diamond DA-40 relative to the local navigation frame. When the aircraft has no roll, pitch, or yaw, this equates to the aircraft flying perfectly tangential to Earth's ellipsoid, with the nose of the aircraft pointing towards the North.
 
 \subsection{\textbf{Global Reference Frames}}
-Global Reference Frames are critical for GPS receivers to calculate position and velocity. In summary, a position from a receiver is based on distances between the receiver and any visible satellites (details about positioning using GPS satellites is provided in Chapter 3). As all GPS satellites operate in orbit around the Earth, the global reference frame provides a suitable solution that encompasses both satellite and receiver positions and velocities. In this thesis, two global reference frames are used. The Earth-Centered, Earth-Fixed (ECEF) and the geodetic reference system (LLA). The ECEF reference frame is considered the standard global reference frame as it works well for defining both positions and velocities for satellites and receivers, but falls short when it comes to visualization as the origin of the ECEF frame is the center of the Earth. The geodetic reference frame is an alternative frame that allows a visualization advantage by defining positions based on the surface of the Earth. Both LLA and ECEF reference frames utilize the World Geodetic System 1984 (WGS84) to describe Earth's geoid and gravitational field as function of parameters in Table~\ref{tbl:wgs84}. Visualization of both reference frames can be seen in Figure~\ref{fig:globalframes}.
+Global Reference Frames are critical for GPS receivers to calculate position and velocity. In summary, a position from a receiver is calculated based on distances between the receiver and visible satellites (details about positioning using GPS satellites is provided in Chapter 3). As all GPS satellites operate in orbit around the Earth, the global reference frame provides a suitable solution that encompasses both satellite and receiver positions and velocities. In this thesis, two global reference frames are used. The Earth-Centered, Earth-Fixed (ECEF) and the geodetic reference system (LLA). The ECEF reference frame is considered the standard global reference frame as it works well for defining both positions and velocities for satellites and receivers, but falls short when it comes to visualization as the origin of the ECEF frame is the center of the Earth. The geodetic reference frame is an alternative frame that allows a visualization advantage by defining positions based on the surface of the Earth. Both LLA and ECEF reference frames utilize the World Geodetic System 1984 (WGS84) to describe Earth's geoid and gravitational field as function of parameters in Table~\ref{tbl:wgs84}. Visualization of both reference frames can be seen in Figure~\ref{fig:globalframes}.
 
 \begin{table}[!ht]
     \caption{Properties describing the WGS84 ellipsoid}\label{tbl:wgs84}
@@ -82,7 +83,7 @@ One of the more complicated reference frame transformations is between the two g
     R_N (L) = \frac{R_0 \, \left(1 - e^2\right)}{{\left(1 - e^2 \, \sin^2 {\left(L\right)}\right)}^{3/2}}
 \end{equation}
 
-Equation~\ref{eq:meridiancurvature}, \(R_N (L)\) describes the one the two radii of curvature. In this case, the meridian radius of curvature describes the north to south radius. The second radii of curvature (Equation~\ref{eq:transversecurvature}) describes the east to west radius and is known as the transverse radius of curvature (\(R_E (L) \)).
+Equation~\ref{eq:meridiancurvature}, \(R_N (L)\) describes the one the two radii of curvature. In this case, the meridian radius of curvature describes the north to south radius. \(L\) is the estimated user longitude as described by the geodetic reference system. The second radii of curvature (Equation~\ref{eq:transversecurvature}) describes the east to west radius and is known as the transverse radius of curvature (\(R_E (L) \)).
 
 \begin{equation}\label{eq:transversecurvature}
     R_E (L) = \frac{R_0}{\sqrt{1 - e^2 \, \sin^2 {\left(L\right)}}}
@@ -102,7 +103,7 @@ After the transverse radius of curvature is calculated, it is used with the LLA 
     Z_{ECEF} = \left[\left(1 - e^2\right) R_E (L) + h\right] \sin \left(L\right)
 \end{equation}
 
-The ECEF to LLA conversion is more complicated. In order to calculate the longitude,\(L\), in Equation~\ref{eq:ecef2llaL}, the altitude, \(h\), (Equation~\ref{eq:ecef2llaaltitude}) must be calculated {--} and vice versa. The correct way to solve for positions in the LLA reference frame is to iterate until the difference between positions from iteration to iteration is miniscule.
+The ECEF to LLA conversion is more complicated. In order to calculate the longitude,\(L\), in Equation~\ref{eq:ecef2llaL}, the altitude, \(h\), (Equation~\ref{eq:ecef2llaaltitude}) must be calculated {--} and vice versa. Lastly, \(\lambda \) describes the latitude of the user position as described by the geodetic reference frame. The correct way to solve for positions in the LLA reference frame is to iterate until the difference between positions from iteration to iteration is miniscule.
 
 \begin{equation}\label{eq:ecef2llaL}
     L = \textrm{atan2}\left(\frac{Z_{ECEF} \left[R_E (L) + h\right]}{\sqrt{X_{ECEF}^2 + Y^2_{ECEF}} \, \left[ \left(1 - e^2\right) R_E (L) + h\right]}\right)
@@ -203,7 +204,7 @@ A wing produces lift by allowing the air to move faster over the top of the airf
     P_1 + \frac{1}{2}\, \rho \, V_1^2 + \rho \, g \, h_1 = P_2 + \frac{1}{2}\, \rho \, V_2^2 + \rho \, g \, h_2
 \end{equation}
 
-shows that a faster moving fluid leads to a lower pressure gradient. On the bottom side of the wing, where the air is slower, a higher pressure gradient forms. This difference in pressure creates a force on the wing that lifts the wing and entire airplane into the air (Figure~\ref{fig:pressuregradient})~\cite{WhatLift}.
+shows that a faster moving fluid leads to a lower pressure gradient. On the bottom side of the wing, where the air is slower, a higher pressure gradient forms. This difference in pressure creates a force on the wing that lifts the wing and entire airplane into the air (Figure~\ref{fig:pressuregradient})~\cite{WhatLift}. In equation~\ref{eq:bern}, \(V\) represents the aircraft forward velocity.
 
 \begin{figure}[!ht]
     \centering
@@ -226,7 +227,7 @@ Lift is not the only force produced by the wing during flight. When any object m
     D = \frac{C_D \rho V^2 A}{2}
 \end{equation}
 
-The aerodynamic moments generated during flight of any aircraft are the single reason that control surface deflections cause the aircraft the roll, pitch or yaw in a certain direction. Just like the equations for lift and drag, the total aerodynamic moments are described by equations~\ref{eq:Lmoment},~\ref{eq:Mmoment}, and~\ref{eq:Nmoment}.
+Above, \(C_D\) is the drag coefficient and \(A\) is the surface area of the aircraft. The aerodynamic moments generated during flight of any aircraft are the single reason that control surface deflections cause the aircraft the roll, pitch or yaw in a certain direction. Just like the equations for lift and drag, the total aerodynamic moments are described by equations~\ref{eq:Lmoment},~\ref{eq:Mmoment}, and~\ref{eq:Nmoment}.
 
 \begin{equation}\label{eq:Lmoment}
     M_l = \frac{C_l \rho V^2 A}{2}
@@ -239,7 +240,7 @@ The aerodynamic moments generated during flight of any aircraft are the single r
 \end{equation}
 
 % What is Strip Theory?
-In Equations~\ref{eq:lift},~\ref{eq:drag},~\ref{eq:Lmoment},~\ref{eq:Mmoment}, and~\ref{eq:Nmoment}, coefficients need to be defined in order to calculate the aerodynamic forces and moments correctly. If known before hand, these coefficients can be calculated programmatically.~Equation~\ref{eq:CL} describes the equation for finding the lift coefficient.
+In Equations~\ref{eq:lift},~\ref{eq:drag},~\ref{eq:Lmoment},~\ref{eq:Mmoment}, and~\ref{eq:Nmoment}, the rolling (\(C_l\)), pitching (\(C_m\)) and yawing (\(C_n\)) coefficients need to be defined in order to calculate the aerodynamic forces and moments correctly. If known before hand, these coefficients can be calculated programmatically.~Equation~\ref{eq:CL} describes the equation for finding the lift coefficient.
 
 \begin{equation}\label{eq:CL}
     C_L = C_{L_0} + C_{L_\alpha}\alpha + C_{L_q}\frac{qc}{2V} + C_{L_{\delta_e}}\delta_e
@@ -267,7 +268,7 @@ The aerodynamic moment coefficient is split into three components, each defined 
 
 In the above equations, \(C_{{(.)}_{(.)}}\) are the coefficients relating to their respective aircraft states.~\(p\), \(q\), and \(r\) are the angular rates about the forward, right, and down direction in the flight vehicle reference frame.~\(\delta_e\), \(\delta_a\), and \(\delta_r\) are control surface deflections of the elevator, ailerons, and rudders, respectively.~\( \beta \) is the sideslip angle of the aircraft and represents the angle between the motion of the aircraft and the direction the aircraft is pointing. Finally, \(b\) describes the half-wing span of the aircraft.
 
-Unless these coefficients and their accompanying variables are somehow known \textit{a priori}, determining what they should be can be cumbersome. However, one way to approximate the coefficients to their true value is to use a CFD program and collect tables of data for the aircraft under various flight condition and control surface deflections. The remaining part of this section describes the process of using \textit{FlightStream} in combination with strip theory to approximate their true values.
+Unless these coefficients and their accompanying variables are somehow known \textit{a priori}, determining what they should be can be cumbersome. However, one way to approximate the coefficients is to use a CFD program and collect tables of data for the aircraft under various flight condition and control surface deflections. The remaining part of this section describes the process of using \textit{FlightStream} in combination with strip theory to approximate their true values.
 
 For the aircraft presented in this thesis, strip theory is a means to better approximate the lift, drag, and moments coefficients described earlier. Figure~\ref{fig:strips} draws the horizontal and vertical strips the aircraft is discretized into. Their reference frame is static and is defined by the strips position and orientation relative to the center of mass of the aircraft. To rotate the aerodynamic forces generated from each strip, a simple yaw{--}pitch{--}row transformation is used.
 
@@ -296,7 +297,7 @@ Because the engine is air-cooled, one of more important components is the engine
     \textrm{power} = \textrm{power}_{0}\left(\frac{\rho}{\rho_0} - \frac{1 - \rho/\rho_0}{7.55}\right),
 \end{equation}
 
-relates power production to the density of air. Where \(\rho \) is the density of the ambient air as a function of altitude (Section~\ref{section:atmos}), \(\rho_0\) is the density of ambient air at sea-level on a standard day, and \(\textrm{power}_0\) is the max engine power provided the density ratio and the nominal power production of the engine. From~\cite{hartzellpropellerHartzellPropellerManual2023}, the engine modeled in this work has a nominal power output on a sea-level standard day of 600 horsepower (447.42 kW). Figure~\ref{fig:gaggferrar} shows the power output of the engine modeled in this thesis based on the Gagg and Ferrar model and nominal sea-level power production.
+relates power production to the density of air, where \(\rho \) is the density of the ambient air as a function of altitude (Section~\ref{section:atmos}), \(\rho_0\) is the density of ambient air at sea-level on a standard day, and \(\textrm{power}_0\) is the max engine power provided the density ratio and the nominal power production of the engine. From~\cite{hartzellpropellerHartzellPropellerManual2023}, the engine modeled in this work has a nominal power output on a sea-level standard day of 600 horsepower (447.42 kW). Figure~\ref{fig:gaggferrar} shows the power output of the engine modeled in this thesis based on the Gagg and Ferrar model and nominal sea-level power production.
 
 \begin{figure}[!ht]
     \centering
@@ -323,7 +324,7 @@ The governor that exists in ground and flight vehicles exists such that drastic 
 
 \subsection{\textbf{Propeller Modeling}}
 % Propeller Dynamics
-The purpose of an aircraft propeller is to accelerate the volume of ambient air in front of it such that the lifting surfaces on the aircraft can generate lift and keep the aircraft at altitude. There are 3 main components to focus on when designing and manufacturing propellers. These are the materials used in building the propeller, the number of blades on the propeller, and the curvature and shape of each blade. While the focus of this thesis is not on details in propeller design, it is important to show how the history and differences between these three items affect the efficiency and performance a propeller has in generating thrust power for the aircraft.
+The purpose of an aircraft propeller is to accelerate the volume of ambient air in front of the flight vehicle such that the lifting surfaces on the aircraft can generate lift and keep the aircraft at altitude. There are 3 main components to focus on when designing and manufacturing propellers. These are the materials used in building the propeller, the number of blades on the propeller, and the curvature and shape of each blade. While the focus of this thesis is not on details in propeller design, it is important to show how the history and differences between these three items affect the efficiency and performance a propeller has in generating thrust power for the aircraft.
 
 The first modern propellers were designed in the early 1900's~\cite{ianHowIdentifyHistoric2016}. Originally made of wood, they featured 3 blades and crudely resembled airfoil shapes (Figure~\ref{fig:woodprops}).
 
@@ -333,24 +334,25 @@ The first modern propellers were designed in the early 1900's~\cite{ianHowIdenti
     \caption{Collection of historic wood and steel propellers~\cite{ianHowIdentifyHistoric2016}.}\label{fig:woodprops}
 \end{figure}
 
-These propellers had a fixed pitch, meaning they could not rotate up and down during flight {--} severely costing the propeller thrust power and lowering overall fuel efficiency. In 1929, Wallace Turnbull invented the variable pitch propeller, allowing pilots to control the pitch of the propeller, dramatically increasing propeller efficiency during flight~\cite{ianShortHistoryAircraft2018}. Through time and the advent of computers, CFD analyses shaped a handful of equations that define the performance and efficiency of propeller design. In this work, a three-blade Hartzell~\cite{HartzellPropellerInc1969} composite propeller is used as it is the Original Equipment Manufacturer (OEM) propeller on the Diamond DA-40 aircraft. This propeller is a variable-pitch, constant speed propeller, meaning the pitch of the propeller is optimally adjusted for the current flight condition, while at the same time, maintaining a constant rotational speed to conserve fuel and hold a consistent propeller efficiency (Equation~\ref{eq:propellerefficiency}).
-
-Before the simulation is started, the propeller is analyzed through \textit{FlightStream}~\cite{FlightStream2022}, a surface vorticity flow solver, to analyze the propeller for its lift coefficient (\(C_L\)) at varying flight conditions (Figure~\ref{fig:flightstreamprop}).
+These propellers had a fixed pitch, meaning they could not rotate up and down during flight {--} severely costing the propeller thrust power and lowering overall fuel efficiency. In 1929, Wallace Turnbull invented the variable pitch propeller (Figure~\ref{fig:variablepitchprop}), allowing pilots to control the pitch of the propeller, dramatically increasing propeller efficiency during flight~\cite{ianShortHistoryAircraft2018}.
 
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=.35\linewidth]{Figures/flightstreamprop.png}
-    \caption{Analyzing three-blade propeller through FlightStream~\cite{FlightStream2022}.}\label{fig:flightstreamprop}
+    \includegraphics[width=0.8\linewidth]{Figures/variablepitchprop.png}
+    \caption{Illustration of the variable pitch propeller~\cite{AerodynamicsPropellerBasics2016}.}\label{fig:variablepitchprop}
 \end{figure}
 
-Once the lift coefficient is determined, numerical look up tables are generated such that the calculation of the forces and moments generated by the propeller can be interpolated, allowing the simulation to be run in real time. To determine the amount of thrust and torque generated by the propeller, the activity factor (Equation~\ref{eq:activityfactor}) of the propeller must first be determined. The activity factor is a measure of the propeller's ability to absorb power and the effectiveness of each blade's width.
+Through time and the advent of computers, CFD analyses shaped a handful of equations that define the performance and efficiency of propeller design. In this work, a three-blade Hartzell~\cite{HartzellPropellerInc1969} composite propeller is used as it is the Original Equipment Manufacturer (OEM) propeller on the Diamond DA-40 aircraft. This propeller is a variable-pitch, constant speed propeller, meaning the pitch of the propeller is optimally adjusted for the current flight condition, while at the same time, maintaining a constant rotational speed to conserve fuel and hold a consistent propeller efficiency.
 
+Before the simulation is started, the propeller is analyzed through \textit{FlightStream}~\cite{FlightStream2022}, a surface vorticity flow solver, to analyze the propeller for its lift coefficient (\(C_L\)) at varying flight conditions.
+
+Once the lift coefficient is determined, numerical look up tables are generated such that the calculation of the forces and moments generated by the propeller can be interpolated, allowing the simulation to be run in real time.
 % Activity Factor
 \begin{equation}\label{eq:activityfactor}
     AF_{\textrm{per blade}} = \frac{1 \times 10^5 \, c_{\textrm{root}}}{16 \, D} \left(0.25 + 0.2 \, \lambda - 0.2 \right)
 \end{equation}
 
-Where \(AF_{\textrm{per blade}}\) is the \textit{Activity Factor} per blade, \(c_{\textrm{root}}\) is the length of a blade's chord at the root, \(D\) is the diameter of the propeller, and \( \lambda \) is the taper ratio. Table~\ref{tbl:propparams} describes the design characteristics of the propeller used in this thesis.
+To determine the amount of thrust and torque generated by the propeller, the activity factor (Equation~\ref{eq:activityfactor}) of the propeller must first be determined. The activity factor is a measure of the propeller's ability to absorb power and the effectiveness of each blade's width. \(AF_{\textrm{per blade}}\) is the activity factor per blade, \(c_{\textrm{root}}\) is the length of a blade's chord at the root, \(D\) is the diameter of the propeller, and \( \lambda \) is the taper ratio. Table~\ref{tbl:propparams} describes the design characteristics of the propeller used in this thesis.
 
 \begin{table}[!ht]
     \caption{Characteristics of the propeller modeled for this work.}\label{tbl:propparams}
@@ -360,7 +362,7 @@ Where \(AF_{\textrm{per blade}}\) is the \textit{Activity Factor} per blade, \(c
         \textbf{Characteristics } & \textbf{Value} & \textbf{Units} \\
         \midrule
         \(c_{\textrm{root}}\)     & 0.1475         & meters         \\
-        \(D\)                     & 1.9            & meters         \\
+        Diameter (\(D\))          & 1.9            & meters         \\
         \( \lambda \)             & 0.8            & {--}           \\
         \(C_L\)                   & 0.5            & {--}           \\
         \bottomrule
@@ -418,7 +420,7 @@ Mapping \(C_T\) and \(C_P\) allows for computationally inexpensive queries with 
     \eta_P = \frac{C_T}{C_P} \, J
 \end{equation}
 
-Propeller efficiency, \( \eta_P \) compares the amount of power produced by the engine and shaft to the amount of power applied to the ambient air {--} an ideal propeller efficiency would be \(1\), where all of the produced engine power is used to accelerate the ambient air. The \textit{Advance Ratio}, \(J\)
+Propeller efficiency, \( \eta_P \) compares the amount of power produced by the engine and shaft to the amount of power applied to the ambient air. An ideal propeller efficiency would be \(1\), where all of the produced engine power is used to accelerate the ambient air. The \textit{Advance Ratio}, \(J\)
 % Advance Ratio
 \begin{equation}\label{eq:advanceRatio}
     J = \frac{V}{n \, D} \, ,
@@ -513,7 +515,7 @@ Once the forces and moments are calculated, they are used within the equation of
 
 \section{\textbf{Measures of Fidelity}}
 
-This focus of this work is the development of a high-fidelity FVDM that closely resembles the behavior of a Diamond DA-40. That being said, the fidelity of the model could always be improved. There is a common question about how much fidelity is needed to provide accurate predictions of the behavior for the modeled flight vehicle. The research performed by~\cite{khaghaniAutonomousVehicleDynamic2016} evaluates this question quite well, where the focus of the work was implementing a 47-state Extended Kalman Filter (EKF) in which 24 of the states were estimating aerodynamic coefficients. For systems where the navigation filter is not fully cognizant of the flight vehicle it is installed on, this method can provide a more generalized solution when extensive knowledge of the flight vehicle does not exist. The work of~\cite{mwenegohaModelbasedTightlyCoupled2020} showcases the value of estimating the aerodynamic coefficients by presenting decent positioning estimates during periods of low satellite visibility.
+This focus of this work is the development of a high-fidelity FVDM that closely resembles the behavior of a Diamond DA-40. That being said, the fidelity of the model could always be improved. There is a common question about how much fidelity is needed to provide accurate predictions of the behavior for the modeled flight vehicle. The research performed by~\cite{khaghaniAutonomousVehicleDynamic2016} evaluates this question quite well, where the focus of the work was implementing a 47-state Extended Kalman Filter (EKF) in which 24 of the states were estimating aerodynamic coefficients. For systems where the navigation filter is not fully cognizant of the flight vehicle it is installed on, this method can provide a more generalized solution when extensive knowledge of the flight vehicle does not exist. The work of~\cite{mwenegohaModelbasedTightlyCoupled2020} showcases the value of estimating the aerodynamic coefficients by presenting decent positioning estimates during periods of low satellite visibility. For the focus of this thesis, the compilation of look up tables and data sheets represents the DA-40 accurately to predict the behavior of the aircraft during flight given a set of controller inputs.
 
 
 \section{\textbf{Conclusions}}

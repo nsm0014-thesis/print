@@ -1,0 +1,62 @@
+\contentsline {chapter}{Abstract}{ii}{}%
+\contentsline {chapter}{Acknowledgments}{iv}{}%
+\contentsline {chapter}{\nonumberline List of Abbreviations}{viii}{}%
+\contentsline {chapter}{\numberline {1}\textbf {Introduction and Background}}{1}{}%
+\contentsline {section}{\numberline {1.1}\textbf {Prior Art}}{3}{}%
+\contentsline {subsection}{\numberline {1.1.1}\textbf {Sensor Fusion Overview and Variation}}{3}{}%
+\contentsline {subsection}{\numberline {1.1.2}\textbf {Vehicle Dynamic Model Sensor Fusion}}{4}{}%
+\contentsline {subsection}{\numberline {1.1.3}\textbf {Other Types of Flight Vehicle Sensor Fusion}}{5}{}%
+\contentsline {section}{\numberline {1.2}\textbf {Vector Tracking}}{5}{}%
+\contentsline {section}{\numberline {1.3}\textbf {Field Contributions}}{6}{}%
+\contentsline {section}{\numberline {1.4}\textbf {Thesis Outline}}{7}{}%
+\contentsline {chapter}{\numberline {2}\textbf {Flight Vehicle Dynamics Model}}{8}{}%
+\contentsline {section}{\numberline {2.1}\textbf {Reference Frames}}{8}{}%
+\contentsline {subsection}{\numberline {2.1.1}\textbf {Flight Vehicle Reference Frame}}{9}{}%
+\contentsline {subsection}{\numberline {2.1.2}\textbf {Propeller Reference Frame}}{11}{}%
+\contentsline {subsection}{\numberline {2.1.3}\textbf {Local Wind Reference Frame}}{11}{}%
+\contentsline {subsection}{\numberline {2.1.4}\textbf {Local Navigation Reference Frame}}{12}{}%
+\contentsline {subsection}{\numberline {2.1.5}\textbf {Global Reference Frames}}{12}{}%
+\contentsline {section}{\numberline {2.2}\textbf {Reference Frame Transformations}}{14}{}%
+\contentsline {subsection}{\numberline {2.2.1}\textbf {ECEF to LLA}}{14}{}%
+\contentsline {subsection}{\numberline {2.2.2}\textbf {LLA to Local}}{15}{}%
+\contentsline {subsection}{\numberline {2.2.3}\textbf {Local to Body}}{16}{}%
+\contentsline {section}{\numberline {2.3}\textbf {Atmosphere Model}}{16}{}%
+\contentsline {section}{\numberline {2.4}\textbf {Aerodynamic Principles}}{18}{}%
+\contentsline {section}{\numberline {2.5}\textbf {Aero-Propulsive Forces}}{22}{}%
+\contentsline {subsection}{\numberline {2.5.1}\textbf {Piston Engine Model}}{22}{}%
+\contentsline {subsection}{\numberline {2.5.2}\textbf {Propeller Modeling}}{25}{}%
+\contentsline {section}{\numberline {2.6}\textbf {Landing Gear Model}}{30}{}%
+\contentsline {section}{\numberline {2.7}\textbf {Forces and Moments Calculations}}{32}{}%
+\contentsline {section}{\numberline {2.8}\textbf {Measures of Fidelity}}{32}{}%
+\contentsline {section}{\numberline {2.9}\textbf {Conclusions}}{33}{}%
+\contentsline {chapter}{\numberline {3}\textbf {GPS Software Defined Receiver Architecture}}{34}{}%
+\contentsline {section}{\numberline {3.1}\textbf {Front End}}{34}{}%
+\contentsline {section}{\numberline {3.2}\textbf {Acquisition}}{35}{}%
+\contentsline {section}{\numberline {3.3}\textbf {Tracking}}{37}{}%
+\contentsline {subsection}{\numberline {3.3.1}\textbf {Correlators}}{37}{}%
+\contentsline {subsection}{\numberline {3.3.2}\textbf {Discriminators and Loop Filters}}{39}{}%
+\contentsline {section}{\numberline {3.4}\textbf {Navigation Algorithms}}{41}{}%
+\contentsline {subsection}{\numberline {3.4.1}\textbf {GPS Measurements}}{42}{}%
+\contentsline {subsection}{\numberline {3.4.2}\textbf {Open-Loop Architectures}}{45}{}%
+\contentsline {section}{\numberline {3.5}\textbf {Conclusions}}{47}{}%
+\contentsline {chapter}{\numberline {4}\textbf {Proposed Navigation Filter Architecture}}{49}{}%
+\contentsline {section}{\numberline {4.1}\textbf {Vector Delay and Frequency Lock Loop}}{51}{}%
+\contentsline {section}{\numberline {4.2}\textbf {Deeply Coupled GPS and FVDM Navigation Filter}}{52}{}%
+\contentsline {subsection}{\numberline {4.2.1}\textbf {Update \textit {a posteriori}}}{58}{}%
+\contentsline {section}{\numberline {4.3}\textbf {Conclusions}}{60}{}%
+\contentsline {chapter}{\numberline {5}\textbf {Simulation Environment}}{61}{}%
+\contentsline {section}{\numberline {5.1}\textbf {Guidance System}}{61}{}%
+\contentsline {subsection}{\numberline {5.1.1}\textbf {Waypoint Generation}}{61}{}%
+\contentsline {section}{\numberline {5.2}\textbf {Control Scheme}}{63}{}%
+\contentsline {section}{\numberline {5.3}\textbf {Disturbance Modeling}}{65}{}%
+\contentsline {section}{\numberline {5.4}\textbf {Conclusions}}{65}{}%
+\contentsline {chapter}{\numberline {6}\textbf {Scenario Implementation and Results}}{67}{}%
+\contentsline {section}{\numberline {6.1}\textbf {Monte-Carlo Analyses}}{67}{}%
+\contentsline {section}{\numberline {6.2}\textbf {First Trajectory}}{68}{}%
+\contentsline {subsection}{\numberline {6.2.1}\textbf {Monte-Carlo Analyses}}{71}{}%
+\contentsline {section}{\numberline {6.3}\textbf {Second Trajectory}}{77}{}%
+\contentsline {subsection}{\numberline {6.3.1}\textbf {Monte-Carlo Analyses}}{78}{}%
+\contentsline {section}{\numberline {6.4}\textbf {Conclusions}}{85}{}%
+\contentsline {chapter}{\numberline {7}\textbf {Conclusions and Future Work}}{86}{}%
+\contentsline {section}{\numberline {7.1}\textbf {Concerns of Observability}}{87}{}%
+\contentsline {section}{\numberline {7.2}\textbf {Future Work}}{88}{}%
